@@ -23,8 +23,8 @@ public class Brett {
 	}
 	
 	public SpielStein at(int x, int y)
-	{	if(x>0&&y>0)
-			return _brett.get(x*y);		
+	{	if(x>=0&&y>=0)//liegt (x, y) auf brett?
+			return _brett.get(x+_dim*y);
 		return null;
 	}
 }
