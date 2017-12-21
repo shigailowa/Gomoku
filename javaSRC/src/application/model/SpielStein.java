@@ -15,7 +15,8 @@ public class SpielStein
 	}
 	
 	public SpielStein(double red, double green, double blue, double opacity)
-	{	_farbe=new Color(red, green, blue, opacity);
+	{
+		_farbe=new Color(red, green, blue, opacity);
 	}
 	
 	public SpielStein(Color c)

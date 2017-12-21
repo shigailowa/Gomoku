@@ -1,13 +1,11 @@
 package application.model;
 
-import java.time.chrono.MinguoChronology;
 import java.util.ArrayList;
 import java.util.List;
 
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.StrokeLineCap;
-import sun.text.resources.ro.CollationData_ro;
 
 public class Brett {
 	
