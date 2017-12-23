@@ -7,6 +7,9 @@ import javafx.scene.Scene;
 
 
 public class Main extends Application {
+	
+	public static boolean DEBUG=false;
+	
 	@Override
 	public void start(Stage primaryStage) {
 		try {			

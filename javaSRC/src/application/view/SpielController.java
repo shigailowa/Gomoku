@@ -2,6 +2,7 @@ package application.view;
 
 import java.awt.Event;
 
+import com.sun.java.accessibility.util.EventQueueMonitor;
 import com.sun.javafx.geom.Point2D;
 
 import application.model.Brett;
@@ -22,8 +23,6 @@ public class SpielController {
 	@FXML ImageView stoneImage;
 	Brett spielbrett;
 	
-//	//test
-//	Circle c;
 	SpielStein s;
 	double currWidth, currHeight;
 	
@@ -41,9 +40,7 @@ public class SpielController {
 		spielbrett=new Brett(19, gameAnchorPane.getPrefWidth(), gameAnchorPane.getPrefHeight());		
 		gameAnchorPane.getChildren().addAll(spielbrett.getGitter());
 		
-//		c=new Circle(-1000, -1000, spielbrett.getGitterWeite()/2-1);
-//		gameAnchorPane.getChildren().add(c);
-		s=new SpielStein();
+		s=new SpielStein(0);
 		stoneImage.setImage(s.getImage());
 		stoneImage.setFitWidth(spielbrett.getGitterWeite());
 		stoneImage.setX(-1000);// out of view
@@ -58,29 +55,19 @@ public class SpielController {
 		if(gameAnchorPane.getWidth()!=currWidth||gameAnchorPane.getHeight()!=currHeight)
 			handleSizeChanged(); // unschoen, aber geht erstmal nur so
 		
-//		System.out.println(spielbrett.getRandX()+" "+spielbrett.getRandY());
-//		Point2D a=new Point2D(1,2);
+		// fix pos
 		double coord[]= spielbrett.roundCoord(event.getX(), event.getY());
-//		c.setCenterX(event.getX()-event.getX()%spielbrett.getGitterWeite()+spielbrett.getGitterWeite()/2+spielbrett.getRandX()%spielbrett.getGitterWeite());
-//		c.setCenterY(event.getY()-event.getY()%spielbrett.getGitterWeite()+spielbrett.getGitterWeite()/2+spielbrett.getRandY()%spielbrett.getGitterWeite());
-		//c.setCenterX(coord[0]);
-		//c.setCenterY(coord[1]);
-		
-//		System.out.println(currWidth+" "+currHeight+"  "+spielbrett.getGitter().get(20).getEndX());
-		
-		
+
+		// set new position of next stone
 		stoneImage.setX(coord[0]-spielbrett.getGitterWeite()/2);
 		stoneImage.setY(coord[1]-spielbrett.getGitterWeite()/2);
 		stoneImage.setFitWidth(spielbrett.getGitterWeite());
 		stoneImage.setFitHeight(spielbrett.getGitterWeite());
-//		System.out.println(stoneImage.getFitWidth()+" "+spielbrett.getGitterWeite());
-//		stoneImage.setPreserveRatio(false);
 	}
 	
 	@FXML
 	private void handleSizeChanged()
 	{
-//		System.out.println("änderung!");
 		currWidth=gameAnchorPane.getWidth();
 		currHeight=gameAnchorPane.getHeight();
 		
@@ -90,15 +77,35 @@ public class SpielController {
 			backgroundImage.setFitWidth(currWidth);
 				
 		spielbrett.redrawGitter(currWidth,currHeight);
-//		c.setRadius(spielbrett.getGitterWeite()/2-1);
 		stoneImage.setFitWidth(spielbrett.getGitterWeite());
 	}
 	
 	@FXML
 	private void handleMouseClicked(MouseEvent event)
 	{
-//		Circle w=new Circle(c.getCenterX(),c.getCenterY(),spielbrett.getGitterWeite()/2-1);
-//		gameAnchorPane.getChildren().add(w);
+		//fix mouse pos
+		double pos[]=spielbrett.roundCoord(event.getX(), event.getY());
+		
+		// schon belegt?
+		if( spielbrett.steinAt(pos[2], pos[3])!=null)
+			return;
+
+		SpielStein sNew=new SpielStein((s.getColor()+1)%spielbrett.getSpieler());
+		ImageView iView=new ImageView();
+		gameAnchorPane.getChildren().addAll(iView);
+		iView.setImage(sNew.getImage());
+		iView.setX(stoneImage.getX());
+		iView.setY(stoneImage.getY());
+		iView.setFitWidth(stoneImage.getFitWidth());
+		iView.setFitHeight(stoneImage.getFitHeight());
+		spielbrett.steinSet(pos[2], pos[3], s);
+		stoneImage.setImage(s.getImage());
+		s=sNew;
+		stoneImage.toFront();
+		
+		//TODO: clean this mess above up!
+		//TODO: put all stones in a list, such that the game can also be replayed afterward (or a move reverted)
+		//TODO: iterate through that stone list during redrawGitter s.t. the stones move if the wondow is resized
 	}
 	
 	@FXML //ka, springt nich an, lass ich hier aber erstmal liegen...

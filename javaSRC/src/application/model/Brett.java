@@ -1,8 +1,10 @@
 package application.model;
 
+import java.security.DomainCombiner;
 import java.util.ArrayList;
 import java.util.List;
 
+import application.Main;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.StrokeLineCap;
@@ -12,7 +14,7 @@ public class Brett {
 	private int _dim; // Dimension des Spielbretts
 	private int _spieler; //anz spieler
 	
-	//array in dem die SPielsteine liegen
+	//array in dem die Spielsteine liegen
 	private SpielStein[][] _brett;
 	
 	private List<Line> _gitterVert;
@@ -35,6 +37,7 @@ public class Brett {
 		_dim=dim;
 		_spieler=2;
 		_brett=new SpielStein[_dim][_dim];
+		
 		_gitterVert=new ArrayList<Line>();
 		_gitterHorz=new ArrayList<Line>();
 		_gitter=new ArrayList<Line>();
@@ -107,49 +110,69 @@ public class Brett {
 	
 	public double[] roundCoord(double x, double y)
 	{
-		boolean debug=false;
-if(debug)System.out.println("\n"+x+" "+y+"  inc");
+if(Main.DEBUG)System.out.println("Brett::roundCoord:: \n"+x+" "+y+"  inc");
 		
 		x=Math.max(_randX, x);
 		y=Math.max(_randY, y);
 
-if(debug)System.out.println(x+" "+y+"  max");
+if(Main.DEBUG)System.out.println("Brett::roundCoord:: "+x+" "+y+"  max");
 		
 		x=Math.min(x, _randX + (_dim-1)*_gitterWeite);
 		y=Math.min(y, _randY + (_dim-1)*_gitterWeite);
 
-if(debug)System.out.println(x+" "+y+"  min");
+if(Main.DEBUG)System.out.println("Brett::roundCoord:: "+x+" "+y+"  min");
 
 		x+=_gitterWeite/2;
 		y+=_gitterWeite/2;
 
-if(debug)System.out.println(x+" "+y+"  +gi  "+_gitterWeite/2);
+if(Main.DEBUG)System.out.println("Brett::roundCoord:: "+x+" "+y+"  +gi  "+_gitterWeite/2);
 		
 		x-=_randX;
 		y-=_randY;
 		
-if(debug)System.out.println(x+" "+y+"  -ra  "+_randX+" "+_randY);
+if(Main.DEBUG)System.out.println("Brett::roundCoord:: "+x+" "+y+"  -ra  "+_randX+" "+_randY);
 		
 		x-=x%_gitterWeite;
 		y-=y%_gitterWeite;
 
-if(debug)System.out.println(x+" "+y+"  -mo  "+_gitterWeite);
+if(Main.DEBUG)System.out.println("Brett::roundCoord:: "+x+" "+y+"  -mo  "+_gitterWeite);
 
 		x+=_randX;
 		y+=_randY;
 		
-if(debug)System.out.println(x+" "+y+"  fin");
-		
-//		event.getX()-event.getX()%spielbrett.getGitterWeite()+spielbrett.getGitterWeite()/2+spielbrett.getRandX()%spielbrett.getGitterWeite()
-		return new double[]{x, y};
+if(Main.DEBUG)System.out.println("Brett::roundCoord:: "+x+" "+y+"  fin");
+
+		return new double[]{x, y, (x-_randX)/_gitterWeite, (y-_randY)/_gitterWeite};
+		//first pair is in display coordinates, second pair is borad indices
 	}
 	
-	public SpielStein at(int x, int y)
+	public SpielStein steinAt(int x, int y)
 	{
-		if(x>=0&&y>=0)//liegt (x, y) auf brett?
+if(Main.DEBUG) System.out.println("Brett::steinAt:: "+x+" "+y);
+		if(x>=0&&x<_dim  &&  y>=0&&y<_dim)//liegt (x, y) auf brett?
 			return _brett[x][y];
 		return null;
 	}
+	
+	// allow implicit cast from double to int
+	public SpielStein steinAt(double x, double y)
+	{	return steinAt((int)x, (int)y);	}
+	
+	
+	public boolean steinSet(int x, int y, SpielStein s)
+	{
+		if(x>=0&&x<_dim && y>=0&&y<_dim  &&  _brett[x][y] == null)
+		{
+			_brett[x][y]=s;
+			return true;
+		}
+		return false;
+	}
+	
+	// allow implicit cast from double to int
+	public boolean steinSet(double x, double y, SpielStein s)
+	{	return steinSet((int)x, (int)y, s);	}
+	
 	
 	public int getDim() 
 	{	return _dim;	}
@@ -165,4 +188,8 @@ if(debug)System.out.println(x+" "+y+"  fin");
 
 	public double getRandY()
 	{	return _randY;	}
+	
+	public final int getSpieler()
+	{	return _spieler;	}
+
 }
