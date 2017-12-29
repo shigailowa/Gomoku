@@ -1,10 +1,5 @@
 package application.view;
 
-import java.awt.Event;
-
-import com.sun.java.accessibility.util.EventQueueMonitor;
-import com.sun.javafx.geom.Point2D;
-
 import application.model.Brett;
 import application.model.SpielStein;
 import javafx.fxml.FXML;
@@ -13,9 +8,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.shape.Circle;
-import javafx.scene.shape.Line;
-import javafx.scene.shape.StrokeLineCap;
 
 public class SpielController {
 	@FXML AnchorPane gameAnchorPane;

@@ -1,10 +1,6 @@
 package application.model;
 
-import com.sun.pisces.GradientColorMap;
-
-import javafx.scene.Node;
 import javafx.scene.image.Image;
-import javafx.scene.paint.Color;
 
 public class SpielStein
 {
