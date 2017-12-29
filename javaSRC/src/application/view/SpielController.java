@@ -1,7 +1,7 @@
 package application.view;
 
-import application.model.Brett;
-import application.model.SpielStein;
+import application.model.*;
+import application.model.Brett.SpielZug;
 import javafx.fxml.FXML;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -37,8 +37,7 @@ public class SpielController {
 		stoneImage.setFitWidth(spielbrett.getGitterWeite());
 		stoneImage.setX(-1000);// out of view
 		stoneImage.toFront(); // pack den spielstein vor das gitter
-		stoneImage.setSmooth(true);
-		stoneImage.setOpacity(.85);
+		stoneImage.setOpacity(.8);
 	}
 	
 	@FXML
@@ -83,21 +82,31 @@ public class SpielController {
 			return;
 
 		SpielStein sNew=new SpielStein((s.getColor()+1)%spielbrett.getSpieler());
+		
+		// new wrap for the next stones image
 		ImageView iView=new ImageView();
 		gameAnchorPane.getChildren().addAll(iView);
+		
+		// set its properties as a copy of the last stone
 		iView.setImage(sNew.getImage());
 		iView.setX(stoneImage.getX());
 		iView.setY(stoneImage.getY());
 		iView.setFitWidth(stoneImage.getFitWidth());
 		iView.setFitHeight(stoneImage.getFitHeight());
-		spielbrett.steinSet(pos[2], pos[3], s);
+		
+		spielbrett.makeMove(new Brett.SpielZug((int)pos[2], (int)pos[3], s, stoneImage));
 		stoneImage.setImage(s.getImage());
+
+		iView.setOpacity(.8);
+		stoneImage.setOpacity(1);
+		
+		// let old stone stay, "attach" new one to mouse
 		s=sNew;
+		stoneImage=iView;
+		
 		stoneImage.toFront();
 		
-		//TODO: clean this mess above up!
-		//TODO: put all stones in a list, such that the game can also be replayed afterward (or a move reverted)
-		//TODO: iterate through that stone list during redrawGitter s.t. the stones move if the wondow is resized
+		//spielbrett.printMoves();
 	}
 	
 	@FXML //ka, springt nich an, lass ich hier aber erstmal liegen...

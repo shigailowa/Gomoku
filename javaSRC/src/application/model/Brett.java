@@ -1,9 +1,15 @@
 package application.model;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
+import com.sun.glass.ui.Pixels.Format;
+import com.sun.org.apache.bcel.internal.generic.NEW;
+import com.sun.org.apache.bcel.internal.generic.RETURN;
+
 import application.Main;
+import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.StrokeLineCap;
@@ -21,13 +27,17 @@ public class Brett {
 	private List<Line> _gitter;
 	private List<Line> _punkte;
 	
+	private List<SpielZug> _SpielZuege;
+	
 	private double _gitterWeite;
 	private double _randX;
 	private double _randY;
 	
+	// wether a next move has to be adjacent diagonally or horizontally or vertically to any previous move
+	private boolean _CheckAdjacent;
 	/*
 	 * Konstruiert ein leeres Brett mit dim Feldern im Quadrat
-	 * @param dim 
+	 * @param dim Dimension des Brettes
 	 */
 	public Brett(int dim, double x, double y)
 	{		
@@ -41,6 +51,9 @@ public class Brett {
 		_gitterHorz=new ArrayList<Line>();
 		_gitter=new ArrayList<Line>();
 		_punkte=new ArrayList<Line>();
+		
+		_SpielZuege=new ArrayList<SpielZug>();
+		_CheckAdjacent=true;
 		
 		for (int i = 0; i < _dim; i++)
 		{
@@ -71,7 +84,7 @@ public class Brett {
 		double min=Math.min(x, y);
 		_gitterWeite=(int)Math.ceil(min/_dim);
 
-		//ah, ffs das gitter stimmt auch irgendwie manchmal nicht so ganz
+		//TODO: ah, ffs das gitter stimmt auch irgendwie manchmal nicht so ganz
 		_punkte.forEach(l->l.relocate(x/2, y/2));
 		_punkte.forEach(l->l.setStrokeWidth(_gitterWeite/2));
 
@@ -95,6 +108,15 @@ public class Brett {
 			_gitterHorz.get(i).setEndX(  _randX+ _gitterWeite*(_dim-1));
 			_gitterHorz.get(i).setEndY(  _randY+        i*_gitterWeite);
 		}
+		
+		// move alrady played stones
+		_SpielZuege.forEach(s->{
+			s.iView.setX(_randX + s.x*_gitterWeite-_gitterWeite/2);
+			s.iView.setY(_randY + s.y*_gitterWeite-_gitterWeite/2);
+			s.iView.setFitWidth(_gitterWeite);
+			s.iView.setFitHeight(_gitterWeite);
+		});
+
 		
 		// neue strich-dicke
 		_gitterHorz.forEach(l->l.setStrokeWidth(_gitterWeite/20));
@@ -157,8 +179,7 @@ if(Main.DEBUG) System.out.println("Brett::steinAt:: "+x+" "+y);
 	public SpielStein steinAt(double x, double y)
 	{	return steinAt((int)x, (int)y);	}
 	
-	
-	public boolean steinSet(int x, int y, SpielStein s)
+	private boolean steinSet(int x, int y, SpielStein s)
 	{
 		if(x>=0&&x<_dim && y>=0&&y<_dim  &&  _brett[x][y] == null)
 		{
@@ -167,11 +188,79 @@ if(Main.DEBUG) System.out.println("Brett::steinAt:: "+x+" "+y);
 		}
 		return false;
 	}
+		
+	public boolean makeMove(SpielZug zug)
+	{
+	/*	System.out.println(
+				String.format("%s ", _brett[zug.x-1][zug.y-1]!=null)+
+				String.format("%s ", _brett[zug.x  ][zug.y-1]!=null)+
+				String.format("%s \n", _brett[zug.x+1][zug.y-1]!=null)+
+				String.format("%s      ", _brett[zug.x-1][zug.y  ]!=null)+
+				String.format("%s \n", _brett[zug.x+1][zug.y  ]!=null)+
+				String.format("%s ", _brett[zug.x-1][zug.y+1]!=null)+
+				String.format("%s ", _brett[zug.x  ][zug.y+1]!=null)+
+				String.format("%s\n", _brett[zug.x+1][zug.y+1]!=null));
+		*/
+		
+		for (int y = 0; y < _dim; y++) {
+			for (int x = 0; x < _dim; x++)
+				if(x==zug.x&&y==zug.y)
+					System.out.print("X");
+				else if(_brett[x][y]==null)
+					System.out.print(".");
+				else
+					System.out.print(_brett[x][y]._farbe+"");
+			System.out.println();
+		}
+		System.out.println(zug.x+" "+zug.y);
+
+		
+		if(_CheckAdjacent && _SpielZuege.size()>0 && zug.x>0 && zug.x<_dim && zug.y>0 && zug.y<_dim &&
+			_brett[zug.x-1][zug.y-1]==null&&
+			_brett[zug.x-1][zug.y  ]==null&&
+			_brett[zug.x-1][zug.y+1]==null&&
+			_brett[zug.x  ][zug.y-1]==null&&
+			_brett[zug.x  ][zug.y+1]==null&&
+			_brett[zug.x+1][zug.y-1]==null&&
+			_brett[zug.x+1][zug.y  ]==null&&
+			_brett[zug.x+1][zug.y+1]==null
+			)
+			return false;
+		
+		boolean b=steinSet(zug.x, zug.y, zug.stein);
+		if(b)
+			_SpielZuege.add(zug);
+		return b;
+	}
 	
-	// allow implicit cast from double to int
-	public boolean steinSet(double x, double y, SpielStein s)
-	{	return steinSet((int)x, (int)y, s);	}
+	// to wrap the data of an occured move
+	public static class SpielZug{
+		public int x, y;
+		public SpielStein stein;
+		public ImageView iView;
+		
+		public SpielZug(int x, int y, SpielStein stein, ImageView iView) {
+			this.x=x;
+			this.y=y;
+			this.stein=stein;
+			this.iView=iView;
+		}
+		
+		
+		public String toString() {
+			return String.format("x:%2d ", x)+String.format("y:%2d", y)+" f:"+stein._farbe;
+		}
+	}
 	
+	public void printMoves()
+	{
+		for (int i = 0; i < _SpielZuege.size(); i++)
+			System.out.println(String.format("Zug%3d: ", i)+_SpielZuege.get(i));
+		System.out.println();
+	}
+
+	public final List<SpielZug> getSpielZuege()
+	{	return _SpielZuege;	}
 	
 	public int getDim() 
 	{	return _dim;	}
