@@ -279,5 +279,8 @@ if(Main.DEBUG) System.out.println("Brett::steinAt:: "+x+" "+y);
 	
 	public final int getSpieler()
 	{	return _spieler;	}
+	
+	public final SpielStein[][] getBrett()
+	{	return _brett;	}
 
 }

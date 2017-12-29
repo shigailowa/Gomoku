@@ -1,5 +1,8 @@
 package application.view;
 
+import java.util.LinkedHashSet;
+import java.util.Set;
+
 import application.model.*;
 import application.model.Brett.SpielZug;
 import javafx.fxml.FXML;
@@ -105,7 +108,7 @@ public class SpielController {
 		stoneImage=iView;
 		
 		stoneImage.toFront();
-		
+				
 		//spielbrett.printMoves();
 	}
 	
