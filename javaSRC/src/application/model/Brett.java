@@ -191,17 +191,7 @@ if(Main.DEBUG) System.out.println("Brett::steinAt:: "+x+" "+y);
 		
 	public boolean makeMove(SpielZug zug)
 	{
-	/*	System.out.println(
-				String.format("%s ", _brett[zug.x-1][zug.y-1]!=null)+
-				String.format("%s ", _brett[zug.x  ][zug.y-1]!=null)+
-				String.format("%s \n", _brett[zug.x+1][zug.y-1]!=null)+
-				String.format("%s      ", _brett[zug.x-1][zug.y  ]!=null)+
-				String.format("%s \n", _brett[zug.x+1][zug.y  ]!=null)+
-				String.format("%s ", _brett[zug.x-1][zug.y+1]!=null)+
-				String.format("%s ", _brett[zug.x  ][zug.y+1]!=null)+
-				String.format("%s\n", _brett[zug.x+1][zug.y+1]!=null));
-		*/
-		
+		//debug ausgabe der gespeicherten brett-matrix
 		for (int y = 0; y < _dim; y++) {
 			for (int x = 0; x < _dim; x++)
 				if(x==zug.x&&y==zug.y)
@@ -211,8 +201,7 @@ if(Main.DEBUG) System.out.println("Brett::steinAt:: "+x+" "+y);
 				else
 					System.out.print(_brett[x][y]._farbe+"");
 			System.out.println();
-		}
-		System.out.println(zug.x+" "+zug.y);
+		}System.out.println(zug.x+" "+zug.y);
 
 		
 		if(_CheckAdjacent && _SpielZuege.size()>0 && zug.x>0 && zug.x<_dim && zug.y>0 && zug.y<_dim &&

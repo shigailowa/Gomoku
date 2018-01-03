@@ -75,8 +75,19 @@ public class SpielController {
 	}
 	
 	@FXML
+	void handleDragDetected(MouseEvent event) {
+		System.out.println("handleDragDetected");
+		handleSizeChanged();
+		handleMouseMoved(event); // to make the move count where the mouse ended up at the end of the drag
+//		spielbrett.redrawGitter(currWidth,currHeight); // to move the pieces to the correct position
+//		stoneImage.setFitWidth(spielbrett.getGitterWeite());
+		handleSizeChanged();
+	}
+	
+	@FXML
 	private void handleMouseClicked(MouseEvent event)
 	{
+		System.out.println("handleMouseClicked");
 		//fix mouse pos
 		double pos[]=spielbrett.roundCoord(event.getX(), event.getY());
 		
@@ -84,31 +95,32 @@ public class SpielController {
 		if( spielbrett.steinAt(pos[2], pos[3])!=null)
 			return;
 
-		SpielStein sNew=new SpielStein((s.getColor()+1)%spielbrett.getSpieler());
-		
-		// new wrap for the next stones image
-		ImageView iView=new ImageView();
-		gameAnchorPane.getChildren().addAll(iView);
-		
-		// set its properties as a copy of the last stone
-		iView.setImage(sNew.getImage());
-		iView.setX(stoneImage.getX());
-		iView.setY(stoneImage.getY());
-		iView.setFitWidth(stoneImage.getFitWidth());
-		iView.setFitHeight(stoneImage.getFitHeight());
-		
-		spielbrett.makeMove(new Brett.SpielZug((int)pos[2], (int)pos[3], s, stoneImage));
-		stoneImage.setImage(s.getImage());
+		if(spielbrett.makeMove(new Brett.SpielZug((int)pos[2], (int)pos[3], s, stoneImage)))
+		{	
+			SpielStein sNew=new SpielStein((s.getColor()+1)%spielbrett.getSpieler());
+			
+			// new wrap for the next stones image
+			ImageView iView=new ImageView();
+			gameAnchorPane.getChildren().addAll(iView);
 
-		iView.setOpacity(.8);
-		stoneImage.setOpacity(1);
-		
-		// let old stone stay, "attach" new one to mouse
-		s=sNew;
-		stoneImage=iView;
-		
-		stoneImage.toFront();
-				
+			// set its properties as a copy of the last stone
+			iView.setImage(sNew.getImage());
+			iView.setX(stoneImage.getX());
+			iView.setY(stoneImage.getY());
+			iView.setFitWidth(stoneImage.getFitWidth());
+			iView.setFitHeight(stoneImage.getFitHeight());
+			
+			stoneImage.setImage(s.getImage());
+	
+			iView.setOpacity(.8);
+			stoneImage.setOpacity(1);
+			
+			// let old stone stay, "attach" new one to mouse
+			s=sNew;
+			stoneImage=iView;
+			
+			stoneImage.toFront();
+		}				
 		//spielbrett.printMoves();
 	}
 	
