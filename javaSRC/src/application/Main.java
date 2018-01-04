@@ -1,5 +1,6 @@
 package application;
 	
+import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -8,6 +9,7 @@ import javax.swing.text.DefaultHighlighter.DefaultHighlightPainter;
 import org.omg.CORBA.PUBLIC_MEMBER;
 
 import com.sun.org.apache.bcel.internal.generic.NEW;
+import com.sun.xml.internal.bind.v2.runtime.unmarshaller.XsiNilLoader.Array;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -34,8 +36,8 @@ public class Main extends Application {
 		}
 	}
 	
-	public static void main(String[] args) {
-	/* testing things, ignore this
+	public static void main(String[] args) {	
+		/* testing things, ignore this
 	 	class foo
 		{
 			foo parent;

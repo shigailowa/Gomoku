@@ -82,9 +82,8 @@ public class Brett {
 	public void redrawGitter(double x, double y)
 	{		
 		double min=Math.min(x, y);
-		_gitterWeite=(int)Math.ceil(min/_dim);
+		_gitterWeite=min/_dim;
 
-		//TODO: ah, ffs das gitter stimmt auch irgendwie manchmal nicht so ganz
 		_punkte.forEach(l->l.relocate(x/2, y/2));
 		_punkte.forEach(l->l.setStrokeWidth(_gitterWeite/2));
 

@@ -1,14 +1,14 @@
 package application.view;
 
-import java.util.LinkedHashSet;
-import java.util.Set;
+import com.sun.glass.ui.Timer;
 
 import application.model.*;
-import application.model.Brett.SpielZug;
+import javafx.animation.AnimationTimer;
 import javafx.fxml.FXML;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 
@@ -18,8 +18,19 @@ public class SpielController {
 	@FXML ImageView stoneImage;
 	Brett spielbrett;
 	
+	SpielAI gegner;
+	
 	SpielStein s;
 	double currWidth, currHeight;
+	
+	// fires a check of the window size such that the displayed field is always up to date
+	AnimationTimer Timer = new AnimationTimer() {		
+		@Override
+		public void handle(long now) {
+			handleSizeChanged();
+//			System.out.println("timer");
+		}
+	};
 	
 	@FXML
 	private void initialize()
@@ -41,6 +52,40 @@ public class SpielController {
 		stoneImage.setX(-1000);// out of view
 		stoneImage.toFront(); // pack den spielstein vor das gitter
 		stoneImage.setOpacity(.8);
+				
+		// emulate mouse click in the middle
+		MouseEvent e=new MouseEvent(null, // source - the source of the event. Can be null.
+									null, // target - the target of the event. Can be null.
+									MouseEvent.MOUSE_CLICKED, //new EventType<MouseEvent>(), // eventType - The type of the event.
+									(int)currWidth/2, // x - The x with respect to the source. Should be in scene coordinates if source == null or source is not a Node.
+									(int)currHeight/2, // y - The y with respect to the source. Should be in scene coordinates if source == null or source is not a Node.
+					/*dummy value*/ -1, // screenX - The x coordinate relative to screen.
+									-1, // screenY - The y coordinate relative to screen.
+									MouseButton.PRIMARY, // button - the mouse button used
+									1, // clickCount - number of click counts
+									false, // shiftDown - true if shift modifier was pressed.
+									false, // controlDown - true if control modifier was pressed.
+									false, // altDown - true if alt modifier was pressed.
+									false, // metaDown - true if meta modifier was pressed.
+									true, // primaryButtonDown - true if primary button was pressed.
+									false, // middleButtonDown - true if middle button was pressed.
+									false, // secondaryButtonDown - true if secondary button was pressed.
+									true, // synthesized - if this event was synthesized
+									false, // popupTrigger - whether this event denotes a popup trigger for current platform
+									true, // stillSincePress - see isStillSincePress()
+									null // pickResult - pick result. Can be null, in this case a 2D pick result without any further values is constructed based on the scene coordinates and target
+								   );
+		Timer.start();
+		handleMouseClicked(e);
+
+		gegner=new SpielAI(spielbrett);
+
+		boolean aiFaengtAn=false;//TODO:aus einstellungen
+		if(!aiFaengtAn)
+		{
+			gegner.generateNextMoves();
+			//gegner.getMove();
+		}
 	}
 	
 	@FXML
@@ -65,6 +110,7 @@ public class SpielController {
 		currWidth=gameAnchorPane.getWidth();
 		currHeight=gameAnchorPane.getHeight();
 		
+		// this only lets the background image expand, never shrink
 		if(backgroundImage.getFitHeight()<currHeight)
 			backgroundImage.setFitHeight(currHeight);
 		if(backgroundImage.getFitWidth()<currWidth)
@@ -88,6 +134,7 @@ public class SpielController {
 	private void handleMouseClicked(MouseEvent event)
 	{
 		System.out.println("handleMouseClicked");
+		
 		//fix mouse pos
 		double pos[]=spielbrett.roundCoord(event.getX(), event.getY());
 		
@@ -96,7 +143,9 @@ public class SpielController {
 			return;
 
 		if(spielbrett.makeMove(new Brett.SpielZug((int)pos[2], (int)pos[3], s, stoneImage)))
-		{	
+		{
+//			gegner.generateNextMoves();
+			
 			SpielStein sNew=new SpielStein((s.getColor()+1)%spielbrett.getSpieler());
 			
 			// new wrap for the next stones image
