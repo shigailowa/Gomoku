@@ -162,7 +162,7 @@ if(Main.DEBUG)System.out.println("Brett::roundCoord:: "+x+" "+y+"  -mo  "+_gitte
 		
 if(Main.DEBUG)System.out.println("Brett::roundCoord:: "+x+" "+y+"  fin");
 
-		return new double[]{x, y, (x-_randX)/_gitterWeite, (y-_randY)/_gitterWeite};
+		return new double[]{x, y, Math.round((x-_randX)/_gitterWeite), Math.round((y-_randY)/_gitterWeite)};
 		//first pair is in display coordinates, second pair is borad indices
 	}
 	
@@ -190,6 +190,7 @@ if(Main.DEBUG) System.out.println("Brett::steinAt:: "+x+" "+y);
 		
 	public boolean makeMove(SpielZug zug)
 	{
+		/*
 		//debug ausgabe der gespeicherten brett-matrix
 		for (int y = 0; y < _dim; y++) {
 			for (int x = 0; x < _dim; x++)
@@ -201,6 +202,7 @@ if(Main.DEBUG) System.out.println("Brett::steinAt:: "+x+" "+y);
 					System.out.print(_brett[x][y]._farbe+"");
 			System.out.println();
 		}System.out.println(zug.x+" "+zug.y);
+		*/
 
 		
 		if(_CheckAdjacent && _SpielZuege.size()>0 && zug.x>0 && zug.x<_dim && zug.y>0 && zug.y<_dim &&

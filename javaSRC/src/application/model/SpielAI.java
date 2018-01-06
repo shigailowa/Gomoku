@@ -1,15 +1,18 @@
 package application.model;
 
+import java.io.NotActiveException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.function.LongToDoubleFunction;
 
 import com.sun.xml.internal.bind.v2.runtime.unmarshaller.XsiNilLoader.Array;
 
+import application.model.Brett.SpielZug;
 import application.model.SpielAI.Savegame;
 
 public class SpielAI {
@@ -25,10 +28,10 @@ public class SpielAI {
 		if(brett.getSpielZuege().size() > 0)
 		{
 			Savegame wurzel = new Savegame(brett);
-			LinkedHashSet<Savegame>foo =new LinkedHashSet<Savegame>();
-			foo.add(wurzel);
+			LinkedHashSet<Savegame>menge =new LinkedHashSet<Savegame>();
+			menge.add(wurzel);
 			System.out.println("moveNr:"+wurzel.moveNr);
-			_possibleMoves.add(wurzel.moveNr-1, foo);//TODO: ? -1
+			_possibleMoves.add(wurzel.moveNr-1, menge);//TODO: ? -1
 		}
 		else
 			System.out.println("das brett hat noch keine steine!");
@@ -36,27 +39,61 @@ public class SpielAI {
 	
 	public void generateNextMoves()
 	{
-		System.out.println("_pm.gen{:"+_possibleMoves);
+//		System.out.println("_pm.gen{:"+_possibleMoves);
 
 		int tiefe=_possibleMoves.size()-1;
-		System.out.println("generateNextMoves::tiefe:"+tiefe);
-		for (Iterator<Savegame> it = (_possibleMoves.get(tiefe)).iterator(); it.hasNext();) { // for each leaf
+//		System.out.println("generateNextMoves::tiefe:"+tiefe);
+		for (Iterator<Savegame> it = (_possibleMoves.get(tiefe)).iterator(); it.hasNext();) // for each leaf
+		{
 			Savegame leaf = (Savegame) it.next(); // current leaf
 //			LinkedHashSet<Savegame> newLeaves=new LinkedHashSet<Savegame>(); // leaves of the current leaf
 //			newLeaves.addAll(leaf.generateNextMoves()); // generate and add new leaves to local var
 //			_possibleMoves.get(tiefe).addAll(newLeaves); // add generated leaves to possibleMoves
 			
 			Double[][] h=leaf.generateHeuristic();
-			for (int i = 0; i < leaf.dim; i++) {
-				for (int j = 0; j < leaf.dim; j++) {
+			System.out.println("Heuristic: ");
+			for (int j = 0; j < leaf.dim; j++)
+			{
+				for (int i = 0; i < leaf.dim; i++)
 					System.out.print(h[i][j]==null?".":String.format("%1.0f", h[i][j]));
-				}
 				System.out.println();
 			}
+			System.out.println();
 		
 		}
 		
-		System.out.println("_pm.gen}:"+_possibleMoves);
+//		System.out.println("_pm.gen}:"+_possibleMoves);
+	}
+	
+	public void updateMoves()
+	{
+//		System.out.println("SpielAi::makeMove brett.zuege.size:"+_brett.getSpielZuege().size());
+//		System.out.println("SpielAi::makeMove _possibleMo.size:"+_possibleMoves.size());
+		
+		for (LinkedHashSet<Savegame> moeglicherZug : _possibleMoves) {
+			if (moeglicherZug.size()>1)
+			{
+				System.out.println("move:"+_brett.getSpielZuege().get(moeglicherZug.iterator().next().moveNr));
+			}
+		}
+
+		for (int i = 0; i < _brett.getSpielZuege().size(); i++) 
+		{
+			SpielZug zug = _brett.getSpielZuege().get(i);
+			if(_possibleMoves.size()<=i)
+			{
+				// generate missing move
+				Savegame s=new Savegame(_brett);
+				LinkedHashSet<Savegame> menge=new LinkedHashSet<Savegame>();
+				menge.add(s);
+				_possibleMoves.add(i, menge);
+			}
+			else if(_possibleMoves.get(i).size()!=1)
+			{
+				//TODO: clip tree
+				System.out.println(zug);
+			}
+		}
 	}
 	
 	public static class Savegame
@@ -105,21 +142,41 @@ public class SpielAI {
 		public Double[][] generateHeuristic()
 		{
 			Double[][] erg= new Double[dim][dim];
+			
+			// generate possible location
 			for (int i = 0; i < dim; i++) {
 				for (int j = 0; j < dim; j++) {
 					if(steine[i][j]>=0) // auf dem feld ist ein stein
-					{
-						erg[i+1][j+1]=erg[i][j]==null?new Double(1):erg[i][j]+1;
-						erg[i+1][j  ]=erg[i][j]==null?new Double(1):erg[i][j]+1;
-						erg[i+1][j-1]=erg[i][j]==null?new Double(1):erg[i][j]+1;
-						erg[i  ][j+1]=erg[i][j]==null?new Double(1):erg[i][j]+1;
-						erg[i  ][j-1]=erg[i][j]==null?new Double(1):erg[i][j]+1;
-						erg[i-1][j+1]=erg[i][j]==null?new Double(1):erg[i][j]+1;
-						erg[i-1][  j]=erg[i][j]==null?new Double(1):erg[i][j]+1;
-						erg[i-1][j-1]=erg[i][j]==null?new Double(1):erg[i][j]+1;
+					{	
+						if(i+1<dim&&j+1<dim)
+							erg[i+1][j+1]=new Double(0);
+						if(i+1<dim)
+							erg[i+1][j  ]=new Double(0);
+						if(i+1<dim&&j-1>=0)
+							erg[i+1][j-1]=new Double(0);
+						if(j+1<dim)
+							erg[i  ][j+1]=new Double(0);
+						if(j-1>=0)
+							erg[i  ][j-1]=new Double(0);
+						if(i-1>=0&&j+1<dim)
+							erg[i-1][j+1]=new Double(0);
+						if(i-1>=0)
+							erg[i-1][  j]=new Double(0);
+						if(i-1>=0&&j-1>=0)
+							erg[i-1][j-1]=new Double(0);
 					}
 				}
 			}
+			
+			// delete positions where there is already a stone placed
+			for (int i = 0; i < erg.length; i++)
+				for (int j = 0; j < erg.length; j++)
+					if(steine[i][j]>=0)
+						erg[i][j]=null;
+			
+			//TODO: bewertung
+			
+			
 			return erg;
 		}
 		
@@ -173,7 +230,6 @@ public class SpielAI {
 			erg+=" ]";
 			return erg;
 		}
-
 
 		@Override
 		public boolean equals(Object obj) {

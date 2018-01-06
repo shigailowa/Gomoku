@@ -3,6 +3,7 @@ package application.view;
 import com.sun.glass.ui.Timer;
 
 import application.model.*;
+import application.model.Brett.SpielZug;
 import javafx.animation.AnimationTimer;
 import javafx.fxml.FXML;
 import javafx.scene.image.Image;
@@ -59,7 +60,7 @@ public class SpielController {
 									MouseEvent.MOUSE_CLICKED, //new EventType<MouseEvent>(), // eventType - The type of the event.
 									(int)currWidth/2, // x - The x with respect to the source. Should be in scene coordinates if source == null or source is not a Node.
 									(int)currHeight/2, // y - The y with respect to the source. Should be in scene coordinates if source == null or source is not a Node.
-					/*dummy value*/ -1, // screenX - The x coordinate relative to screen.
+						/* dummy */ -1, // screenX - The x coordinate relative to screen.
 									-1, // screenY - The y coordinate relative to screen.
 									MouseButton.PRIMARY, // button - the mouse button used
 									1, // clickCount - number of click counts
@@ -76,7 +77,9 @@ public class SpielController {
 									null // pickResult - pick result. Can be null, in this case a 2D pick result without any further values is constructed based on the scene coordinates and target
 								   );
 		Timer.start();
+
 		handleMouseClicked(e);
+		handleSizeChanged(true); // force the redraw
 
 		gegner=new SpielAI(spielbrett);
 
@@ -91,24 +94,31 @@ public class SpielController {
 	@FXML
 	private void handleMouseMoved(MouseEvent event)
 	{
-		if(gameAnchorPane.getWidth()!=currWidth||gameAnchorPane.getHeight()!=currHeight)
-			handleSizeChanged(); // unschoen, aber geht erstmal nur so
+//		handleSizeChanged(); // unschoen, aber geht erstmal nur so
 		
 		// fix pos
 		double coord[]= spielbrett.roundCoord(event.getX(), event.getY());
 
-		// set new position of next stone
+		// update position of next-stone
 		stoneImage.setX(coord[0]-spielbrett.getGitterWeite()/2);
 		stoneImage.setY(coord[1]-spielbrett.getGitterWeite()/2);
 		stoneImage.setFitWidth(spielbrett.getGitterWeite());
 		stoneImage.setFitHeight(spielbrett.getGitterWeite());
 	}
-	
-	@FXML
+
+	@FXML // to emulate a default parameter (of false)
 	private void handleSizeChanged()
+	{	handleSizeChanged(false);	}
+	
+	private void handleSizeChanged(boolean forceIt)
 	{
-		currWidth=gameAnchorPane.getWidth();
-		currHeight=gameAnchorPane.getHeight();
+		if(forceIt||currWidth!=gameAnchorPane.getWidth()||currHeight!=gameAnchorPane.getHeight())
+		{
+			currWidth=gameAnchorPane.getWidth();
+			currHeight=gameAnchorPane.getHeight();
+		}
+		else // nothing to fix
+			return;
 		
 		// this only lets the background image expand, never shrink
 		if(backgroundImage.getFitHeight()<currHeight)
@@ -121,8 +131,9 @@ public class SpielController {
 	}
 	
 	@FXML
-	void handleDragDetected(MouseEvent event) {
-		System.out.println("handleDragDetected");
+	void handleDragDetected(MouseEvent event)
+	{
+//		System.out.println("handleDragDetected");
 		handleSizeChanged();
 		handleMouseMoved(event); // to make the move count where the mouse ended up at the end of the drag
 //		spielbrett.redrawGitter(currWidth,currHeight); // to move the pieces to the correct position
@@ -133,7 +144,7 @@ public class SpielController {
 	@FXML
 	private void handleMouseClicked(MouseEvent event)
 	{
-		System.out.println("handleMouseClicked");
+//		System.out.println("handleMouseClicked");
 		
 		//fix mouse pos
 		double pos[]=spielbrett.roundCoord(event.getX(), event.getY());
@@ -142,10 +153,17 @@ public class SpielController {
 		if( spielbrett.steinAt(pos[2], pos[3])!=null)
 			return;
 
-		if(spielbrett.makeMove(new Brett.SpielZug((int)pos[2], (int)pos[3], s, stoneImage)))
+		SpielZug naechsterZug=new Brett.SpielZug((int)pos[2], (int)pos[3], s, stoneImage);
+		if(spielbrett.makeMove(naechsterZug))
 		{
-//			gegner.generateNextMoves();
-			
+			handleSizeChanged(true); // update potentially wrong displayed stones
+
+			if(gegner!=null)
+			{
+				gegner.updateMoves();
+				gegner.generateNextMoves();
+
+			}
 			SpielStein sNew=new SpielStein((s.getColor()+1)%spielbrett.getSpieler());
 			
 			// new wrap for the next stones image
@@ -168,7 +186,7 @@ public class SpielController {
 			s=sNew;
 			stoneImage=iView;
 			
-			stoneImage.toFront();
+			stoneImage.toFront();			
 		}				
 		//spielbrett.printMoves();
 	}
