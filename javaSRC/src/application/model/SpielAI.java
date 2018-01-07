@@ -1,19 +1,11 @@
 package application.model;
 
-import java.io.NotActiveException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.function.LongToDoubleFunction;
-
-import com.sun.xml.internal.bind.v2.runtime.unmarshaller.XsiNilLoader.Array;
 
 import application.model.Brett.SpielZug;
-import application.model.SpielAI.Savegame;
 
 public class SpielAI {
 	private Brett _brett;
@@ -55,7 +47,7 @@ public class SpielAI {
 			for (int j = 0; j < leaf.dim; j++)
 			{
 				for (int i = 0; i < leaf.dim; i++)
-					System.out.print(h[i][j]==null?".":String.format("%1.0f", h[i][j]));
+					System.out.print(h[i][j]==null?(leaf.steine[i][j]<0?".":(leaf.steine[i][j]==0?"W":"B")):String.format("%1.0f", h[i][j]));
 				System.out.println();
 			}
 			System.out.println();
@@ -94,6 +86,40 @@ public class SpielAI {
 				System.out.println(zug);
 			}
 		}
+	}
+	
+	public Integer[][] getBestMoves()
+	{
+		Double[][] heuristic=_possibleMoves.get(_possibleMoves.size()-1).iterator().next().generateHeuristic();
+		
+		double bestValue=-2;
+		int amountBest=0;
+		int dim =_possibleMoves.get(_possibleMoves.size()-1).iterator().next().dim;
+		
+		// find best value
+		for (int i = 0; i < dim; i++)
+			for (int j = 0; j < dim; j++)
+				if(heuristic[i][j] != null)
+					if(bestValue<heuristic[i][j])
+					{
+						bestValue=heuristic[i][j];
+						amountBest=1;
+					}
+					else if (bestValue==heuristic[i][j])
+						amountBest++;
+
+		Integer[][] erg = new Integer[amountBest][2];
+		
+		for (int i = 0; i < dim; i++)
+			for (int j = 0; j < dim; j++)
+				if(heuristic[i][j] != null 
+				&& bestValue==heuristic[i][j])
+				{
+					amountBest--;
+					erg[amountBest][1]=i;
+					erg[amountBest][0]=j;
+				}
+		return erg;
 	}
 	
 	public static class Savegame

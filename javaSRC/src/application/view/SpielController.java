@@ -125,6 +125,10 @@ public class SpielController {
 			backgroundImage.setFitHeight(currHeight);
 		if(backgroundImage.getFitWidth()<currWidth)
 			backgroundImage.setFitWidth(currWidth);
+		
+		//TODO: make the background image always stick to the grid when resizing
+		backgroundImage.setLayoutX(-(backgroundImage.getFitWidth ()-currWidth )/2);
+		backgroundImage.setLayoutY(-(backgroundImage.getFitHeight()-currHeight)/2);
 				
 		spielbrett.redrawGitter(currWidth,currHeight);
 		stoneImage.setFitWidth(spielbrett.getGitterWeite());
@@ -162,8 +166,8 @@ public class SpielController {
 			{
 				gegner.updateMoves();
 				gegner.generateNextMoves();
-
 			}
+			
 			SpielStein sNew=new SpielStein((s.getColor()+1)%spielbrett.getSpieler());
 			
 			// new wrap for the next stones image
@@ -186,8 +190,57 @@ public class SpielController {
 			s=sNew;
 			stoneImage=iView;
 			
-			stoneImage.toFront();			
-		}				
+			stoneImage.toFront();
+				
+			if(gegner!=null&&false)//TODO: fix the damn ai pos
+			{
+				System.out.println("gegnerischger zug!");
+				
+				
+				Integer[][] zuege=gegner.getBestMoves();
+				int anz=zuege.length;
+				System.out.println("generierte zuege:"+anz);
+				int zugNum=(int)(Math.random()*anz);
+				System.out.println("zugNum:"+zugNum+" "+zuege[zugNum][0]+" "+zuege[zugNum][1]);
+				naechsterZug=new Brett.SpielZug(zuege[zugNum][0], zuege[zugNum][1], s, stoneImage);
+				if (spielbrett.makeMove(naechsterZug))
+				{
+					System.out.println("war legal, wird gemacht");
+					handleSizeChanged(true); // update potentially wrong displayed stones
+
+					if(gegner!=null)
+					{
+						gegner.updateMoves();
+						gegner.generateNextMoves();
+					}
+					
+					sNew=new SpielStein((s.getColor()+1)%spielbrett.getSpieler());
+					
+					// new wrap for the next stones image
+					iView=new ImageView();
+					gameAnchorPane.getChildren().addAll(iView);
+
+					// set its properties as a copy of the last stone
+					iView.setImage(sNew.getImage());
+					iView.setX(stoneImage.getX());
+					iView.setY(stoneImage.getY());
+					iView.setFitWidth(stoneImage.getFitWidth());
+					iView.setFitHeight(stoneImage.getFitHeight());
+					
+					stoneImage.setImage(s.getImage());
+			
+					iView.setOpacity(.8);
+					stoneImage.setOpacity(1);
+					
+					// let old stone stay, "attach" new one to mouse
+					s=sNew;
+					stoneImage=iView;
+					
+					stoneImage.toFront();
+				}
+					
+			}
+		}
 		//spielbrett.printMoves();
 	}
 	
