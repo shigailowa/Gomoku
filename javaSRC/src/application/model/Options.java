@@ -13,11 +13,35 @@ public class Options {
 	private HashSet<Tupel> _menge;
 	
 	
-	public Options(HashSet<Tupel>) {
+	public Options() {
+		_menge = new HashSet<Tupel>();
+	}
+	
+	
+	public Object getOptions(String name) {
+		
+		for (Tupel tupel : _menge) {
+			
+			if (tupel._name == name) {
+				return tupel._objekt;
+			}
+		}
+		
+		return null;
+	}
+	
+	
+	public void setOptions(String name, Object objekt) {
+		
+		Tupel tupelNeu = new Tupel(name, objekt);
+		
+		_menge.remove(tupelNeu);
+		_menge.add(tupelNeu);
 		
 	}
 	
-	public static class Tupel {
+	
+	private class Tupel {
 		
 		public String _name;
 		
