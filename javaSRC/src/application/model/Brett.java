@@ -130,37 +130,37 @@ public class Brett {
 	
 	public double[] roundCoord(double x, double y)
 	{
-if(Main.DEBUG)System.out.println("Brett::roundCoord:: \n"+x+" "+y+"  inc");
+if((boolean) Main.optionen.getOption("debug"))System.out.println("Brett::roundCoord:: \n"+x+" "+y+"  inc");
 		
 		x=Math.max(_randX, x);
 		y=Math.max(_randY, y);
 
-if(Main.DEBUG)System.out.println("Brett::roundCoord:: "+x+" "+y+"  max");
+if((boolean) Main.optionen.getOption("debug"))System.out.println("Brett::roundCoord:: "+x+" "+y+"  max");
 		
 		x=Math.min(x, _randX + (_dim-1)*_gitterWeite);
 		y=Math.min(y, _randY + (_dim-1)*_gitterWeite);
 
-if(Main.DEBUG)System.out.println("Brett::roundCoord:: "+x+" "+y+"  min");
+if((boolean) Main.optionen.getOption("debug"))System.out.println("Brett::roundCoord:: "+x+" "+y+"  min");
 
 		x+=_gitterWeite/2;
 		y+=_gitterWeite/2;
 
-if(Main.DEBUG)System.out.println("Brett::roundCoord:: "+x+" "+y+"  +gi  "+_gitterWeite/2);
+if((boolean) Main.optionen.getOption("debug"))System.out.println("Brett::roundCoord:: "+x+" "+y+"  +gi  "+_gitterWeite/2);
 		
 		x-=_randX;
 		y-=_randY;
 		
-if(Main.DEBUG)System.out.println("Brett::roundCoord:: "+x+" "+y+"  -ra  "+_randX+" "+_randY);
+if((boolean) Main.optionen.getOption("debug"))System.out.println("Brett::roundCoord:: "+x+" "+y+"  -ra  "+_randX+" "+_randY);
 		
 		x-=x%_gitterWeite;
 		y-=y%_gitterWeite;
 
-if(Main.DEBUG)System.out.println("Brett::roundCoord:: "+x+" "+y+"  -mo  "+_gitterWeite);
+if((boolean) Main.optionen.getOption("debug"))System.out.println("Brett::roundCoord:: "+x+" "+y+"  -mo  "+_gitterWeite);
 
 		x+=_randX;
 		y+=_randY;
 		
-if(Main.DEBUG)System.out.println("Brett::roundCoord:: "+x+" "+y+"  fin");
+if((boolean) Main.optionen.getOption("debug"))System.out.println("Brett::roundCoord:: "+x+" "+y+"  fin");
 
 		return new double[]{x, y, Math.round((x-_randX)/_gitterWeite), Math.round((y-_randY)/_gitterWeite)};
 		//first pair is in display coordinates, second pair is borad indices
@@ -168,7 +168,7 @@ if(Main.DEBUG)System.out.println("Brett::roundCoord:: "+x+" "+y+"  fin");
 	
 	public SpielStein steinAt(int x, int y)
 	{
-if(Main.DEBUG) System.out.println("Brett::steinAt:: "+x+" "+y);
+if((boolean) Main.optionen.getOption("debug"))System.out.println("Brett::steinAt:: "+x+" "+y);
 		if(x>=0&&x<_dim  &&  y>=0&&y<_dim) // liegt (x, y) auf brett?
 			return _brett[x][y];
 		return null;

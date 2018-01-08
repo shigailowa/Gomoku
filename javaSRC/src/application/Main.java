@@ -1,14 +1,15 @@
 package application;
 
+import application.model.Options;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.stage.Stage;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 
 public class Main extends Application {
 	
-	public static boolean DEBUG=false;
-	
+	public static Options optionen=new Options();
 	
 	@Override
 	public void start(Stage primaryStage) {
@@ -26,7 +27,12 @@ public class Main extends Application {
 		}
 	}
 	
-	public static void main(String[] args) {	
+	public static void main(String[] args) {
+		optionen.setOption("debug", false);
+		optionen.setOption("BackgroundImage", new Image("resources/Ahorn_Holz.JPG"));
+		optionen.setOption("nextStoneOpacity", .7);
+		optionen.setOption("aiFaengtAn", true);
+		optionen.setOption("inEinerReihe", 5);
 		launch(args);
 	}
 }

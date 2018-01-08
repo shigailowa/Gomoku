@@ -2,8 +2,11 @@ package application.view;
 
 import java.util.List;
 
+import com.sun.corba.se.spi.ior.MakeImmutable;
 import com.sun.glass.ui.Timer;
+import com.sun.org.apache.bcel.internal.classfile.LocalVariableTable;
 
+import application.Main;
 import application.model.*;
 import application.model.Brett.SpielZug;
 import javafx.animation.AnimationTimer;
@@ -41,7 +44,7 @@ public class SpielController {
 		currWidth=gameAnchorPane.getPrefWidth();
 		currHeight=gameAnchorPane.getPrefHeight();
 		
-		backgroundImage.setImage(new Image("resources/Ahorn_Holz.JPG")); //TODO aus options
+		backgroundImage.setImage((Image) Main.optionen.getOption("BackgroundImage"));
 		backgroundImage.setFitWidth(gameAnchorPane.getPrefWidth());
 		backgroundImage.setFitHeight(gameAnchorPane.getPrefHeight());
 		backgroundImage.setPreserveRatio(false);
@@ -49,55 +52,59 @@ public class SpielController {
 		spielbrett=new Brett(19, gameAnchorPane.getPrefWidth(), gameAnchorPane.getPrefHeight());		
 		gameAnchorPane.getChildren().addAll(spielbrett.getGitter());
 		
+		double min=Math.min(currWidth, currHeight);
+		double pseudoGitterWeite=min/spielbrett.getDim();
+		
 		s=new SpielStein(0);
 		stoneImage.setImage(s.getImage());
-		stoneImage.setFitWidth(spielbrett.getGitterWeite());
+		stoneImage.setFitWidth(pseudoGitterWeite);
 		stoneImage.setX(-1000);// out of view
 		stoneImage.toFront(); // pack den spielstein vor das gitter
-		stoneImage.setOpacity(.7); //TODO aus options
+		stoneImage.setOpacity((double) Main.optionen.getOption("nextStoneOpacity"));
 				
-		// emulate mouse click in the middle
-		MouseEvent e=new MouseEvent(null, // source - the source of the event. Can be null.
-									null, // target - the target of the event. Can be null.
-									MouseEvent.MOUSE_CLICKED, //new EventType<MouseEvent>(), // eventType - The type of the event.
-									(int)currWidth/2, // x - The x with respect to the source. Should be in scene coordinates if source == null or source is not a Node.
-									(int)currHeight/2, // y - The y with respect to the source. Should be in scene coordinates if source == null or source is not a Node.
-						/* dummy */ -1, // screenX - The x coordinate relative to screen.
-									-1, // screenY - The y coordinate relative to screen.
-									MouseButton.PRIMARY, // button - the mouse button used
-									1, // clickCount - number of click counts
-									false, // shiftDown - true if shift modifier was pressed.
-									false, // controlDown - true if control modifier was pressed.
-									false, // altDown - true if alt modifier was pressed.
-									false, // metaDown - true if meta modifier was pressed.
-									true, // primaryButtonDown - true if primary button was pressed.
-									false, // middleButtonDown - true if middle button was pressed.
-									false, // secondaryButtonDown - true if secondary button was pressed.
-									true, // synthesized - if this event was synthesized
-									false, // popupTrigger - whether this event denotes a popup trigger for current platform
-									true, // stillSincePress - see isStillSincePress()
-									null // pickResult - pick result. Can be null, in this case a 2D pick result without any further values is constructed based on the scene coordinates and target
-								   );
+
 		Timer.start();
 		
 		lastPlayed=new ImageView();
 		lastPlayed.setImage(new Image("resources/lastPlayedStone.png"));
 		lastPlayed.setX(-1000); // out of view
-		lastPlayed.setFitWidth(spielbrett.getGitterWeite());
+		lastPlayed.setFitWidth(pseudoGitterWeite);
 		gameAnchorPane.getChildren().add(lastPlayed);
 		
-		handleMouseClicked(e);
-		handleSizeChanged(true); // force the redraw
+		
+		System.out.println("middle move");
+		handleMouseClicked((int)currWidth/2, (int)currHeight/2);
 
 		gegner=new SpielAI(spielbrett);
+		gegner.updateMoves();
 
-		//TODO clean up ai or player beginning
-		boolean aiFaengtAn=false;//TODO:aus einstellungen
-		if(!aiFaengtAn)
-		{
-			gegner.generateNextMoves();
-			//gegner.getMove();
-		}
+		handleSizeChanged(true); // force a redraw
+		
+		// let ai make a move
+		System.out.println("aimove");
+		//if((boolean) Main.optionen.getOption("aiFaengtAn"))
+		//{
+			Integer[][] zuege=gegner.getBestMoves();
+			
+			System.out.println("pseudoGitterWeite"+pseudoGitterWeite);
+			
+			System.out.println("AIMOVES:");
+			for (int i = 0; i < zuege.length; i++) {
+				for (int j = 0; j < zuege[i].length; j++) {
+					System.out.print(i+" "+j+" : "+zuege[i][j]*pseudoGitterWeite+spielbrett.getRandX()+"; ");
+				}
+				System.out.println();
+			}
+			System.out.println("END AIMOVES:");
+			
+			int zugNum=(int)(Math.random()*zuege.length); // of the generated best moves, take one at random
+			handleMouseClicked((int)(zuege[zugNum][0]*pseudoGitterWeite+spielbrett.getRandX()),
+							   (int)(zuege[zugNum][1]*pseudoGitterWeite+spielbrett.getRandY()));
+		//}
+
+		//TODO wtf?
+		handleMouseClicked(385, 385);
+		handleSizeChanged(true); // force a redraw
 	}
 	
 	@FXML
@@ -109,7 +116,7 @@ public class SpielController {
 		// update position of next-stone
 		stoneImage.setX(coord[0]-spielbrett.getGitterWeite()/2);
 		stoneImage.setY(coord[1]-spielbrett.getGitterWeite()/2);
-		stoneImage.setFitWidth(spielbrett.getGitterWeite());
+		stoneImage.setFitWidth( spielbrett.getGitterWeite());
 		stoneImage.setFitHeight(spielbrett.getGitterWeite());
 	}
 
@@ -137,7 +144,7 @@ public class SpielController {
 		backgroundImage.setLayoutX(-(backgroundImage.getFitWidth ()-currWidth )/2);
 		backgroundImage.setLayoutY(-(backgroundImage.getFitHeight()-currHeight)/2);
 				
-		spielbrett.redrawGitter(currWidth,currHeight);
+		spielbrett.redrawGitter(currWidth==0?gameAnchorPane.getPrefWidth():currWidth, currHeight==0?gameAnchorPane.getPrefHeight():currHeight);
 		stoneImage.setFitWidth(spielbrett.getGitterWeite());
 
 		// update lastMove image
@@ -159,9 +166,41 @@ public class SpielController {
 		handleMouseMoved(event);
 	}
 	
+	// emulate a mouseclick at a given position
+	private void handleMouseClicked(int x, int y)
+	{
+		System.out.println(x+" "+y);
+		// emulate mouse click in the middle
+		MouseEvent e=new MouseEvent(null, // source - the source of the event. Can be null.
+									null, // target - the target of the event. Can be null.
+									MouseEvent.MOUSE_CLICKED, //new EventType<MouseEvent>(), // eventType - The type of the event.
+									x, // x - The x with respect to the source. Should be in scene coordinates if source == null or source is not a Node.
+									y, // y - The y with respect to the source. Should be in scene coordinates if source == null or source is not a Node.
+						/* dummy */ -1, // screenX - The x coordinate relative to screen.
+									-1, // screenY - The y coordinate relative to screen.
+									MouseButton.PRIMARY, // button - the mouse button used
+									1, // clickCount - number of click counts
+									false, // shiftDown - true if shift modifier was pressed.
+									false, // controlDown - true if control modifier was pressed.
+									false, // altDown - true if alt modifier was pressed.
+									false, // metaDown - true if meta modifier was pressed.
+									true, // primaryButtonDown - true if primary button was pressed.
+									false, // middleButtonDown - true if middle button was pressed.
+									false, // secondaryButtonDown - true if secondary button was pressed.
+									true, // synthesized - if this event was synthesized
+									false, // popupTrigger - whether this event denotes a popup trigger for current platform
+									true, // stillSincePress - see isStillSincePress()
+									null // pickResult - pick result. Can be null, in this case a 2D pick result without any further values is constructed based on the scene coordinates and target
+								   );
+		// let it do its thing
+		handleMouseClicked(e);
+	}
+	
 	@FXML
 	private void handleMouseClicked(MouseEvent event)
 	{
+//		System.out.println("Click "+event.getX()+" "+event.getY());
+
 		//fix mouse pos
 		double pos[]=spielbrett.roundCoord(event.getX(), event.getY());
 		
@@ -194,7 +233,7 @@ public class SpielController {
 			
 			stoneImage.setImage(s.getImage());
 	
-			iView.setOpacity(.7); //TODO aus options
+			iView.setOpacity((double) Main.optionen.getOption("nextStoneOpacity"));
 			stoneImage.setOpacity(1);
 			
 			// let old stone stay, "attach" new one to mouse
@@ -233,7 +272,7 @@ public class SpielController {
 					
 					stoneImage.setImage(s.getImage());
 			
-					iView.setOpacity(.7); //TODO aus options
+					iView.setOpacity((double) Main.optionen.getOption("nextStoneOpacity"));
 					stoneImage.setOpacity(1);
 					
 					// let old stone stay, "attach" new one to mouse
@@ -263,7 +302,7 @@ public class SpielController {
 				if(richtungX==0&&richtungY==0) // mitte nicht abpruefen
 					continue;
 				
-				for (int tiefe = 1; tiefe < 5 && erg==false; tiefe++) // TODO: 5 aus den optionen holen
+				for (int tiefe = 1; tiefe < (int)Main.optionen.getOption("inEinerReihe") && erg==false; tiefe++)
 				{
 					// ist an der zu pruefenden stelle ein stein? (ist zu pruefende pos auf dem brett?)
 					SpielStein pruefStein = spielbrett.steinAt(letzterZug.x + richtungX*tiefe,
@@ -276,7 +315,7 @@ public class SpielController {
 						break;
 					
 					//merke dass es einen gewinner gibt
-					if(tiefe==5-1) //TODO aus optionen
+					if(tiefe==(int)Main.optionen.getOption("inEinerReihe")-1)
 						erg=true;
 				}
 			}
