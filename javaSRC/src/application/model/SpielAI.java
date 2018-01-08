@@ -86,6 +86,9 @@ public class SpielAI {
 				System.out.println(zug);
 			}
 		}
+
+		// vorerst auskommentiert, da das noch nicht vorhanden ist
+		//		generateNextMoves();
 	}
 	
 	public Integer[][] getBestMoves()
@@ -116,8 +119,8 @@ public class SpielAI {
 				&& bestValue==heuristic[i][j])
 				{
 					amountBest--;
-					erg[amountBest][1]=i;
-					erg[amountBest][0]=j;
+					erg[amountBest][0]=i;
+					erg[amountBest][1]=j;
 				}
 		return erg;
 	}

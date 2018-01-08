@@ -1,5 +1,7 @@
 package application.view;
 
+import java.util.List;
+
 import com.sun.glass.ui.Timer;
 
 import application.model.*;
@@ -23,13 +25,13 @@ public class SpielController {
 	
 	SpielStein s;
 	double currWidth, currHeight;
+	ImageView lastPlayed;
 	
 	// fires a check of the window size such that the displayed field is always up to date
 	AnimationTimer Timer = new AnimationTimer() {		
 		@Override
 		public void handle(long now) {
 			handleSizeChanged();
-//			System.out.println("timer");
 		}
 	};
 	
@@ -39,7 +41,7 @@ public class SpielController {
 		currWidth=gameAnchorPane.getPrefWidth();
 		currHeight=gameAnchorPane.getPrefHeight();
 		
-		backgroundImage.setImage(new Image("resources/Ahorn_Holz.JPG"));
+		backgroundImage.setImage(new Image("resources/Ahorn_Holz.JPG")); //TODO aus options
 		backgroundImage.setFitWidth(gameAnchorPane.getPrefWidth());
 		backgroundImage.setFitHeight(gameAnchorPane.getPrefHeight());
 		backgroundImage.setPreserveRatio(false);
@@ -52,7 +54,7 @@ public class SpielController {
 		stoneImage.setFitWidth(spielbrett.getGitterWeite());
 		stoneImage.setX(-1000);// out of view
 		stoneImage.toFront(); // pack den spielstein vor das gitter
-		stoneImage.setOpacity(.8);
+		stoneImage.setOpacity(.7); //TODO aus options
 				
 		// emulate mouse click in the middle
 		MouseEvent e=new MouseEvent(null, // source - the source of the event. Can be null.
@@ -77,12 +79,19 @@ public class SpielController {
 									null // pickResult - pick result. Can be null, in this case a 2D pick result without any further values is constructed based on the scene coordinates and target
 								   );
 		Timer.start();
-
+		
+		lastPlayed=new ImageView();
+		lastPlayed.setImage(new Image("resources/lastPlayedStone.png"));
+		lastPlayed.setX(-1000); // out of view
+		lastPlayed.setFitWidth(spielbrett.getGitterWeite());
+		gameAnchorPane.getChildren().add(lastPlayed);
+		
 		handleMouseClicked(e);
 		handleSizeChanged(true); // force the redraw
 
 		gegner=new SpielAI(spielbrett);
 
+		//TODO clean up ai or player beginning
 		boolean aiFaengtAn=false;//TODO:aus einstellungen
 		if(!aiFaengtAn)
 		{
@@ -94,8 +103,6 @@ public class SpielController {
 	@FXML
 	private void handleMouseMoved(MouseEvent event)
 	{
-//		handleSizeChanged(); // unschoen, aber geht erstmal nur so
-		
 		// fix pos
 		double coord[]= spielbrett.roundCoord(event.getX(), event.getY());
 
@@ -132,24 +139,29 @@ public class SpielController {
 				
 		spielbrett.redrawGitter(currWidth,currHeight);
 		stoneImage.setFitWidth(spielbrett.getGitterWeite());
+
+		// update lastMove image
+		if(spielbrett.getSpielZuege().size()!=0)
+		{
+			SpielZug lastMove = spielbrett.getSpielZuege().get(spielbrett.getSpielZuege().size()-1);
+			lastPlayed.setX(lastMove.x*spielbrett.getGitterWeite()+spielbrett.getRandX()-spielbrett.getGitterWeite()/2);
+			lastPlayed.setY(lastMove.y*spielbrett.getGitterWeite()+spielbrett.getRandY()-spielbrett.getGitterWeite()/2);
+			lastPlayed.setFitHeight(spielbrett.getGitterWeite());
+			lastPlayed.setFitWidth(spielbrett.getGitterWeite());
+			lastPlayed.toFront();
+		}
 	}
 	
 	@FXML
 	void handleDragDetected(MouseEvent event)
 	{
-//		System.out.println("handleDragDetected");
-		handleSizeChanged();
-		handleMouseMoved(event); // to make the move count where the mouse ended up at the end of the drag
-//		spielbrett.redrawGitter(currWidth,currHeight); // to move the pieces to the correct position
-//		stoneImage.setFitWidth(spielbrett.getGitterWeite());
-		handleSizeChanged();
+		// to make the move count where the mouse ended up at the end of the drag
+		handleMouseMoved(event);
 	}
 	
 	@FXML
 	private void handleMouseClicked(MouseEvent event)
 	{
-//		System.out.println("handleMouseClicked");
-		
 		//fix mouse pos
 		double pos[]=spielbrett.roundCoord(event.getX(), event.getY());
 		
@@ -165,7 +177,6 @@ public class SpielController {
 			if(gegner!=null)
 			{
 				gegner.updateMoves();
-				gegner.generateNextMoves();
 			}
 			
 			SpielStein sNew=new SpielStein((s.getColor()+1)%spielbrett.getSpieler());
@@ -183,7 +194,7 @@ public class SpielController {
 			
 			stoneImage.setImage(s.getImage());
 	
-			iView.setOpacity(.8);
+			iView.setOpacity(.7); //TODO aus options
 			stoneImage.setOpacity(1);
 			
 			// let old stone stay, "attach" new one to mouse
@@ -191,28 +202,21 @@ public class SpielController {
 			stoneImage=iView;
 			
 			stoneImage.toFront();
-				
-			if(gegner!=null&&false)//TODO: fix the damn ai pos
+			
+			if(checkIfGewinner())
+				System.out.println("es jibt nen Gewinner!"); //TODO: do something, someone has won!
+			
+			if(gegner!=null)
 			{
-				System.out.println("gegnerischger zug!");
-				
-				
 				Integer[][] zuege=gegner.getBestMoves();
-				int anz=zuege.length;
-				System.out.println("generierte zuege:"+anz);
-				int zugNum=(int)(Math.random()*anz);
-				System.out.println("zugNum:"+zugNum+" "+zuege[zugNum][0]+" "+zuege[zugNum][1]);
+				int zugNum=(int)(Math.random()*zuege.length); // of the generated best moves, take one at random
 				naechsterZug=new Brett.SpielZug(zuege[zugNum][0], zuege[zugNum][1], s, stoneImage);
+				
 				if (spielbrett.makeMove(naechsterZug))
 				{
-					System.out.println("war legal, wird gemacht");
 					handleSizeChanged(true); // update potentially wrong displayed stones
 
-					if(gegner!=null)
-					{
-						gegner.updateMoves();
-						gegner.generateNextMoves();
-					}
+					gegner.updateMoves();
 					
 					sNew=new SpielStein((s.getColor()+1)%spielbrett.getSpieler());
 					
@@ -229,7 +233,7 @@ public class SpielController {
 					
 					stoneImage.setImage(s.getImage());
 			
-					iView.setOpacity(.8);
+					iView.setOpacity(.7); //TODO aus options
 					stoneImage.setOpacity(1);
 					
 					// let old stone stay, "attach" new one to mouse
@@ -237,13 +241,49 @@ public class SpielController {
 					stoneImage=iView;
 					
 					stoneImage.toFront();
+					
+					if(checkIfGewinner())
+						System.out.println("es jibt nen Gewinner!"); //TODO: do something, someone has won!
 				}
 					
 			}
 		}
-		//spielbrett.printMoves();
+		stoneImage.setX(-1000); // move the "next" stone out of view
 	}
 	
+	private boolean checkIfGewinner()
+	{
+		SpielZug letzterZug = spielbrett.getSpielZuege().get(spielbrett.getSpielZuege().size()-1);
+		
+		boolean erg=false;
+		for (int richtungX = -1; richtungX < 2 && erg==false; richtungX++)
+		{
+			for (int richtungY = -1; richtungY < 2 && erg==false; richtungY++)
+			{
+				if(richtungX==0&&richtungY==0) // mitte nicht abpruefen
+					continue;
+				
+				for (int tiefe = 1; tiefe < 5 && erg==false; tiefe++) // TODO: 5 aus den optionen holen
+				{
+					// ist an der zu pruefenden stelle ein stein? (ist zu pruefende pos auf dem brett?)
+					SpielStein pruefStein = spielbrett.steinAt(letzterZug.x + richtungX*tiefe,
+															   letzterZug.y + richtungY*tiefe);
+					if(pruefStein==null)
+						break;
+					
+					// hat dieser die richtige farbe?
+					if(pruefStein.getColor()!=letzterZug.stein.getColor())
+						break;
+					
+					//merke dass es einen gewinner gibt
+					if(tiefe==5-1) //TODO aus optionen
+						erg=true;
+				}
+			}
+		}
+		return erg;
+	}
+
 	@FXML //ka, springt nich an, lass ich hier aber erstmal liegen...
 	//ich wollt damit nen debugmodus aktivieren...
 	private void handleKeyTyped(KeyEvent event)

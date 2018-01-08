@@ -169,7 +169,7 @@ if(Main.DEBUG)System.out.println("Brett::roundCoord:: "+x+" "+y+"  fin");
 	public SpielStein steinAt(int x, int y)
 	{
 if(Main.DEBUG) System.out.println("Brett::steinAt:: "+x+" "+y);
-		if(x>=0&&x<_dim  &&  y>=0&&y<_dim)//liegt (x, y) auf brett?
+		if(x>=0&&x<_dim  &&  y>=0&&y<_dim) // liegt (x, y) auf brett?
 			return _brett[x][y];
 		return null;
 	}
