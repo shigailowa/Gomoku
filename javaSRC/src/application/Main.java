@@ -26,7 +26,7 @@ public class Main extends Application {
 	public void start(Stage primaryStage) {
 		try {			
 			FXMLLoader loader=new FXMLLoader();
-		    loader.setLocation(Main.class.getResource("view/GameLayout.fxml"));
+		    loader.setLocation(Main.class.getResource("view/StartMenu1Layout.fxml"));
 		    Scene spielScene = new Scene(loader.load());
 
 		    spielScene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
