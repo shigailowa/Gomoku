@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.control.*?>
 <?import javafx.scene.image.*?>
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane fx:id="gameAnchorPane" onDragDetected="#handleDragDetected" onKeyPressed="#handleKeyTyped" onKeyReleased="#handleKeyTyped" onKeyTyped="#handleKeyTyped" onMouseClicked="#handleMouseClicked" onMouseMoved="#handleMouseMoved" prefHeight="700.0" prefWidth="700.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.view.SpielController">
+<AnchorPane fx:id="gameAnchorPane" onDragDetected="#handleDragDetected" onKeyPressed="#handleKeyPressed" onKeyReleased="#handleKeyReleased" onMouseClicked="#handleMouseClicked" onMouseMoved="#handleMouseMoved" prefHeight="700.0" prefWidth="700.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.view.SpielController">
    <children>
-      <ImageView fx:id="backgroundImage" fitHeight="200.0" fitWidth="200.0" onKeyPressed="#handleKeyTyped" onKeyReleased="#handleKeyTyped" onKeyTyped="#handleKeyTyped" pickOnBounds="true" preserveRatio="true" />
-      <ImageView fx:id="stoneImage" fitHeight="150.0" fitWidth="78.0" onKeyPressed="#handleKeyTyped" onKeyReleased="#handleKeyTyped" onKeyTyped="#handleKeyTyped" pickOnBounds="true" preserveRatio="true" />
+      <ImageView fx:id="backgroundImage" fitHeight="200.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
+      <ImageView fx:id="stoneImage" fitHeight="150.0" fitWidth="78.0" pickOnBounds="true" preserveRatio="true" />
    </children>
 </AnchorPane>

@@ -243,7 +243,7 @@ public class SpielController {
 					stoneImage.toFront();
 					
 					if(checkIfGewinner())
-						System.out.println("es jibt nen Gewinner!"); //TODO: do something, someone has won!
+						System.out.println("es jibt nen Gewinner!"); // TODO: do something, someone has won!
 				}
 					
 			}
@@ -283,13 +283,17 @@ public class SpielController {
 		}
 		return erg;
 	}
-
-	@FXML //ka, springt nich an, lass ich hier aber erstmal liegen...
-	//ich wollt damit nen debugmodus aktivieren...
-	private void handleKeyTyped(KeyEvent event)
+	
+	@FXML
+	private void handleKeyPressed(KeyEvent event)
 	{
-		System.out.println("handleKeyTyped");
-		System.out.println(event.toString());
+//		System.out.println("handleKeyPressed: "+event.getCode()+" "+event.toString());
+	}
+	
+	@FXML
+	private void handleKeyReleased(KeyEvent event)
+	{
+//		System.out.println("handleKeyReleased: "+event.getCode()+" "+event.toString());
 	}
 }
 

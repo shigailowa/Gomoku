@@ -190,32 +190,46 @@ if(Main.DEBUG) System.out.println("Brett::steinAt:: "+x+" "+y);
 		
 	public boolean makeMove(SpielZug zug)
 	{
-		/*
-		//debug ausgabe der gespeicherten brett-matrix
-		for (int y = 0; y < _dim; y++) {
-			for (int x = 0; x < _dim; x++)
-				if(x==zug.x&&y==zug.y)
-					System.out.print("X");
-				else if(_brett[x][y]==null)
-					System.out.print(".");
-				else
-					System.out.print(_brett[x][y]._farbe+"");
-			System.out.println();
-		}System.out.println(zug.x+" "+zug.y);
-		*/
+		// check if there is an adjacent stone
+		if(_CheckAdjacent && _SpielZuege.size()>0 && zug.x>=0 && zug.x<_dim && zug.y>=0 && zug.y<_dim)
+		{
+			boolean foundAdjacent=false;
+			
+			if(foundAdjacent==false && zug.x-1>=0 && zug.y-1>=0
+				&& _brett[zug.x-1][zug.y-1]!=null)
+					foundAdjacent=true;
 
-		
-		if(_CheckAdjacent && _SpielZuege.size()>0 && zug.x>0 && zug.x<_dim && zug.y>0 && zug.y<_dim &&
-			_brett[zug.x-1][zug.y-1]==null&&
-			_brett[zug.x-1][zug.y  ]==null&&
-			_brett[zug.x-1][zug.y+1]==null&&
-			_brett[zug.x  ][zug.y-1]==null&&
-			_brett[zug.x  ][zug.y+1]==null&&
-			_brett[zug.x+1][zug.y-1]==null&&
-			_brett[zug.x+1][zug.y  ]==null&&
-			_brett[zug.x+1][zug.y+1]==null
-			)
-			return false;
+			if(foundAdjacent==false && zug.x-1>=0
+				&& _brett[zug.x-1][zug.y ]!=null)
+					foundAdjacent=true;
+
+			if(foundAdjacent==false && zug.x-1>=0 && zug.y+1<_dim
+				&& _brett[zug.x-1][zug.y+1]!=null)
+					foundAdjacent=true;
+			
+			if(foundAdjacent==false && zug.y-1>=0
+				&& _brett[zug.x ][zug.y-1]!=null)
+					foundAdjacent=true;
+
+			if(foundAdjacent==false && zug.y+1<_dim
+				&& _brett[zug.x ][zug.y+1]!=null)
+					foundAdjacent=true;
+
+			if(foundAdjacent==false && zug.x+1<_dim && zug.y-1>=0
+				&& _brett[zug.x+1][zug.y-1]!=null)
+					foundAdjacent=true;
+			
+			if(foundAdjacent==false && zug.x+1<_dim
+				&& _brett[zug.x+1][zug.y ]!=null)
+					foundAdjacent=true;
+			
+			if(foundAdjacent==false && zug.x+1<_dim && zug.y+1<_dim
+				&& _brett[zug.x+1][zug.y+1]!=null)
+					foundAdjacent=true;
+
+			if(!foundAdjacent)
+				return false;
+		}
 		
 		boolean b=steinSet(zug.x, zug.y, zug.stein);
 		if(b)
