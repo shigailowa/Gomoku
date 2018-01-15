@@ -13,17 +13,6 @@ public class Options {
 		_menge = new HashSet<Tupel>();
 	}
 	
-	// if the string name is present, return the corresponding obj
-	// otherwise null
-	public Object getOption(String name)
-	{	
-		for (Tupel tupel : _menge)
-			if (tupel._name == name)
-				return tupel._objekt;
-		
-		return null;
-	}
-	
 	// set for a given string an obj, if already present, overwrite
 	public void setOption(String name, Object objekt)
 	{
@@ -34,16 +23,47 @@ public class Options {
 		
 	}
 	
+	// if the string name is present, return the corresponding obj
+	// otherwise null
+	public Object getOption(String name)
+	{	
+		for (Tupel tupel : _menge)
+			if (tupel.name == name)
+				return tupel.objekt;
+		
+		return null;
+	}
+	
+	public void printOption(String name)
+	{
+		System.out.print(name+": ");
+		System.out.println(getOption(name));
+	}
+	
+	@Override
+	public String toString() {
+		int longestName=0;
+		for (Tupel tupel : _menge)
+			if(tupel.name.length()>longestName)
+				longestName=tupel.name.length();
+		
+		String erg = new String("Options: \n");
+		for (Tupel tupel : _menge)
+			erg+=String.format("%"+longestName+"s:", tupel.name)+tupel.objekt+"\n";
+
+		return erg;
+	}
+
 	// inner class that wraps a string and an object
 	private class Tupel
 	{	
-		public String _name;	
-		public Object _objekt;
+		public String name;	
+		public Object objekt;
 		
 		public Tupel(String name, Object objekt)
 		{
-			_name = name;
-			_objekt = objekt;
+			this.name = name;
+			this.objekt = objekt;
 		}
 
 		// generated methods so the tupel can be put inside a hashSet
@@ -52,7 +72,7 @@ public class Options {
 			final int prime = 31;
 			int result = 1;
 			result = prime * result + getOuterType().hashCode();
-			result = prime * result + ((_name == null) ? 0 : _name.hashCode());
+			result = prime * result + ((name == null) ? 0 : name.hashCode());
 			return result;
 		}
 
@@ -67,10 +87,10 @@ public class Options {
 			Tupel other = (Tupel) obj;
 			if (!getOuterType().equals(other.getOuterType()))
 				return false;
-			if (_name == null) {
-				if (other._name != null)
+			if (name == null) {
+				if (other.name != null)
 					return false;
-			} else if (!_name.equals(other._name))
+			} else if (!name.equals(other.name))
 				return false;
 			return true;
 		}
@@ -78,5 +98,11 @@ public class Options {
 		private Options getOuterType() {
 			return Options.this;
 		}
+
+		@Override
+		public String toString() {
+			return "Tupel [name=" + name + ", objekt=" + objekt + "]";
+		}
+		
 	}
 }

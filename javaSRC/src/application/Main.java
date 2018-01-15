@@ -31,8 +31,12 @@ public class Main extends Application {
 		optionen.setOption("debug", false);
 		optionen.setOption("BackgroundImage", new Image("resources/Ahorn_Holz.JPG"));
 		optionen.setOption("nextStoneOpacity", .7);
-		optionen.setOption("aiFaengtAn", true);
+		optionen.setOption("aiFaengtAn", false);
+		optionen.setOption("anzahlAi", 1); // \in \{0, 1, 2\}
 		optionen.setOption("inEinerReihe", 5);
+		optionen.setOption("brettgroesse", 19);
+		optionen.setOption("anfangInMitte", true);
+		optionen.setOption("anfangsFarbe", 0);
 		launch(args);
 	}
 }
