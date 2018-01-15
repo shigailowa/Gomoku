@@ -262,6 +262,11 @@ if((boolean) Main.optionen.getOption("debug"))System.out.println("Brett::steinAt
 			System.out.println(String.format("Zug%3d: ", i)+_SpielZuege.get(i));
 		System.out.println();
 	}
+	
+	public int getNextMoveColour()
+	{
+		return _SpielZuege.size()%_spieler;
+	}
 
 	public final List<SpielZug> getSpielZuege()
 	{	return _SpielZuege;	}

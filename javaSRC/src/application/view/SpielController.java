@@ -1,15 +1,11 @@
 package application.view;
 
-import java.util.List;
-
-import com.sun.corba.se.spi.ior.MakeImmutable;
-import com.sun.glass.ui.Timer;
-import com.sun.org.apache.bcel.internal.classfile.LocalVariableTable;
-
 import application.Main;
 import application.model.*;
 import application.model.Brett.SpielZug;
 import javafx.animation.AnimationTimer;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -24,19 +20,13 @@ public class SpielController {
 	@FXML ImageView stoneImage;
 	Brett spielbrett;
 	
-	SpielAI gegner;
+	AnimationTimer zweiAiTimer;
 	
+	SpielAI gegner;
+
 	SpielStein s;
 	double currWidth, currHeight;
 	ImageView lastPlayed;
-	
-	// fires a check of the window size such that the displayed field is always up to date
-	AnimationTimer Timer = new AnimationTimer() {		
-		@Override
-		public void handle(long now) {
-			handleSizeChanged();
-		}
-	};
 	
 	@FXML
 	private void initialize()
@@ -49,21 +39,18 @@ public class SpielController {
 		backgroundImage.setFitHeight(gameAnchorPane.getPrefHeight());
 		backgroundImage.setPreserveRatio(false);
 		
-		spielbrett=new Brett(19, gameAnchorPane.getPrefWidth(), gameAnchorPane.getPrefHeight());		
+		spielbrett=new Brett((int)Main.optionen.getOption("brettgroesse"), gameAnchorPane.getPrefWidth(), gameAnchorPane.getPrefHeight());		
 		gameAnchorPane.getChildren().addAll(spielbrett.getGitter());
 		
 		double min=Math.min(currWidth, currHeight);
-		double pseudoGitterWeite=min/spielbrett.getDim();
+		double pseudoGitterWeite=min/spielbrett.getDim(); // gebraucht, da zurzeit noch nicht verfuegbar in class Brett
 		
-		s=new SpielStein(0);
+		s=new SpielStein((int)Main.optionen.getOption("anfangsFarbe")); // da bei erneutem spiel vllt. anders
 		stoneImage.setImage(s.getImage());
 		stoneImage.setFitWidth(pseudoGitterWeite);
-		stoneImage.setX(-1000);// out of view
+		stoneImage.setX(-1000); // out of view
 		stoneImage.toFront(); // pack den spielstein vor das gitter
 		stoneImage.setOpacity((double) Main.optionen.getOption("nextStoneOpacity"));
-				
-
-		Timer.start();
 		
 		lastPlayed=new ImageView();
 		lastPlayed.setImage(new Image("resources/lastPlayedStone.png"));
@@ -71,40 +58,64 @@ public class SpielController {
 		lastPlayed.setFitWidth(pseudoGitterWeite);
 		gameAnchorPane.getChildren().add(lastPlayed);
 		
-		
-		System.out.println("middle move");
-		handleMouseClicked((int)currWidth/2, (int)currHeight/2);
+		if((boolean)Main.optionen.getOption("anfangInMitte"))
+			// erster zug in der Mitte
+			handleMouseClicked((int)currWidth/2, (int)currHeight/2);
 
-		gegner=new SpielAI(spielbrett);
-		gegner.updateMoves();
-
-		handleSizeChanged(true); // force a redraw
 		
-		// let ai make a move
-		System.out.println("aimove");
-		//if((boolean) Main.optionen.getOption("aiFaengtAn"))
-		//{
-			Integer[][] zuege=gegner.getBestMoves();
-			
-			System.out.println("pseudoGitterWeite"+pseudoGitterWeite);
-			
-			System.out.println("AIMOVES:");
-			for (int i = 0; i < zuege.length; i++) {
-				for (int j = 0; j < zuege[i].length; j++) {
-					System.out.print(i+" "+j+" : "+zuege[i][j]*pseudoGitterWeite+spielbrett.getRandX()+"; ");
+		if((int) Main.optionen.getOption("anzahlAi")==2)
+		{
+			Main.optionen.setOption("aiFaengtAn", false);
+			zweiAiTimer=new AnimationTimer()
+			{
+				@Override
+				public void handle(long time)
+				{
+					stoneImage.setX(-1000); // move out of view
+					if(time%(int)Main.optionen.getOption("twoAiSpeed")==0)
+						letAImakeMove();
 				}
-				System.out.println();
-			}
-			System.out.println("END AIMOVES:");
-			
-			int zugNum=(int)(Math.random()*zuege.length); // of the generated best moves, take one at random
-			handleMouseClicked((int)(zuege[zugNum][0]*pseudoGitterWeite+spielbrett.getRandX()),
-							   (int)(zuege[zugNum][1]*pseudoGitterWeite+spielbrett.getRandY()));
-		//}
+			};
+			zweiAiTimer.start();
+		}
+		
+		if((int)Main.optionen.getOption("anzahlAi")>0 ) // es gibt nur einen ai Gegner
+		{
+			gegner=new SpielAI(spielbrett);
+			gegner.updateMoves();
 
-		//TODO wtf?
-		handleMouseClicked(385, 385);
-		handleSizeChanged(true); // force a redraw
+			// let ai make a move
+			System.out.println("aimove");
+			Main.optionen.printOption("aiFaengtAn");
+			if(!(boolean) Main.optionen.getOption("aiFaengtAn"))
+			{
+				System.out.println("anzZuege:"+spielbrett.getSpielZuege().size());
+				Integer[][] zuege=gegner.getBestMoves();
+				
+				System.out.println("pseudoGitterWeite"+pseudoGitterWeite);
+				
+				System.out.println("AIMOVES:");
+				for (int i = 0; i < zuege.length; i++) {
+					for (int j = 0; j < zuege[i].length; j++) {
+						System.out.print(i+" "+j+" : "+zuege[i][j]*pseudoGitterWeite+spielbrett.getRandX()+"; ");
+					}
+					System.out.println();
+				}
+				System.out.println("END AIMOVES:");
+				
+				int zugNum=(int)(Math.random()*zuege.length); // of the generated best moves, take one at random
+				handleMouseClicked((int)(zuege[zugNum][0]*pseudoGitterWeite+spielbrett.getRandX()),
+								   (int)(zuege[zugNum][1]*pseudoGitterWeite+spielbrett.getRandY()));
+			}
+		}
+		
+		gameAnchorPane.widthProperty().addListener(new ChangeListener<Number>()
+		{	@Override public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue)
+			{	handleSizeChanged();	}	});
+		
+		gameAnchorPane.heightProperty().addListener(new ChangeListener<Number>()
+		{	@Override public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue)
+			{	handleSizeChanged();	}	});
 	}
 	
 	@FXML
@@ -140,14 +151,21 @@ public class SpielController {
 		if(backgroundImage.getFitWidth()<currWidth)
 			backgroundImage.setFitWidth(currWidth);
 		
-		//TODO: make the background image always stick to the grid when resizing
+		//TODO: make the background image always stick nicely to the grid when resizing
 		backgroundImage.setLayoutX(-(backgroundImage.getFitWidth ()-currWidth )/2);
 		backgroundImage.setLayoutY(-(backgroundImage.getFitHeight()-currHeight)/2);
 				
 		spielbrett.redrawGitter(currWidth==0?gameAnchorPane.getPrefWidth():currWidth, currHeight==0?gameAnchorPane.getPrefHeight():currHeight);
 		stoneImage.setFitWidth(spielbrett.getGitterWeite());
-
+		
 		// update lastMove image
+		updateLastPlayedPos();		
+		stoneImage.setX(-1000); // move out of view until next mouse movement
+	}
+	
+	// only update the relative position of the circle on the screen
+	private void updateLastPlayedPos()
+	{
 		if(spielbrett.getSpielZuege().size()!=0)
 		{
 			SpielZug lastMove = spielbrett.getSpielZuege().get(spielbrett.getSpielZuege().size()-1);
@@ -166,7 +184,7 @@ public class SpielController {
 		handleMouseMoved(event);
 	}
 	
-	// emulate a mouseclick at a given position
+	// emulates a mouseclick at a given position
 	private void handleMouseClicked(int x, int y)
 	{
 		System.out.println(x+" "+y);
@@ -201,6 +219,9 @@ public class SpielController {
 	{
 //		System.out.println("Click "+event.getX()+" "+event.getY());
 
+		if(event.isSynthesized()==false && (int)Main.optionen.getOption("anzahlAi")==2)
+			return; // dont let the click by a player count if only ai are playing
+		
 		//fix mouse pos
 		double pos[]=spielbrett.roundCoord(event.getX(), event.getY());
 		
@@ -210,13 +231,9 @@ public class SpielController {
 
 		SpielZug naechsterZug=new Brett.SpielZug((int)pos[2], (int)pos[3], s, stoneImage);
 		if(spielbrett.makeMove(naechsterZug))
-		{
-			handleSizeChanged(true); // update potentially wrong displayed stones
-
+		{			
 			if(gegner!=null)
-			{
 				gegner.updateMoves();
-			}
 			
 			SpielStein sNew=new SpielStein((s.getColor()+1)%spielbrett.getSpieler());
 			
@@ -242,52 +259,83 @@ public class SpielController {
 			
 			stoneImage.toFront();
 			
-			if(checkIfGewinner())
-				System.out.println("es jibt nen Gewinner!"); //TODO: do something, someone has won!
-			
-			if(gegner!=null)
+			// update potentially wrong displayed stones, caused by potential dragging of the mouse
+			handleSizeChanged(true);
+
+			if(handleGewinner())
+				return;
+			if(		(   spielbrett.getSpielZuege().size()>2 
+					  ||(boolean)Main.optionen.getOption("aiFaengtAn") )
+					&&(int)Main.optionen.getOption("anzahlAi")==1 ) // sonst keine oder zwei ai-spieler
+				letAImakeMove();
+		}
+	}
+	
+	public void letAImakeMove()
+	{
+		System.out.println("letAImakeMove");
+		if(gegner!=null)
+		{
+			Integer[][] zuege=gegner.getBestMoves();
+			int zugNum=(int)(Math.random()*zuege.length); // of the generated best moves, take one at random
+			if(zuege.length==0)
 			{
-				Integer[][] zuege=gegner.getBestMoves();
-				int zugNum=(int)(Math.random()*zuege.length); // of the generated best moves, take one at random
-				naechsterZug=new Brett.SpielZug(zuege[zugNum][0], zuege[zugNum][1], s, stoneImage);
-				
-				if (spielbrett.makeMove(naechsterZug))
-				{
-					handleSizeChanged(true); // update potentially wrong displayed stones
-
-					gegner.updateMoves();
-					
-					sNew=new SpielStein((s.getColor()+1)%spielbrett.getSpieler());
-					
-					// new wrap for the next stones image
-					iView=new ImageView();
-					gameAnchorPane.getChildren().addAll(iView);
-
-					// set its properties as a copy of the last stone
-					iView.setImage(sNew.getImage());
-					iView.setX(stoneImage.getX());
-					iView.setY(stoneImage.getY());
-					iView.setFitWidth(stoneImage.getFitWidth());
-					iView.setFitHeight(stoneImage.getFitHeight());
-					
-					stoneImage.setImage(s.getImage());
+				// handle Unentschieden
+				System.out.println("brett voll!");
+				return;
+			}
+			else if (zuege.length==1)
+			{
+				zugNum=0;
+				System.out.println("nur einer frei!");
+			}
 			
-					iView.setOpacity((double) Main.optionen.getOption("nextStoneOpacity"));
-					stoneImage.setOpacity(1);
-					
-					// let old stone stay, "attach" new one to mouse
-					s=sNew;
-					stoneImage=iView;
-					
-					stoneImage.toFront();
-					
-					if(checkIfGewinner())
-						System.out.println("es jibt nen Gewinner!"); // TODO: do something, someone has won!
-				}
-					
+			SpielZug naechsterZug = new Brett.SpielZug(zuege[zugNum][0], zuege[zugNum][1], s, stoneImage);
+			
+			if (spielbrett.makeMove(naechsterZug))
+			{
+				gegner.updateMoves();
+				
+				SpielStein sNew=new SpielStein((s.getColor()+1)%spielbrett.getSpieler());
+				
+				// new wrap for the next stones image
+				ImageView iView = new ImageView();
+				gameAnchorPane.getChildren().addAll(iView);
+
+				// set its properties as a copy of the last stone
+				iView.setImage(sNew.getImage());
+				iView.setX(stoneImage.getX());
+				iView.setY(stoneImage.getY());
+				iView.setFitWidth(stoneImage.getFitWidth());
+				iView.setFitHeight(stoneImage.getFitHeight());
+				
+				stoneImage.setImage(s.getImage());
+		
+				iView.setOpacity((double) Main.optionen.getOption("nextStoneOpacity"));
+				stoneImage.setOpacity(1);
+				
+				// let old stone stay, "attach" new one to mouse
+				s=sNew;
+				stoneImage=iView;
+				
+				stoneImage.toFront();
+				
+				// update potentially wrong displayed stones, caused by potential dragging of the mouse
+				handleSizeChanged(true);
+
+				if(handleGewinner())
+					return;
 			}
 		}
-		stoneImage.setX(-1000); // move the "next" stone out of view
+	}
+	
+	// wird gerufen um gewinnerbehandlung zu starten
+	private boolean handleGewinner()
+	{
+		boolean erg=checkIfGewinner();
+		if(erg)
+			System.out.println("es jibt nen Gewinner!"); // TODO: do something, someone has won!
+		return erg;
 	}
 	
 	private boolean checkIfGewinner()

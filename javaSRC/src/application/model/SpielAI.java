@@ -5,7 +5,12 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 
+import com.sun.jmx.remote.util.OrderClassLoaders;
+import com.sun.xml.internal.bind.v2.runtime.unmarshaller.XsiNilLoader.Array;
+
+import application.Main;
 import application.model.Brett.SpielZug;
+import jdk.management.resource.internal.UnassignedContext;
 
 public class SpielAI {
 	private Brett _brett;
@@ -23,7 +28,7 @@ public class SpielAI {
 			LinkedHashSet<Savegame>menge =new LinkedHashSet<Savegame>();
 			menge.add(wurzel);
 			System.out.println("moveNr:"+wurzel.moveNr);
-			_possibleMoves.add(wurzel.moveNr-1, menge);//TODO: ? -1
+			_possibleMoves.add(wurzel.moveNr-1, menge);
 		}
 		else
 			System.out.println("das brett hat noch keine steine!");
@@ -95,7 +100,7 @@ public class SpielAI {
 	{
 		Double[][] heuristic=_possibleMoves.get(_possibleMoves.size()-1).iterator().next().generateHeuristic();
 		
-		double bestValue=-2;
+		double bestValue=Double.NEGATIVE_INFINITY;
 		int amountBest=0;
 		int dim =_possibleMoves.get(_possibleMoves.size()-1).iterator().next().dim;
 		
@@ -103,7 +108,7 @@ public class SpielAI {
 		for (int i = 0; i < dim; i++)
 			for (int j = 0; j < dim; j++)
 				if(heuristic[i][j] != null)
-					if(bestValue<heuristic[i][j])
+					if(bestValue < heuristic[i][j])
 					{
 						bestValue=heuristic[i][j];
 						amountBest=1;
@@ -116,7 +121,7 @@ public class SpielAI {
 		for (int i = 0; i < dim; i++)
 			for (int j = 0; j < dim; j++)
 				if(heuristic[i][j] != null 
-				&& bestValue==heuristic[i][j])
+					&& bestValue==heuristic[i][j])
 				{
 					amountBest--;
 					erg[amountBest][0]=i;
@@ -197,13 +202,229 @@ public class SpielAI {
 				}
 			}
 			
-			// delete positions where there is already a stone placed
+			// delete positions where there is already a stone present
 			for (int i = 0; i < erg.length; i++)
 				for (int j = 0; j < erg.length; j++)
 					if(steine[i][j]>=0)
 						erg[i][j]=null;
 			
-			//TODO: bewertung
+			
+			// bewertung:
+			int spielendeFarbe=moveNr%spielerAnz;
+			ArrayList<Double[][]> unbeschraenkteReihe= new ArrayList<Double[][]>();
+			ArrayList<Double[][]> beschraenkteReihe= new ArrayList<Double[][]>();
+						
+			// befuelle arrays mit klonen der spielbaren zuege
+			for (int i = 0; i < (int) Main.optionen.getOption("inEinerReihe"); i++)
+			{
+				// nicht nur erste ebene klonen, auch die darunter liegende
+				Double[][] klon1 = erg.clone();
+				Double[][] klon2 = erg.clone();
+				for (int j = 0; j < erg.length; j++)
+				{
+					klon1[j]=erg[j].clone();
+					klon2[j]=erg[j].clone();
+				}
+				unbeschraenkteReihe.add(klon1);
+				beschraenkteReihe.add(klon2);
+			}
+			
+			/*
+			for (int i = 0; i < steine.length; i++)
+			{
+				int startDerZaehlung=-1; // noch keiner
+				int laengeDerKette=0; // noch keiner
+				boolean obenBeschraenkt=false;
+				for (int j = 0; j < steine[i].length; j++)
+				{
+					// es gibt einen stein der momentan spielenden farbe
+					if(steine[i][j]==spielendeFarbe)
+					{
+						if(j>0) // nicht der allererste
+						{
+							if(steine[i][j-1]<0) // vorheriges feld ist frei
+							{
+								startDerZaehlung=j;
+								laengeDerKette=1;
+							}
+							else if(steine[i][j-1]==spielendeFarbe) // vorheriges feld ist mit gleicher farbe belegt
+								laengeDerKette++; // einer mehr gefunden
+							else // stein anderer farbe auf vorherigem feld
+							{
+								startDerZaehlung=j;
+								laengeDerKette=1;
+								obenBeschraenkt=true;
+							}
+						}
+						else // aller erster stein auf dem feld
+						{
+							startDerZaehlung=j;
+							laengeDerKette=1;
+						}
+					}
+					// noch ein stein wurde gefunden
+					else if(steine[i][j]==spielendeFarbe&&laengeDerKette!=0)
+					{
+						laengeDerKette++;
+					}
+					else if(steine[i][j]!=spielendeFarbe) // ende der kette || ignorieren
+					{
+						if(laengeDerKette>0) // davor wurden steine gefunden
+						{
+							if(obenBeschraenkt && steine[i][j]>=0) // auf beiden seiten blockiert
+							{									   // ignoriere gefundene kette
+								// reset variables
+								laengeDerKette=0;
+								startDerZaehlung=-1;
+								obenBeschraenkt=false;
+							}
+							else if (obenBeschraenkt) // nur oben beschraenkt
+							{
+								beschraenkteReihe.get(laengeDerKette-1)[i][j]++;//merke unten
+							}
+							else // nicht beschraenkt
+							{
+								System.out.println("laenge der kette:"+laengeDerKette);
+								unbeschraenkteReihe.get(laengeDerKette-1)[i][startDerZaehlung-1]++;// merke anfang
+								if(unbeschraenkteReihe.get(laengeDerKette-1)[i][j]!=null)
+									unbeschraenkteReihe.get(laengeDerKette-1)[i][j]++; // merke ende
+								else
+									System.out.println("i:"+i+" j:"+j);
+							}
+						}	
+					}
+				}
+			}
+			*/
+			
+			for (int x = 0; x < steine.length; x++)
+			{
+				int kettenLaenge=0;
+				for (int y = 0; y < steine.length; y++)
+				{
+					if(steine[x][y]==spielendeFarbe) // stein gefunden
+					{
+						if(y+1<dim&&steine[x][y+1]==spielendeFarbe) // darunter frei?
+						{
+							kettenLaenge++;
+							continue;
+						}
+						// behandlung fuer ketten der laenge 1:
+						if(y>0&&steine[x][y-1]<0 && kettenLaenge==1) // darueber frei
+						{
+							if(y+1<dim&&steine[x][y+1]<0) // darunter frei
+							{
+								//merke positionen
+								unbeschraenkteReihe.get(0)[x][y-1]++;
+								unbeschraenkteReihe.get(0)[x][y+1]++;
+							}
+							else
+							{
+								beschraenkteReihe.get(0)[x][y-1]++;
+							}
+						}
+						else if (y+1<dim&&steine[x][y+1]<0) // darunter frei
+						{
+							// merke position
+							beschraenkteReihe.get(0)[x][y+1]++;
+						}
+						// sonst beide seiten nicht frei, also ignorieren
+					}
+				}
+			}
+			
+			
+
+		/*
+			System.out.println("farbe die dran ist:"+spielendeFarbe);
+			
+			for (int index=0; index<beschraenkteReihe.size(); index++)
+			{
+				System.out.println("beschraenkt der laenge:"+(index+1));
+				Double[][] momentan = beschraenkteReihe.get(index);
+				for (int j = 0; j < momentan.length; j++)
+				{
+					for (int i = 0; i < momentan[j].length; i++)
+					{
+						if(momentan[i][j]!=null)
+							System.out.print("["+momentan[i][j]+"]");
+						else if(steine[i][j]>=0)
+						{
+							if(steine[i][j]==0)
+								System.out.print("[ W ]");
+							else if(steine[i][j]==1)
+								System.out.print("[ S ]");
+						}
+						else
+							System.out.print("[   ]");
+					}
+					System.out.println();
+				}
+				System.out.println();
+			}
+			
+			for (int index=0; index<unbeschraenkteReihe.size(); index++)
+			{
+				System.out.println("unbeschraenkt der laenge:"+(index+1));
+				Double[][] momentan = unbeschraenkteReihe.get(index);
+				for (int j = 0; j < momentan.length; j++) {
+					for (int i = 0; i < momentan[j].length; i++) {
+						if(momentan[i][j]!=null)
+							System.out.print("["+momentan[i][j]+"]");
+						else if(steine[i][j]>=0)
+						{
+							if(steine[i][j]==0)
+								System.out.print("[ W ]");
+							else if(steine[i][j]==1)
+								System.out.print("[ S ]");
+						}
+						else
+							System.out.print("[   ]");
+					}
+					System.out.println();
+				}
+				System.out.println();
+			}
+			
+		 	*/
+						
+			// check if there is a move that HAS to be made
+			// * 3 with 2 open ends
+				// each is a -Infinity
+			// * 4 with 1 end
+				// that is a -Infinity
+			
+			// durchlaufe alle positionen?
+			// finde vorher auch 1er, 2er etc. variabel abhaengig von der gewinnlaenge
+			// finde 3er, merke diese in einermatrix, wo ende offen (markiere dies gleich mit)
+			// zusätzliche matrix, wo drin steht wieviele 3er gefunden wurden von der position aus
+			// suche nur von oben nach unten/ links nach rechts, um doppelte zaehlung zu vermeiden
+			// diagonal?
+			// erst anfangen, wo es gefaehrlich wird, dann vom linken rand nach oben rechts suchen, links weiter runter gehen, 
+			// dann am unteren rand nach rechts weiter, bis es sicher ist
+			// analog dazu die anderen diagonalen absuchen, 
+			// also vom oberen rand aus links angefangen, dann nach links unten suchend nach rechts bewegen, dann am rechtsn rand herunter weiter
+			// suche jeweils weiter nach 4ern, speichere diese in einer matrix fuer 4er mit geschlossenem ende
+			
+			
+			// zwickmuele
+			// * 2 mal 2 mit beiden seiten offen, wo ein ende der jeweiligen an einer gleichen stelle liegt
+			// * ein kreuz mit offener mitte, wo 2 dreier des gegners als kreuz auftreten koennen
+			// * varianten mit 3 wo ende zu ist und offner 2er
+			// * varianten mit 2 geschlossenen 3ern
+			// * ofener 2er, dazu ein offener 2er, welcher vom konstruiernden feld 1 frei laesst, 
+			//   sodass ein offener 3er entsteht und ein offner 4er wo einer fehlt
+				// the constructing pos is a -Infinity
+			
+			// etc, fuer sich selbst, falls das ein siegender zug ist...
+				// +Infinity
+			
+			// falls nichts davon gefunden wurde, finde alle positionen wo eine reihe n lang des gegners blockiert wird
+			// und wieviele m mal das pro position auftritt
+			
+			// analog fuer sich selbst zum bauen
+			
+			
 			
 			
 			return erg;
