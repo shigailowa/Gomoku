@@ -11,7 +11,7 @@
   <tabs>
     <Tab fx:id="gameTab" text="Spiel">
       <content>
-        <AnchorPane fx:id="gameAnchorPane" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+        <AnchorPane fx:id="gameAnchorPane" minHeight="0.0" minWidth="0.0" prefHeight="560.0" prefWidth="600.0">
                <children>
                   <ImageView fx:id="backgroundImage" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
                   <ImageView fx:id="stoneImage" fitHeight="150.0" fitWidth="200.0" layoutX="207.0" layoutY="36.0" pickOnBounds="true" preserveRatio="true" />

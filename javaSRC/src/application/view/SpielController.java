@@ -6,7 +6,6 @@ import java.util.List;
 import application.Main;
 import application.model.Brett;
 import application.model.Brett.SpielZug;
-import application.model.Options;
 import application.model.SpielAI;
 import application.model.SpielStein;
 import javafx.animation.AnimationTimer;
@@ -60,9 +59,6 @@ public class SpielController {
 	@FXML private Button neuButton;
 	@FXML private Button startenButton;
 	
-	//für Optionen
-	private Options optionen = new Options();
-	
 	//ToggleGroup fuer radioButtons 1Spieler, 2Spieler, AI
 	final ToggleGroup radioButtonGroup = new ToggleGroup();
 	
@@ -92,20 +88,16 @@ public class SpielController {
 	
 	static long lastTime=0;
 	
-	@FXML
-	private void initialize()
-	{
-		
+	@FXML private void initialize()
+	{	
 		currWidth=gameAnchorPane.getPrefWidth();
 		currHeight=gameAnchorPane.getPrefHeight();
 		
 		backgroundImage.setImage((Image) Main.optionen.getOption("BackgroundImage"));
+		backgroundImage.setPreserveRatio(false);
 		backgroundImage.setFitWidth(gameAnchorPane.getPrefWidth());
 		backgroundImage.setFitHeight(gameAnchorPane.getPrefHeight());
-		backgroundImage.setPreserveRatio(false);
 		
-		spielbrett=new Brett((int)Main.optionen.getOption("brettgroesse"), gameAnchorPane.getPrefWidth(), gameAnchorPane.getPrefHeight());		
-
 		//RadioButtons der ToggleGroup zuordnen
 		einSpielerButton.setToggleGroup(radioButtonGroup);
 		zweiSpielerButton.setToggleGroup(radioButtonGroup);
@@ -119,8 +111,8 @@ public class SpielController {
 		bild1.setFitWidth(bild1Button.getPrefWidth());
 		
 		bild1Button.setGraphic(bild1);
-		
 		bild1Button.setToggleGroup(bildGroup);
+		
 		
 		ImageView bild2 = new ImageView("resources/AhornMaser01.JPG");
 		
@@ -128,10 +120,17 @@ public class SpielController {
 		bild2.setFitWidth(bild2Button.getPrefWidth());
 		
 		bild2Button.setGraphic(bild2);
-		
 		bild2Button.setToggleGroup(bildGroup);
 		
 		standardEinstellungen();
+		
+		gameAnchorPane.widthProperty().addListener(new ChangeListener<Number>()
+		{	@Override public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue)
+			{	handleSizeChanged();	}	});
+		
+		gameAnchorPane.heightProperty().addListener(new ChangeListener<Number>()
+		{	@Override public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue)
+			{	handleSizeChanged();	}	});
 	}
 	
 	//alle standardeinstellungen
@@ -148,23 +147,12 @@ public class SpielController {
 		hilfeText.setEditable(false);
 		uberText.setEditable(false);
 		bild1Button.setSelected(true);
-		
-		optionen.setOption("debug", false);
-		optionen.setOption("BackgroundImage", new Image("resources/Ahorn_Holz.JPG"));
-		optionen.setOption("nextStoneOpacity", .7);
-		optionen.setOption("aiFaengtAn", true);
-		optionen.setOption("anzahlAi", 2); // \in \{0, 1, 2\}
-		optionen.setOption("inEinerReihe", 5);
-		optionen.setOption("brettgroesse", 19);
-		optionen.setOption("anfangInMitte", true);
-		optionen.setOption("anfangsFarbe", 0);
-		optionen.setOption("twoAiSpeed", 1);	
 	}
 	
 	//baue Brett auf
 	private void bildeBrett()
 	{
-		spielbrett=new Brett((int) optionen.getOption("brettgroesse"), gameAnchorPane.getPrefWidth(), gameAnchorPane.getPrefHeight());		
+		spielbrett=new Brett((int) Main.optionen.getOption("brettgroesse"), gameAnchorPane.getPrefWidth(), gameAnchorPane.getPrefHeight());		
 		gameAnchorPane.getChildren().addAll(spielbrett.getGitter());
 		
 		double min=Math.min(currWidth, currHeight);
@@ -185,8 +173,10 @@ public class SpielController {
 		
 		if((boolean)Main.optionen.getOption("anfangInMitte"))
 			// erster zug in der Mitte
-			handleMouseClicked((int)currWidth/2, (int)currHeight/2);
+		//	System.out.println("foo?");//
+			handleMouseClicked((int)(currWidth/2), (int)(currHeight/2));
 
+		System.out.println("cW:"+currWidth+"cH:"+currHeight);
 		
 		if((int) Main.optionen.getOption("anzahlAi")==2)
 		{
@@ -205,7 +195,7 @@ public class SpielController {
 				}
 			};
 			zweiAiTimer.start();
-		}
+		} // only ai
 		
 		if((int)Main.optionen.getOption("anzahlAi")>0 ) // es gibt nur einen ai Gegner
 		{
@@ -235,35 +225,25 @@ public class SpielController {
 				handleMouseClicked((int)(zuege[zugNum][0]*pseudoGitterWeite+spielbrett.getRandX()),
 								   (int)(zuege[zugNum][1]*pseudoGitterWeite+spielbrett.getRandY()));
 			}
-		}
-		
-		gameAnchorPane.widthProperty().addListener(new ChangeListener<Number>()
-		{	@Override public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue)
-			{	handleSizeChanged();	}	});
-		
-		gameAnchorPane.heightProperty().addListener(new ChangeListener<Number>()
-		{	@Override public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue)
-			{	handleSizeChanged();	}	});
-	}
+		} // 1 ai
+	} // bildeBrett()
 	
 	
 	//spieler auswahl
-	@FXML
-	private void handleSpielerAnzahlButton(ActionEvent event)
+	@FXML private void handleSpielerAnzahlButton(ActionEvent event)
 	{
 		if (einSpielerButton.isSelected())
-			optionen.setOption("anzahlAi",1);
+			Main.optionen.setOption("anzahlAi",1);
 		
 		if (zweiSpielerButton.isSelected())
-			optionen.setOption("anzahlAi",0);
+			Main.optionen.setOption("anzahlAi",0);
 		
 		if (aiButton.isSelected())
-			optionen.setOption("anzahlAi", 2);
+			Main.optionen.setOption("anzahlAi", 2);
 	}
 	
 	//brettgroesse box
-	@FXML
-	private void handleBrettGroesseBox(ActionEvent event)
+	@FXML private void handleBrettGroesseBox(ActionEvent event)
 	{	
 		String brettGroesseText = brettGroesseBox.getSelectionModel().getSelectedItem();
 		
@@ -287,12 +267,11 @@ public class SpielController {
 		
 		String brettGroesse = brettGroesseTextField.getText();
 		brettGroesseLabel.setText(brettGroesse);
-		optionen.setOption("brettgroesse", Integer.parseInt(brettGroesse));
+		Main.optionen.setOption("brettgroesse", Integer.parseInt(brettGroesse));
 	}
 	
 	//brettgroesse textfeld
-	@FXML
-	private void handleBrettGroesseFeld(ActionEvent event)
+	@FXML private void handleBrettGroesseFeld(ActionEvent event)
 	{
 		String brettGroesse = brettGroesseTextField.getText();		
 		brettGroesseLabel.setText(brettGroesse);
@@ -306,57 +285,50 @@ public class SpielController {
 		default:   brettGroesseBox.setValue(" "); break;
 		}
 	
-		optionen.setOption("brettgroesse", Integer.parseInt(brettGroesse));
+		Main.optionen.setOption("brettgroesse", Integer.parseInt(brettGroesse));
 	}
-	
-	
+
 	//spielregeln
-	@FXML
-	private void handleSpielregeln(ActionEvent event)
+	@FXML private void handleSpielregeln(ActionEvent event)
 	{
-		optionen.setOption("inEinerReihe", Integer.parseInt(anzahlReiheTextField.getText()));
-		optionen.setOption("nurAnlegen", anlegenCheckBox.isSelected());		
-		optionen.setOption("aiFaengtAn", aiCheckBox.isSelected());				
-		optionen.setOption("anfangInMitte", mitteBeginnCheckBox.isSelected());
+		Main.optionen.setOption("inEinerReihe", Integer.parseInt(anzahlReiheTextField.getText()));
+		Main.optionen.setOption("nurAnlegen", anlegenCheckBox.isSelected());		
+		Main.optionen.setOption("aiFaengtAn", aiCheckBox.isSelected());				
+		Main.optionen.setOption("anfangInMitte", mitteBeginnCheckBox.isSelected());
 	}
 	
 	
 	//hintergrund bild 1
-	@FXML 
-	private void handleBackground(ActionEvent event) {
+	@FXML private void handleBackground(ActionEvent event) {
 		
 		if (bild1Button.isSelected())
 		{
 			backgroundImage.setImage(new Image("resources/Ahorn_Holz.JPG"));
-			optionen.setOption("BackgroundImage", new Image("resources/Ahorn_Holz.JPG"));
+			Main.optionen.setOption("BackgroundImage", new Image("resources/Ahorn_Holz.JPG"));
 		}
 			
 		if (bild2Button.isSelected())
 		{
 			backgroundImage.setImage(new Image("resources/AhornMaser01.JPG"));
-			optionen.setOption("BackgroundImage", new Image("resources/AhornMaser01.JPG"));
+			Main.optionen.setOption("BackgroundImage", new Image("resources/AhornMaser01.JPG"));
 		}
 	}
 	
-	
 	//neustart
-	@FXML
-	private void handleNeuButton()
+	@FXML private void handleNeuButton()
 	{
 		bildeBrett();
 	}
 	
 	//start button
-	@FXML
-	private void handleStartButton(ActionEvent event)
+	@FXML private void handleStartButton(ActionEvent event)
 	{
 		startenButton.setDisable(true);
 		startenButton.setVisible(false);
 		bildeBrett();
 	}
 	
-	@FXML
-	private void handleMouseMoved(MouseEvent event)
+	@FXML private void handleMouseMoved(MouseEvent event)
 	{
 		// fix pos
 		double coord[]= spielbrett.roundCoord(event.getX(), event.getY());
@@ -368,8 +340,8 @@ public class SpielController {
 		stoneImage.setFitHeight(spielbrett.getGitterWeite());
 	}
 
-	@FXML // to emulate a default parameter (of false)
-	private void handleSizeChanged()
+	// to emulate a default parameter (of false)
+	@FXML private void handleSizeChanged()
 	{	handleSizeChanged(false);	}
 	
 	private void handleSizeChanged(boolean forceIt)
@@ -392,8 +364,11 @@ public class SpielController {
 		backgroundImage.setLayoutX(-(backgroundImage.getFitWidth ()-currWidth )/2);
 		backgroundImage.setLayoutY(-(backgroundImage.getFitHeight()-currHeight)/2);
 				
-		spielbrett.redrawGitter(currWidth==0?gameAnchorPane.getPrefWidth():currWidth, currHeight==0?gameAnchorPane.getPrefHeight():currHeight);
-		stoneImage.setFitWidth(spielbrett.getGitterWeite());
+		if(spielbrett!=null)
+		{	
+			spielbrett.redrawGitter(currWidth==0?gameAnchorPane.getPrefWidth():currWidth, currHeight==0?gameAnchorPane.getPrefHeight():currHeight);
+			stoneImage.setFitWidth(spielbrett.getGitterWeite());
+		}
 		
 		// update lastMove image
 		updatePlayMarkers();
@@ -403,7 +378,7 @@ public class SpielController {
 	// only update the relative position of the circle on the screen
 	private void updatePlayMarkers()
 	{
-		if(spielbrett.getSpielZuege().size()!=0)
+		if(spielbrett!=null&&spielbrett.getSpielZuege().size()!=0)
 		{
 			SpielZug lastMove = spielbrett.getSpielZuege().get(spielbrett.getSpielZuege().size()-1);
 			lastPlayed.setX(lastMove.x*spielbrett.getGitterWeite()+spielbrett.getRandX()-spielbrett.getGitterWeite()/2);
@@ -455,7 +430,7 @@ public class SpielController {
 	@FXML
 	private void handleMouseClicked(MouseEvent event)
 	{
-//		System.out.println("Click "+event.getX()+" "+event.getY());
+		System.out.println("Click "+event.getX()+" "+event.getY());
 
 		if(event.isSynthesized()==false && (int)Main.optionen.getOption("anzahlAi")==2)
 			return; // dont let the click by a player count if only ai are playing
@@ -578,6 +553,9 @@ public class SpielController {
 	
 	private boolean checkIfGewinner()
 	{
+		if(spielbrett==null||spielbrett.getSpielZuege().size()==0)
+			return false; // noch nichts da zum ueberpruefen
+		
 		SpielZug letzterZug = spielbrett.getSpielZuege().get(spielbrett.getSpielZuege().size()-1);
 
 		if(winningStone!=null) // remove potential leftovers

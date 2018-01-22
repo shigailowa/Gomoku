@@ -32,7 +32,7 @@ public class Main extends Application {
 		optionen.setOption("BackgroundImage", new Image("resources/Ahorn_Holz.JPG"));
 		optionen.setOption("nextStoneOpacity", .7);
 		optionen.setOption("aiFaengtAn", true);
-		optionen.setOption("anzahlAi", 1); // \in \{0, 1, 2\}
+		optionen.setOption("anzahlAi", 0); // \in \{0, 1, 2\}
 		optionen.setOption("inEinerReihe", 5);
 		optionen.setOption("brettgroesse", 19);
 		optionen.setOption("anfangInMitte", true);
