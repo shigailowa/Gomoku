@@ -132,32 +132,21 @@ public class SpielController {
 		bild2Button.setToggleGroup(bildGroup);
 		
 		standardEinstellungen();
-		
 	}
 	
 	//alle standardeinstellungen
-	private void standardEinstellungen() {
-		
+	private void standardEinstellungen()
+	{
 		einSpielerButton.setSelected(true);
-		
 		brettGroesseTextField.setText("19");
-		
 		brettGroesseLabel.setText("19");
-		
 		brettGroesseBox.setValue("Gomoku 19 (Go)");
-		
 		anzahlReiheTextField.setText("5");
-		
 		anlegenCheckBox.setSelected(true);
-		
 		aiCheckBox.setSelected(true);
-		
 		mitteBeginnCheckBox.setSelected(true);
-		
 		hilfeText.setEditable(false);
-		
 		uberText.setEditable(false);
-		
 		bild1Button.setSelected(true);
 		
 		optionen.setOption("debug", false);
@@ -175,9 +164,7 @@ public class SpielController {
 	//baue Brett auf
 	private void bildeBrett()
 	{
-		int brettgroesse = (int) optionen.getOption("brettgroesse");
-		
-		spielbrett=new Brett(brettgroesse, gameAnchorPane.getPrefWidth(), gameAnchorPane.getPrefHeight());		
+		spielbrett=new Brett((int) optionen.getOption("brettgroesse"), gameAnchorPane.getPrefWidth(), gameAnchorPane.getPrefHeight());		
 		gameAnchorPane.getChildren().addAll(spielbrett.getGitter());
 		
 		double min=Math.min(currWidth, currHeight);
@@ -262,110 +249,75 @@ public class SpielController {
 	
 	//spieler auswahl
 	@FXML
-	private void handleSpielerAnzahlButton(ActionEvent event) {
-		
-		if (einSpielerButton.isSelected()) {
+	private void handleSpielerAnzahlButton(ActionEvent event)
+	{
+		if (einSpielerButton.isSelected())
 			optionen.setOption("anzahlAi",1);
-		}
 		
-		if (zweiSpielerButton.isSelected()) {
+		if (zweiSpielerButton.isSelected())
 			optionen.setOption("anzahlAi",0);
-		}
 		
-		if (aiButton.isSelected()) {
+		if (aiButton.isSelected())
 			optionen.setOption("anzahlAi", 2);
-		}
-		
 	}
 	
 	//brettgroesse box
 	@FXML
-	private void handleBrettGroesseBox(ActionEvent event) {
-		
+	private void handleBrettGroesseBox(ActionEvent event)
+	{	
 		String brettGroesseText = brettGroesseBox.getSelectionModel().getSelectedItem();
 		
-		if (brettGroesseText == "Tic Tac Toe") {
+		if (brettGroesseText == "Tic Tac Toe")
 			brettGroesseTextField.setText("3");
-		}
 		
-		if (brettGroesseText == "Gomoku 15" ) {
+		if (brettGroesseText == "Gomoku 15" )
 			brettGroesseTextField.setText("15");
-		}
-		
-		if (brettGroesseText == "Gomoku 17" ) {
+
+		if (brettGroesseText == "Gomoku 17" )
 			brettGroesseTextField.setText("17");
-		}
 		
-		if (brettGroesseText == "Gomoku 19 (Go)" ) {
+		if (brettGroesseText == "Gomoku 19 (Go)" )
+		{
 			brettGroesseTextField.setText("19");
 			standardEinstellungen();
 		}
 		
-		if (brettGroesseText == " " ) {
+		if (brettGroesseText == " " )
 			brettGroesseTextField.setText(" ");
-		}
 		
 		String brettGroesse = brettGroesseTextField.getText();
-		
 		brettGroesseLabel.setText(brettGroesse);
-		
 		optionen.setOption("brettgroesse", Integer.parseInt(brettGroesse));
 	}
 	
 	//brettgroesse textfeld
 	@FXML
-	private void handleBrettGroesseFeld(ActionEvent event) {
-		
-		String brettGroesse = brettGroesseTextField.getText();
-		
+	private void handleBrettGroesseFeld(ActionEvent event)
+	{
+		String brettGroesse = brettGroesseTextField.getText();		
 		brettGroesseLabel.setText(brettGroesse);
-		
-		if (brettGroesse == "3") {
-			brettGroesseBox.setValue("Tic Tac Toe");
+	
+		switch (brettGroesse)
+		{
+		case "3":  brettGroesseBox.setValue("Tic Tac Toe"); break;
+		case "15": brettGroesseBox.setValue("Gomoku 15"); break;
+		case "17": brettGroesseBox.setValue("Gomoku 17"); break;
+		case "19": brettGroesseBox.setValue("Gomoku 19 (Go)"); break;
+		default:   brettGroesseBox.setValue(" "); break;
 		}
-		else if (brettGroesse == "15") {
-			brettGroesseBox.setValue("Gomoku 15");
-		}
-		else if (brettGroesse == "17") {
-			brettGroesseBox.setValue("Gomoku 17");
-		}
-		else if (brettGroesse == "19") {
-			brettGroesseBox.setValue("Gomoku 19 (Go)");
-		}
-		else {
-			brettGroesseBox.setValue(" ");
-		}
-		
+	
 		optionen.setOption("brettgroesse", Integer.parseInt(brettGroesse));
-		
 	}
 	
 	
 	//spielregeln
 	@FXML
-	private void handleSpielregeln(ActionEvent event) {
-		
-		String reiheText = anzahlReiheTextField.getText();
-		
-		optionen.setOption("inEinerReihe", Integer.parseInt(reiheText));
-		
-		if (anlegenCheckBox.isSelected()) {
-			optionen.setOption("nurAnlegen", true);
-		} else {
-			optionen.setOption("nurAnlegen", false);
-		}
-		
-		if (aiCheckBox.isSelected()) {
-			optionen.setOption("aiFaengtAn", true);
-		} else {
-			optionen.setOption("aiFaengtAn", false);
-		}
-		
-		if (mitteBeginnCheckBox.isSelected()) {
-			optionen.setOption("anfangInMitte", true);
-		} else {
-			optionen.setOption("anfangInMitte", false);
-		}
+	private void handleSpielregeln(ActionEvent event)
+	{
+		optionen.setOption("inEinerReihe", Integer.parseInt(anzahlReiheTextField.getText()));
+		optionen.setOption("nurAnlegen", anlegenCheckBox.isSelected());		
+		optionen.setOption("aiFaengtAn", aiCheckBox.isSelected());				
+		optionen.setOption("anfangInMitte", mitteBeginnCheckBox.isSelected());
 	}
 	
 	
@@ -373,12 +325,14 @@ public class SpielController {
 	@FXML 
 	private void handleBackground(ActionEvent event) {
 		
-		if (bild1Button.isSelected()) {
+		if (bild1Button.isSelected())
+		{
 			backgroundImage.setImage(new Image("resources/Ahorn_Holz.JPG"));
 			optionen.setOption("BackgroundImage", new Image("resources/Ahorn_Holz.JPG"));
 		}
 			
-		if (bild2Button.isSelected()) {
+		if (bild2Button.isSelected())
+		{
 			backgroundImage.setImage(new Image("resources/AhornMaser01.JPG"));
 			optionen.setOption("BackgroundImage", new Image("resources/AhornMaser01.JPG"));
 		}
@@ -387,14 +341,15 @@ public class SpielController {
 	
 	//neustart
 	@FXML
-	private void handleNeuButton() {
+	private void handleNeuButton()
+	{
 		bildeBrett();
 	}
 	
 	//start button
 	@FXML
-	private void handleStartButton(ActionEvent event) {
-		
+	private void handleStartButton(ActionEvent event)
+	{
 		startenButton.setDisable(true);
 		startenButton.setVisible(false);
 		bildeBrett();
