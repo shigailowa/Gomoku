@@ -1,5 +1,12 @@
 package application.view;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.omg.CORBA.PUBLIC_MEMBER;
+
+import com.sun.org.glassfish.external.statistics.Statistic;
+
 import application.Main;
 import application.model.*;
 import application.model.Brett.SpielZug;
@@ -13,6 +20,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import jdk.internal.dynalink.beans.StaticClass;
 
 public class SpielController {
 	@FXML AnchorPane gameAnchorPane;
@@ -27,6 +35,9 @@ public class SpielController {
 	SpielStein s;
 	double currWidth, currHeight;
 	ImageView lastPlayed;
+	List<ImageView> winningStone;
+	
+	static long lastTime=0;
 	
 	@FXML
 	private void initialize()
@@ -72,8 +83,11 @@ public class SpielController {
 				public void handle(long time)
 				{
 					stoneImage.setX(-1000); // move out of view
-					if(time%(int)Main.optionen.getOption("twoAiSpeed")==0)
+					if(time>lastTime)
+					{
+						lastTime=time+(int)Main.optionen.getOption("twoAiSpeed");
 						letAImakeMove();
+					}
 				}
 			};
 			zweiAiTimer.start();
@@ -159,12 +173,12 @@ public class SpielController {
 		stoneImage.setFitWidth(spielbrett.getGitterWeite());
 		
 		// update lastMove image
-		updateLastPlayedPos();		
+		updatePlayMarkers();
 		stoneImage.setX(-1000); // move out of view until next mouse movement
 	}
 	
 	// only update the relative position of the circle on the screen
-	private void updateLastPlayedPos()
+	private void updatePlayMarkers()
 	{
 		if(spielbrett.getSpielZuege().size()!=0)
 		{
@@ -175,6 +189,7 @@ public class SpielController {
 			lastPlayed.setFitWidth(spielbrett.getGitterWeite());
 			lastPlayed.toFront();
 		}
+		checkIfGewinner(); // this implicitly removes old and redraws them
 	}
 	
 	@FXML
@@ -187,7 +202,7 @@ public class SpielController {
 	// emulates a mouseclick at a given position
 	private void handleMouseClicked(int x, int y)
 	{
-		System.out.println(x+" "+y);
+//		System.out.println(x+" "+y);
 		// emulate mouse click in the middle
 		MouseEvent e=new MouseEvent(null, // source - the source of the event. Can be null.
 									null, // target - the target of the event. Can be null.
@@ -273,7 +288,7 @@ public class SpielController {
 	
 	public void letAImakeMove()
 	{
-		System.out.println("letAImakeMove");
+//		System.out.println("letAImakeMove");
 		if(gegner!=null)
 		{
 			Integer[][] zuege=gegner.getBestMoves();
@@ -341,7 +356,10 @@ public class SpielController {
 	private boolean checkIfGewinner()
 	{
 		SpielZug letzterZug = spielbrett.getSpielZuege().get(spielbrett.getSpielZuege().size()-1);
-		
+
+		if(winningStone!=null) // remove potential leftovers
+			gameAnchorPane.getChildren().removeAll(winningStone);
+
 		boolean erg=false;
 		for (int richtungX = -1; richtungX < 2 && erg==false; richtungX++)
 		{
@@ -364,7 +382,24 @@ public class SpielController {
 					
 					//merke dass es einen gewinner gibt
 					if(tiefe==(int)Main.optionen.getOption("inEinerReihe")-1)
+					{
 						erg=true;
+						winningStone=new ArrayList<ImageView>();
+						Image w=(Image)Main.optionen.getOption("WinningStone");
+						for (int i = 0; i < (int)Main.optionen.getOption("inEinerReihe"); i++)
+						{
+							ImageView iv=new ImageView(w);
+							iv.setX((letzterZug.x + richtungX*i-.5)*spielbrett.getGitterWeite()+spielbrett.getRandX());
+							iv.setFitHeight(letzterZug.iView.getFitHeight());
+							
+							iv.setY((letzterZug.y + richtungY*i-.5)*spielbrett.getGitterWeite()+spielbrett.getRandY());
+							iv.setFitWidth(letzterZug.iView.getFitWidth());
+
+							winningStone.add(iv);
+						}
+						gameAnchorPane.getChildren().addAll(winningStone);
+						lastPlayed.toFront();
+					}
 				}
 			}
 		}
