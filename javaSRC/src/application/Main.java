@@ -1,7 +1,5 @@
 package application;
 
-import java.sql.Time;
-
 import application.model.Options;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -39,7 +37,7 @@ public class Main extends Application {
 		optionen.setOption("brettgroesse", 19);
 		optionen.setOption("anfangInMitte", true);
 		optionen.setOption("anfangsFarbe", 0);
-		optionen.setOption("twoAiSpeed", 1*1000000000/*makes it seconds*/);
+		optionen.setOption("twoAiSpeed", (int)Math.floor(0.01*1000000000)/*makes it seconds*/);
 		optionen.setOption("WinningStone", new Image("resources/WinningStone.png"));
 		launch(args);
 	}

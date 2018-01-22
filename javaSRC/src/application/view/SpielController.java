@@ -3,29 +3,82 @@ package application.view;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.omg.CORBA.PUBLIC_MEMBER;
-
-import com.sun.org.glassfish.external.statistics.Statistic;
-
 import application.Main;
-import application.model.*;
+import application.model.Brett;
 import application.model.Brett.SpielZug;
+import application.model.Options;
+import application.model.SpielAI;
+import application.model.SpielStein;
 import javafx.animation.AnimationTimer;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.RadioButton;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
+import javafx.scene.control.ToggleButton;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
-import jdk.internal.dynalink.beans.StaticClass;
 
 public class SpielController {
-	@FXML AnchorPane gameAnchorPane;
-	@FXML ImageView backgroundImage;
-	@FXML ImageView stoneImage;
+	
+	@FXML private CheckBox mitteBeginnCheckBox;
+	@FXML private ImageView backgroundImage;
+	@FXML private Tab ueberTab;
+	@FXML private CheckBox anlegenCheckBox;
+	@FXML private Label brettGroesseLabel;
+	@FXML private AnchorPane einstellungenAnchorPane;
+	@FXML private AnchorPane gameAnchorPane;
+	@FXML private CheckBox aiCheckBox;
+	@FXML private Tab helpTab;
+	@FXML private Tab gameTab;
+	@FXML private TextField brettGroesseTextField;
+	@FXML private RadioButton zweiSpielerButton;
+	@FXML private ImageView stoneImage;
+	@FXML private ComboBox<String> brettGroesseBox;
+	@FXML private ToggleButton bild2Button;
+	@FXML private Tab einstellungenTab;
+	@FXML private TextField anzahlReiheTextField;
+	@FXML private ToggleButton bild1Button;
+	@FXML private RadioButton einSpielerButton;
+	@FXML private RadioButton aiButton;
+	@FXML private TextArea hilfeText;
+	@FXML private TextArea uberText;
+	@FXML private Button neuButton;
+	@FXML private Button startenButton;
+	
+	//für Optionen
+	private Options optionen = new Options();
+	
+	//ToggleGroup fuer radioButtons 1Spieler, 2Spieler, AI
+	final ToggleGroup radioButtonGroup = new ToggleGroup();
+	
+	//ToggleGroup für Bilder
+	final ToggleGroup bildGroup = new ToggleGroup();
+	
+	//Optionen fuer ComboBox
+	ObservableList<String> choiceBoxOptions = 
+			FXCollections.observableArrayList(
+				"Tic Tac Toe",
+				"Gomoku 15",
+				"Gomoku 17",
+				"Gomoku 19 (Go)",
+				" "
+			);
+	
 	Brett spielbrett;
 	
 	AnimationTimer zweiAiTimer;
@@ -42,6 +95,7 @@ public class SpielController {
 	@FXML
 	private void initialize()
 	{
+		
 		currWidth=gameAnchorPane.getPrefWidth();
 		currHeight=gameAnchorPane.getPrefHeight();
 		
@@ -51,6 +105,79 @@ public class SpielController {
 		backgroundImage.setPreserveRatio(false);
 		
 		spielbrett=new Brett((int)Main.optionen.getOption("brettgroesse"), gameAnchorPane.getPrefWidth(), gameAnchorPane.getPrefHeight());		
+
+		//RadioButtons der ToggleGroup zuordnen
+		einSpielerButton.setToggleGroup(radioButtonGroup);
+		zweiSpielerButton.setToggleGroup(radioButtonGroup);
+		aiButton.setToggleGroup(radioButtonGroup);
+		
+		brettGroesseBox.setItems(choiceBoxOptions);
+
+		ImageView bild1 = new ImageView("resources/Ahorn_Holz.JPG");
+		
+		bild1.setFitHeight(bild1Button.getPrefHeight());
+		bild1.setFitWidth(bild1Button.getPrefWidth());
+		
+		bild1Button.setGraphic(bild1);
+		
+		bild1Button.setToggleGroup(bildGroup);
+		
+		ImageView bild2 = new ImageView("resources/AhornMaser01.JPG");
+		
+		bild2.setFitHeight(bild2Button.getPrefHeight());
+		bild2.setFitWidth(bild2Button.getPrefWidth());
+		
+		bild2Button.setGraphic(bild2);
+		
+		bild2Button.setToggleGroup(bildGroup);
+		
+		standardEinstellungen();
+		
+	}
+	
+	//alle standardeinstellungen
+	private void standardEinstellungen() {
+		
+		einSpielerButton.setSelected(true);
+		
+		brettGroesseTextField.setText("19");
+		
+		brettGroesseLabel.setText("19");
+		
+		brettGroesseBox.setValue("Gomoku 19 (Go)");
+		
+		anzahlReiheTextField.setText("5");
+		
+		anlegenCheckBox.setSelected(true);
+		
+		aiCheckBox.setSelected(true);
+		
+		mitteBeginnCheckBox.setSelected(true);
+		
+		hilfeText.setEditable(false);
+		
+		uberText.setEditable(false);
+		
+		bild1Button.setSelected(true);
+		
+		optionen.setOption("debug", false);
+		optionen.setOption("BackgroundImage", new Image("resources/Ahorn_Holz.JPG"));
+		optionen.setOption("nextStoneOpacity", .7);
+		optionen.setOption("aiFaengtAn", true);
+		optionen.setOption("anzahlAi", 2); // \in \{0, 1, 2\}
+		optionen.setOption("inEinerReihe", 5);
+		optionen.setOption("brettgroesse", 19);
+		optionen.setOption("anfangInMitte", true);
+		optionen.setOption("anfangsFarbe", 0);
+		optionen.setOption("twoAiSpeed", 1);	
+	}
+	
+	//baue Brett auf
+	private void bildeBrett()
+	{
+		int brettgroesse = (int) optionen.getOption("brettgroesse");
+		
+		spielbrett=new Brett(brettgroesse, gameAnchorPane.getPrefWidth(), gameAnchorPane.getPrefHeight());		
 		gameAnchorPane.getChildren().addAll(spielbrett.getGitter());
 		
 		double min=Math.min(currWidth, currHeight);
@@ -130,6 +257,147 @@ public class SpielController {
 		gameAnchorPane.heightProperty().addListener(new ChangeListener<Number>()
 		{	@Override public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue)
 			{	handleSizeChanged();	}	});
+	}
+	
+	
+	//spieler auswahl
+	@FXML
+	private void handleSpielerAnzahlButton(ActionEvent event) {
+		
+		if (einSpielerButton.isSelected()) {
+			optionen.setOption("anzahlAi",1);
+		}
+		
+		if (zweiSpielerButton.isSelected()) {
+			optionen.setOption("anzahlAi",0);
+		}
+		
+		if (aiButton.isSelected()) {
+			optionen.setOption("anzahlAi", 2);
+		}
+		
+	}
+	
+	//brettgroesse box
+	@FXML
+	private void handleBrettGroesseBox(ActionEvent event) {
+		
+		String brettGroesseText = brettGroesseBox.getSelectionModel().getSelectedItem();
+		
+		if (brettGroesseText == "Tic Tac Toe") {
+			brettGroesseTextField.setText("3");
+		}
+		
+		if (brettGroesseText == "Gomoku 15" ) {
+			brettGroesseTextField.setText("15");
+		}
+		
+		if (brettGroesseText == "Gomoku 17" ) {
+			brettGroesseTextField.setText("17");
+		}
+		
+		if (brettGroesseText == "Gomoku 19 (Go)" ) {
+			brettGroesseTextField.setText("19");
+			standardEinstellungen();
+		}
+		
+		if (brettGroesseText == " " ) {
+			brettGroesseTextField.setText(" ");
+		}
+		
+		String brettGroesse = brettGroesseTextField.getText();
+		
+		brettGroesseLabel.setText(brettGroesse);
+		
+		optionen.setOption("brettgroesse", Integer.parseInt(brettGroesse));
+	}
+	
+	//brettgroesse textfeld
+	@FXML
+	private void handleBrettGroesseFeld(ActionEvent event) {
+		
+		String brettGroesse = brettGroesseTextField.getText();
+		
+		brettGroesseLabel.setText(brettGroesse);
+		
+		if (brettGroesse == "3") {
+			brettGroesseBox.setValue("Tic Tac Toe");
+		}
+		else if (brettGroesse == "15") {
+			brettGroesseBox.setValue("Gomoku 15");
+		}
+		else if (brettGroesse == "17") {
+			brettGroesseBox.setValue("Gomoku 17");
+		}
+		else if (brettGroesse == "19") {
+			brettGroesseBox.setValue("Gomoku 19 (Go)");
+		}
+		else {
+			brettGroesseBox.setValue(" ");
+		}
+		
+		optionen.setOption("brettgroesse", Integer.parseInt(brettGroesse));
+		
+	}
+	
+	
+	//spielregeln
+	@FXML
+	private void handleSpielregeln(ActionEvent event) {
+		
+		String reiheText = anzahlReiheTextField.getText();
+		
+		optionen.setOption("inEinerReihe", Integer.parseInt(reiheText));
+		
+		if (anlegenCheckBox.isSelected()) {
+			optionen.setOption("nurAnlegen", true);
+		} else {
+			optionen.setOption("nurAnlegen", false);
+		}
+		
+		if (aiCheckBox.isSelected()) {
+			optionen.setOption("aiFaengtAn", true);
+		} else {
+			optionen.setOption("aiFaengtAn", false);
+		}
+		
+		if (mitteBeginnCheckBox.isSelected()) {
+			optionen.setOption("anfangInMitte", true);
+		} else {
+			optionen.setOption("anfangInMitte", false);
+		}
+	}
+	
+	
+	//hintergrund bild 1
+	@FXML 
+	private void handleBackground(ActionEvent event) {
+		
+		if (bild1Button.isSelected()) {
+			backgroundImage.setImage(new Image("resources/Ahorn_Holz.JPG"));
+			optionen.setOption("BackgroundImage", new Image("resources/Ahorn_Holz.JPG"));
+		}
+			
+		if (bild2Button.isSelected()) {
+			backgroundImage.setImage(new Image("resources/AhornMaser01.JPG"));
+			optionen.setOption("BackgroundImage", new Image("resources/AhornMaser01.JPG"));
+		}
+	}
+	
+	
+	//neustart
+	@FXML
+	private void handleNeuButton() {
+		bildeBrett();
+	}
+	
+	//start button
+	@FXML
+	private void handleStartButton(ActionEvent event) {
+		
+		startenButton.setDisable(true);
+		startenButton.setVisible(false);
+		bildeBrett();
 	}
 	
 	@FXML

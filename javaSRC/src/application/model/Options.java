@@ -20,7 +20,6 @@ public class Options {
 		
 		_menge.remove(tupelNeu);
 		_menge.add(tupelNeu);
-		
 	}
 	
 	// if the string name is present, return the corresponding obj
