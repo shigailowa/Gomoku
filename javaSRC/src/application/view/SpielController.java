@@ -15,16 +15,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.RadioButton;
-import javafx.scene.control.Tab;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
-import javafx.scene.control.ToggleButton;
-import javafx.scene.control.ToggleGroup;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
@@ -36,11 +27,12 @@ public class SpielController {
 	
 	@FXML private CheckBox mitteBeginnCheckBox;
 	@FXML private ImageView backgroundImage;
+	@FXML private TabPane tabPaneSwitch; // 33 heigher than the gameAnchorPane such that the actual game is square to begin with
 	@FXML private Tab ueberTab;
 	@FXML private CheckBox anlegenCheckBox;
 	@FXML private Label brettGroesseLabel;
 	@FXML private AnchorPane einstellungenAnchorPane;
-	@FXML private AnchorPane gameAnchorPane;
+	@FXML private AnchorPane gameAnchorPane; // holds the actual game
 	@FXML private CheckBox aiCheckBox;
 	@FXML private Tab helpTab;
 	@FXML private Tab gameTab;
@@ -93,7 +85,7 @@ public class SpielController {
 		currWidth=gameAnchorPane.getPrefWidth();
 		currHeight=gameAnchorPane.getPrefHeight();
 		
-		backgroundImage.setImage((Image) Main.optionen.getOption("BackgroundImage"));
+		backgroundImage.setImage((Image) Main.optionen.getOption("BackgroundImageAhornHolz"));
 		backgroundImage.setPreserveRatio(false);
 		backgroundImage.setFitWidth(gameAnchorPane.getPrefWidth());
 		backgroundImage.setFitHeight(gameAnchorPane.getPrefHeight());
@@ -161,22 +153,17 @@ public class SpielController {
 		s=new SpielStein((int)Main.optionen.getOption("anfangsFarbe")); // da bei erneutem spiel vllt. anders
 		stoneImage.setImage(s.getImage());
 		stoneImage.setFitWidth(pseudoGitterWeite);
-		stoneImage.setX(-1000); // out of view
 		stoneImage.toFront(); // pack den spielstein vor das gitter
 		stoneImage.setOpacity((double) Main.optionen.getOption("nextStoneOpacity"));
 		
 		lastPlayed=new ImageView();
 		lastPlayed.setImage(new Image("resources/lastPlayedStone.png"));
-		lastPlayed.setX(-1000); // out of view
 		lastPlayed.setFitWidth(pseudoGitterWeite);
 		gameAnchorPane.getChildren().add(lastPlayed);
 		
 		if((boolean)Main.optionen.getOption("anfangInMitte"))
 			// erster zug in der Mitte
-		//	System.out.println("foo?");//
 			handleMouseClicked((int)(currWidth/2), (int)(currHeight/2));
-
-		System.out.println("cW:"+currWidth+"cH:"+currHeight);
 		
 		if((int) Main.optionen.getOption("anzahlAi")==2)
 		{
@@ -186,7 +173,7 @@ public class SpielController {
 				@Override
 				public void handle(long time)
 				{
-					stoneImage.setX(-1000); // move out of view
+					stoneImage.setX(-1042); // move out of view
 					if(time>lastTime)
 					{
 						lastTime=time+(int)Main.optionen.getOption("twoAiSpeed");
@@ -233,10 +220,10 @@ public class SpielController {
 	@FXML private void handleSpielerAnzahlButton(ActionEvent event)
 	{
 		if (einSpielerButton.isSelected())
-			Main.optionen.setOption("anzahlAi",1);
+			Main.optionen.setOption("anzahlAi", 1);
 		
 		if (zweiSpielerButton.isSelected())
-			Main.optionen.setOption("anzahlAi",0);
+			Main.optionen.setOption("anzahlAi", 0);
 		
 		if (aiButton.isSelected())
 			Main.optionen.setOption("anzahlAi", 2);
@@ -247,27 +234,29 @@ public class SpielController {
 	{	
 		String brettGroesseText = brettGroesseBox.getSelectionModel().getSelectedItem();
 		
-		if (brettGroesseText == "Tic Tac Toe")
-			brettGroesseTextField.setText("3");
-		
-		if (brettGroesseText == "Gomoku 15" )
-			brettGroesseTextField.setText("15");
-
-		if (brettGroesseText == "Gomoku 17" )
-			brettGroesseTextField.setText("17");
-		
-		if (brettGroesseText == "Gomoku 19 (Go)" )
+		switch (brettGroesseText)
 		{
-			brettGroesseTextField.setText("19");
-			standardEinstellungen();
+		case "Tic Tac Toe": brettGroesseTextField.setText("3"); break;
+			//TODO: lade einstellungen fuer tic tac toe
+		case "Gomoku 15":   brettGroesseTextField.setText("15"); break;
+		case "Gomoku 17":   brettGroesseTextField.setText("17"); break;
+		case "Gomoku 19 (Go)":
+			brettGroesseTextField.setText("17");
+			standardEinstellungen(); // lade standard
+			//TODO: sieh standard an und passe an
+			break;
+
+		default:
+			brettGroesseTextField.setText("");
+			break;
 		}
 		
-		if (brettGroesseText == " " )
-			brettGroesseTextField.setText(" ");
-		
 		String brettGroesse = brettGroesseTextField.getText();
-		brettGroesseLabel.setText(brettGroesse);
-		Main.optionen.setOption("brettgroesse", Integer.parseInt(brettGroesse));
+		if(brettGroesse.length() > 0 )
+		{
+			brettGroesseLabel.setText(brettGroesse);
+			Main.optionen.setOption("brettgroesse", Integer.parseInt(brettGroesse));
+		}
 	}
 	
 	//brettgroesse textfeld
@@ -282,7 +271,7 @@ public class SpielController {
 		case "15": brettGroesseBox.setValue("Gomoku 15"); break;
 		case "17": brettGroesseBox.setValue("Gomoku 17"); break;
 		case "19": brettGroesseBox.setValue("Gomoku 19 (Go)"); break;
-		default:   brettGroesseBox.setValue(" "); break;
+		default:   brettGroesseBox.setValue(""); break;
 		}
 	
 		Main.optionen.setOption("brettgroesse", Integer.parseInt(brettGroesse));
@@ -299,19 +288,13 @@ public class SpielController {
 	
 	
 	//hintergrund bild 1
-	@FXML private void handleBackground(ActionEvent event) {
-		
+	@FXML private void handleBackground(ActionEvent event)
+	{
 		if (bild1Button.isSelected())
-		{
-			backgroundImage.setImage(new Image("resources/Ahorn_Holz.JPG"));
-			Main.optionen.setOption("BackgroundImage", new Image("resources/Ahorn_Holz.JPG"));
-		}
+			backgroundImage.setImage((Image) Main.optionen.getOption("BackgroundImageAhornHolz"));
 			
 		if (bild2Button.isSelected())
-		{
-			backgroundImage.setImage(new Image("resources/AhornMaser01.JPG"));
-			Main.optionen.setOption("BackgroundImage", new Image("resources/AhornMaser01.JPG"));
-		}
+			backgroundImage.setImage((Image) Main.optionen.getOption("BackgroundImageAhornMasern"));
 	}
 	
 	//neustart
@@ -330,6 +313,9 @@ public class SpielController {
 	
 	@FXML private void handleMouseMoved(MouseEvent event)
 	{
+		if(spielbrett==null)
+			return; // ohne begonenes spiel nichts zu tun
+		
 		// fix pos
 		double coord[]= spielbrett.roundCoord(event.getX(), event.getY());
 
@@ -346,6 +332,7 @@ public class SpielController {
 	
 	private void handleSizeChanged(boolean forceIt)
 	{
+//		System.out.println("handleSizeChanged()");
 		if(forceIt||currWidth!=gameAnchorPane.getWidth()||currHeight!=gameAnchorPane.getHeight())
 		{
 			currWidth=gameAnchorPane.getWidth();
@@ -372,7 +359,7 @@ public class SpielController {
 		
 		// update lastMove image
 		updatePlayMarkers();
-		stoneImage.setX(-1000); // move out of view until next mouse movement
+		stoneImage.setX(-1001); // move out of view until next mouse movement
 	}
 	
 	// only update the relative position of the circle on the screen
@@ -424,13 +411,17 @@ public class SpielController {
 									null // pickResult - pick result. Can be null, in this case a 2D pick result without any further values is constructed based on the scene coordinates and target
 								   );
 		// let it do its thing
+//		handleMouseMoved(e);
 		handleMouseClicked(e);
 	}
 	
 	@FXML
 	private void handleMouseClicked(MouseEvent event)
 	{
-		System.out.println("Click "+event.getX()+" "+event.getY());
+//		System.out.println("Click "+event.getX()+" "+event.getY());
+
+		if(spielbrett==null)
+			return; // ohne begonenes spiel nichts zu tun
 
 		if(event.isSynthesized()==false && (int)Main.optionen.getOption("anzahlAi")==2)
 			return; // dont let the click by a player count if only ai are playing
@@ -453,7 +444,7 @@ public class SpielController {
 			// new wrap for the next stones image
 			ImageView iView=new ImageView();
 			gameAnchorPane.getChildren().addAll(iView);
-
+			
 			// set its properties as a copy of the last stone
 			iView.setImage(sNew.getImage());
 			iView.setX(stoneImage.getX());
@@ -468,6 +459,7 @@ public class SpielController {
 			
 			// let old stone stay, "attach" new one to mouse
 			s=sNew;
+			stoneImage.setX(100);
 			stoneImage=iView;
 			
 			stoneImage.toFront();
@@ -611,6 +603,34 @@ public class SpielController {
 	private void handleKeyPressed(KeyEvent event)
 	{
 //		System.out.println("handleKeyPressed: "+event.getCode()+" "+event.toString());
+		switch(event.getCode())
+		{
+		case S:
+			System.out.println("gameAnchorPane  h:"+gameAnchorPane.getHeight()+" w:"+gameAnchorPane.getWidth());
+			System.out.println("tabPaneSwitch   h:"+tabPaneSwitch.getHeight()+" w:"+tabPaneSwitch.getWidth());
+			System.out.println("difference:"+(tabPaneSwitch.getHeight()-gameAnchorPane.getHeight()));
+			break;
+		case P:
+			System.out.println("lastPlayed  x:"+lastPlayed.getX() + " y:"+lastPlayed.getY());
+			break;
+		case I:
+			System.out.println("stoneImage  x:"+stoneImage.getX()+" y:"+stoneImage.getY());
+			break;
+		case U:
+			System.out.println("1x:"+spielbrett.getSpielZuege().iterator().next().iView.getX()
+							 +" 1y:"+spielbrett.getSpielZuege().iterator().next().iView.getY());
+			System.out.println("zuege:"+spielbrett.getSpielZuege());
+			break;
+		case M:
+			ImageView iV=spielbrett.getSpielZuege().iterator().next().iView;
+			System.out.println("vX:"+iV.getX()+" vY:"+iV.getY());
+			iV.setX(iV.getX()+1);
+			//spielbrett.getSpielZuege().forEach(z->{z.iView.setX(z.iView.getX()+1);}); // move all right
+			break;
+			
+		default:
+			break;
+		}
 	}
 	
 	@FXML

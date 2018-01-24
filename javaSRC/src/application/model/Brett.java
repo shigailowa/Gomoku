@@ -114,6 +114,7 @@ public class Brett {
 			s.iView.setY(_randY + s.y*_gitterWeite-_gitterWeite/2);
 			s.iView.setFitWidth(_gitterWeite);
 			s.iView.setFitHeight(_gitterWeite);
+//			System.out.println("s.iView"+s.iView.getX()+" "+s.iView.getY());
 		});
 
 		
@@ -238,21 +239,23 @@ if((boolean) Main.optionen.getOption("debug"))System.out.println("Brett::steinAt
 	}
 	
 	// to wrap the data of an occured move
-	public static class SpielZug{
+	public static class SpielZug
+	{
 		public int x, y;
 		public SpielStein stein;
 		public ImageView iView;
 		
-		public SpielZug(int x, int y, SpielStein stein, ImageView iView) {
+		public SpielZug(int x, int y, SpielStein stein, ImageView iView)
+		{
 			this.x=x;
 			this.y=y;
 			this.stein=stein;
 			this.iView=iView;
 		}
 		
-		
-		public String toString() {
-			return String.format("x:%2d ", x)+String.format("y:%2d", y)+" f:"+stein._farbe;
+		public String toString()
+		{
+			return String.format("x:%2d ", x)+String.format("y:%2d", y)+" f:"+stein._farbe + " [Vx:"+iView.getX() + "Vy:" + iView.getY()+"]";
 		}
 	}
 	

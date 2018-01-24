@@ -29,7 +29,8 @@ public class Main extends Application {
 	
 	public static void main(String[] args) {
 		optionen.setOption("debug", false);
-		optionen.setOption("BackgroundImage", new Image("resources/Ahorn_Holz.JPG"));
+		optionen.setOption("BackgroundImageAhornHolz", new Image("resources/Ahorn_Holz.JPG"));
+		optionen.setOption("BackgroundImageAhornMasern", new Image("resources/AhornMaser01.JPG"));
 		optionen.setOption("nextStoneOpacity", .7);
 		optionen.setOption("aiFaengtAn", true);
 		optionen.setOption("anzahlAi", 0); // \in \{0, 1, 2\}

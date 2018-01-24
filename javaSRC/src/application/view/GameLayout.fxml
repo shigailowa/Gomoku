@@ -7,15 +7,15 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<TabPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="560.0" prefWidth="600.0" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.view.SpielController">
+<TabPane fx:id="tabPaneSwitch" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onKeyPressed="#handleKeyPressed" onKeyReleased="#handleKeyReleased" prefHeight="633.0" prefWidth="600.0" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.view.SpielController">
   <tabs>
     <Tab fx:id="gameTab" text="Spiel">
       <content>
-        <AnchorPane fx:id="gameAnchorPane" minHeight="0.0" minWidth="0.0" prefHeight="560.0" prefWidth="600.0">
+        <AnchorPane fx:id="gameAnchorPane" minHeight="0.0" minWidth="0.0" onDragDetected="#handleDragDetected" onKeyPressed="#handleKeyPressed" onKeyReleased="#handleKeyReleased" onMouseClicked="#handleMouseClicked" onMouseMoved="#handleMouseMoved" prefHeight="600.0" prefWidth="600.0">
                <children>
                   <ImageView fx:id="backgroundImage" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
-                  <ImageView fx:id="stoneImage" fitHeight="150.0" fitWidth="200.0" layoutX="207.0" layoutY="36.0" pickOnBounds="true" preserveRatio="true" />
-                  <Button fx:id="startenButton" layoutX="235.0" layoutY="216.0" mnemonicParsing="false" onAction="#handleStartButton" prefHeight="99.0" prefWidth="145.0" text="Spiel starten" />
+                  <ImageView fx:id="stoneImage" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
+                  <Button fx:id="startenButton" layoutX="235.0" layoutY="251.0" mnemonicParsing="false" onAction="#handleStartButton" prefHeight="99.0" prefWidth="145.0" text="Spiel starten" />
                </children></AnchorPane>
       </content>
     </Tab>
