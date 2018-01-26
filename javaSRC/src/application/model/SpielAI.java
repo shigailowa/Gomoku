@@ -5,19 +5,17 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 
-import com.sun.jmx.remote.util.OrderClassLoaders;
-import com.sun.xml.internal.bind.v2.runtime.unmarshaller.XsiNilLoader.Array;
-
 import application.Main;
 import application.model.Brett.SpielZug;
-import jdk.management.resource.internal.UnassignedContext;
 
-public class SpielAI {
+public class SpielAI
+{
 	private Brett _brett;
 	private ArrayList<LinkedHashSet<Savegame>> _possibleMoves;
 	
 	
-	public SpielAI(Brett brett) {
+	public SpielAI(Brett brett) 
+	{
 		_brett=brett;
 		_possibleMoves=new ArrayList<LinkedHashSet<Savegame>>();
 		System.out.println("_pm:"+_possibleMoves);
@@ -100,13 +98,17 @@ public class SpielAI {
 	{
 		Double[][] heuristic=_possibleMoves.get(_possibleMoves.size()-1).iterator().next().generateHeuristic();
 		
+//		System.out.println("HEURISTIC:");
+//		printDoubleArray(heuristic);
+//		System.out.println();
+		
 		double bestValue=Double.NEGATIVE_INFINITY;
 		int amountBest=0;
 		int dim =_possibleMoves.get(_possibleMoves.size()-1).iterator().next().dim;
 		
 		// find best value
-		for (int i = 0; i < dim; i++)
-			for (int j = 0; j < dim; j++)
+		for (int i = 0; i < heuristic.length; i++)
+			for (int j = 0; j<heuristic[i].length; j++)
 				if(heuristic[i][j] != null)
 					if(bestValue < heuristic[i][j])
 					{
@@ -116,10 +118,11 @@ public class SpielAI {
 					else if (bestValue==heuristic[i][j])
 						amountBest++;
 
+//		System.out.println("amountBest: "+amountBest+"  bestValue:"+bestValue);
 		Integer[][] erg = new Integer[amountBest][2];
 		
-		for (int i = 0; i < dim; i++)
-			for (int j = 0; j < dim; j++)
+		for (int i = 0; i < heuristic.length; i++)
+			for (int j = 0; j < heuristic[i].length; j++)
 				if(heuristic[i][j] != null 
 					&& bestValue==heuristic[i][j])
 				{
@@ -215,16 +218,12 @@ public class SpielAI {
 			ArrayList<Double[][]> beschraenkteReihe= new ArrayList<Double[][]>();
 						
 			// befuelle arrays mit klonen der spielbaren zuege
-			for (int i = 0; i < (int) Main.optionen.getOption("inEinerReihe"); i++)
+			for (int i = 0; i < (int) Main.optionen.getOption("inEinerReihe")-1; i++) // -1 da sonst schon gewonnen
 			{
 				// nicht nur erste ebene klonen, auch die darunter liegende
-				Double[][] klon1 = erg.clone();
-				Double[][] klon2 = erg.clone();
-				for (int j = 0; j < erg.length; j++)
-				{
-					klon1[j]=erg[j].clone();
-					klon2[j]=erg[j].clone();
-				}
+				Double[][] klon1 = twoDeepCloneDouble(erg);
+				Double[][] klon2 = twoDeepCloneDouble(erg);
+				
 				unbeschraenkteReihe.add(klon1);
 				beschraenkteReihe.add(klon2);
 			}
@@ -333,8 +332,6 @@ public class SpielAI {
 				}
 			}
 			
-			
-
 		/*
 			System.out.println("farbe die dran ist:"+spielendeFarbe);
 			
@@ -424,9 +421,87 @@ public class SpielAI {
 			
 			// analog fuer sich selbst zum bauen
 			
+			/*
+			System.out.println("beschraenkt 0:");
+			printDoubleArray(unbeschraenkteReihe.get(0));
+			System.out.println();
+			
+			System.out.println("pre-messing:");
+			printDoubleArray(erg);
+			System.out.println();
+			
+			System.out.println("add-test:");
+			Double[][] foo= addDoubleArray(erg, unbeschraenkteReihe.get(0));
+			printDoubleArray(foo);
+			System.out.println();
 			
 			
+			System.out.println("copy test:");
+			Double[][] bar = twoDeepCloneDouble(unbeschraenkteReihe.get(0));
+			printDoubleArray(bar);
+			System.out.println();
 			
+			
+			System.out.println("mult-test:");
+			multDoubleArray(unbeschraenkteReihe.get(0), 42.);
+			printDoubleArray(bar);
+			System.out.println();
+			
+			*/
+			
+			
+			Double[] beschraenktFaktor={1., 2., 3., Double.POSITIVE_INFINITY}; //TODO: find better values
+			for (int i = 0; i<beschraenkteReihe.size()&&beschraenkteReihe.get(i)!=null; i++)
+				multDoubleArray(beschraenkteReihe.get(i), beschraenktFaktor[i]);
+
+			Double[] unbeschraenktFaktor={1., 2., Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY}; //TODO: find better values
+			for (int i = 0; i<unbeschraenkteReihe.size()&&unbeschraenkteReihe.get(i)!=null; i++)
+				multDoubleArray(unbeschraenkteReihe.get(i), unbeschraenktFaktor[i]);
+			
+			
+			for (Double[][] d : beschraenkteReihe)
+				erg = addDoubleArray(erg, d);
+
+/*			System.out.println();
+			System.out.println("after adding once");
+			printDoubleArray(erg);
+*/
+			for (Double[][] d : unbeschraenkteReihe)
+				erg = addDoubleArray(erg, d);
+			
+/*			System.out.println("beschraenkt(0:)");
+			printDoubleArray(beschraenkteReihe.get(0));
+			System.out.println();
+			System.out.println("beschraenkt(1:)");
+			printDoubleArray(beschraenkteReihe.get(1));
+			System.out.println();
+			System.out.println("beschraenkt(2:)");
+			printDoubleArray(beschraenkteReihe.get(2));
+			System.out.println();
+			System.out.println("beschraenkt(3:)");
+			printDoubleArray(beschraenkteReihe.get(3));
+			System.out.println();
+			
+			System.out.println("unbeschraenkt(0:)");
+			printDoubleArray(unbeschraenkteReihe.get(0));
+			System.out.println();
+			System.out.println("unbeschraenkt(1:)");
+			printDoubleArray(unbeschraenkteReihe.get(1));
+			System.out.println();
+			System.out.println("unbeschraenkt(2:)");
+			printDoubleArray(unbeschraenkteReihe.get(2));
+			System.out.println();
+			System.out.println("unbeschraenkt(3:)");
+			printDoubleArray(unbeschraenkteReihe.get(3));
+			System.out.println();
+*/
+			
+
+/*			System.out.println();
+			System.out.println("after adding second, pre-return");
+			printDoubleArray(erg);
+			System.out.println();
+*/
 			return erg;
 		}
 		
@@ -501,6 +576,93 @@ public class SpielAI {
 			if (!Arrays.deepEquals(steine, other.steine))
 				return false;
 			return true;
+		}
+	}
+	
+	/**
+	 * Adds two Matrices
+	 * @param a and
+	 * @param b
+	 * @return new object is of greatest size of the two inputs
+	 */
+	public static Double[][] addDoubleArray(Double[][] a, Double[][] b)
+	{
+		if(a==null&&b==null)
+			return null;
+		
+		Double[][] erg = new Double[Math.max(a!=null?a.length:0, b!=null?b.length:0)][];
+				
+		//fill with sub array that are long enough
+		for (int i = 0; i < erg.length; i++)
+		{
+			erg[i]=new Double[Math.max(
+					((a.length>i)?a[i].length:0),
+					((b.length>i)?b[i].length:0)  )];
+						
+			//initialise values
+			for (int j = 0; j < erg[i].length; j++)
+			{
+				if(a!=null&&i<a.length)
+					erg[i][j] = (a[i]!=null&&j<a[i].length)?a[i][j]:null;
+				if(erg[i][j]!=null)
+				{
+					if(b!=null&&i<b.length)
+						erg[i][j] += (b[i]!=null&&j<b[i].length)?b[i][j]:null;
+				}
+				else if(b!=null&&i<b.length)
+					erg[i][j]=(b[i]!=null&&j<b[i].length)?b[i][j]:null;
+			}
+		}
+		return erg;
+	}
+	
+	/**
+	 * Multiplies a Matrix with a factor
+	 * 
+	 * @param a Double[][] to be multiplied with
+	 * @param f factor
+	 */
+	public static void multDoubleArray(Double[][] a, double f)
+	{
+		if(a==null)
+			return;
+		
+		for (int i = 0; i < a.length; i++)
+			for (int j = 0; a[i]!=null && j<a[i].length; j++)
+				if(a[i][j]!=null)
+					if(a[i][j]==0) // hmm NaN weirdness
+						a[i][j] = 0.;
+					else
+						a[i][j] *= f;
+	}
+	
+	/**
+	 * Not only clones the first layer, but also the second
+	 * 
+	 * @param a Double[][] to be cloned
+	 * @return deep cloned Double[][]
+	 */
+	public static Double[][] twoDeepCloneDouble(Double[][] a)
+	{
+		if(a==null)
+			return null;
+		
+		Double[][] erg=a.clone();
+		for (int i = 0; i < erg.length; i++)
+			erg[i]=a[i].clone();
+
+		return erg;
+	}
+	
+	
+	public static void printDoubleArray(Double[][] a)
+	{
+		for (int i = 0; i < a.length; i++)
+		{
+			System.out.print("i="+i+": ");
+			for (int j = 0; j < a[i].length; j++)
+				System.out.print((a[i][j]==null?"nul":a[i][j])+" ");
+			System.out.println();
 		}
 	}
 }

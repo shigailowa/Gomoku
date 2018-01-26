@@ -1,6 +1,7 @@
 package application.view;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import application.Main;
@@ -50,6 +51,10 @@ public class SpielController {
 	@FXML private TextArea uberText;
 	@FXML private Button neuButton;
 	@FXML private Button startenButton;
+	@FXML private Button newGameButton;
+	@FXML private ToggleButton pauseGameButton;
+	@FXML private AnchorPane wrapAnchorPane;
+	@FXML private Slider aiSpeedSlider;
 	
 	//ToggleGroup fuer radioButtons 1Spieler, 2Spieler, AI
 	final ToggleGroup radioButtonGroup = new ToggleGroup();
@@ -78,7 +83,9 @@ public class SpielController {
 	ImageView lastPlayed;
 	List<ImageView> winningStone;
 	
+	// stuff for ai
 	static long lastTime=0;
+	boolean aiPaused = false;
 	
 	@FXML private void initialize()
 	{	
@@ -114,13 +121,16 @@ public class SpielController {
 		bild2Button.setGraphic(bild2);
 		bild2Button.setToggleGroup(bildGroup);
 		
+		pauseGameButton.setDisable(true);
+		pauseGameButton.setVisible(false);
+		
 		standardEinstellungen();
 		
-		gameAnchorPane.widthProperty().addListener(new ChangeListener<Number>()
+		wrapAnchorPane.widthProperty().addListener(new ChangeListener<Number>()
 		{	@Override public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue)
 			{	handleSizeChanged();	}	});
 		
-		gameAnchorPane.heightProperty().addListener(new ChangeListener<Number>()
+		wrapAnchorPane.heightProperty().addListener(new ChangeListener<Number>()
 		{	@Override public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue)
 			{	handleSizeChanged();	}	});
 	}
@@ -174,7 +184,7 @@ public class SpielController {
 				public void handle(long time)
 				{
 					stoneImage.setX(-1042); // move out of view
-					if(time>lastTime)
+					if(time>lastTime&&!aiPaused)
 					{
 						lastTime=time+(int)Main.optionen.getOption("twoAiSpeed");
 						letAImakeMove();
@@ -202,19 +212,19 @@ public class SpielController {
 				System.out.println("AIMOVES:");
 				for (int i = 0; i < zuege.length; i++) {
 					for (int j = 0; j < zuege[i].length; j++) {
-						System.out.print(i+" "+j+" : "+zuege[i][j]*pseudoGitterWeite+spielbrett.getRandX()+"; ");
+						System.out.print(i+" "+j+" : "+(zuege[i][j]*pseudoGitterWeite+spielbrett.getRandX())+"; ");
 					}
 					System.out.println();
 				}
 				System.out.println("END AIMOVES:");
 				
 				int zugNum=(int)(Math.random()*zuege.length); // of the generated best moves, take one at random
+								
 				handleMouseClicked((int)(zuege[zugNum][0]*pseudoGitterWeite+spielbrett.getRandX()),
 								   (int)(zuege[zugNum][1]*pseudoGitterWeite+spielbrett.getRandY()));
 			}
 		} // 1 ai
 	} // bildeBrett()
-	
 	
 	//spieler auswahl
 	@FXML private void handleSpielerAnzahlButton(ActionEvent event)
@@ -286,7 +296,6 @@ public class SpielController {
 		Main.optionen.setOption("anfangInMitte", mitteBeginnCheckBox.isSelected());
 	}
 	
-	
 	//hintergrund bild 1
 	@FXML private void handleBackground(ActionEvent event)
 	{
@@ -300,7 +309,21 @@ public class SpielController {
 	//neustart
 	@FXML private void handleNeuButton()
 	{
-		bildeBrett();
+		gameAnchorPane.getChildren().removeAll(spielbrett.getGitter());
+		if(zweiAiTimer!=null)
+			zweiAiTimer.stop();
+		
+		for (int i = 0; i < spielbrett.getSpielZuege().size(); i++)
+			gameAnchorPane.getChildren().removeAll(spielbrett.getSpielZuege().get(i).iView);
+		
+		// move out of the way, not just forget it
+		lastPlayed.setX(-1000); 
+		if(winningStone!=null)
+			winningStone.forEach(v->{
+				v.setX(-1000);
+			});
+		startenButton.setDisable(false);
+		startenButton.setVisible(true);
 	}
 	
 	//start button
@@ -308,7 +331,41 @@ public class SpielController {
 	{
 		startenButton.setDisable(true);
 		startenButton.setVisible(false);
+		
+		if((int)Main.optionen.getOption("anzahlAi")!=2)
+		{
+			pauseGameButton.setDisable(true);
+			pauseGameButton.setVisible(false);
+		}
+		else
+		{
+			pauseGameButton.setDisable(false);
+			pauseGameButton.setVisible(true);
+		}
+
 		bildeBrett();
+	}
+	
+	@FXML private void handleNewGameButton(ActionEvent event)
+	{
+		System.out.println("handleNewGameButton");
+	}
+	
+	@FXML private void handlePauseGameButton(ActionEvent event)
+	{
+		if((int)Main.optionen.getOption("anzahlAi")!=2 || zweiAiTimer==null)
+			return;
+		
+		if(pauseGameButton.isSelected())
+		{
+			aiPaused=true;
+			pauseGameButton.setText("Play");
+		}
+		else
+		{
+			aiPaused=false;
+			pauseGameButton.setText("Pause");
+		}
 	}
 	
 	@FXML private void handleMouseMoved(MouseEvent event)
@@ -325,21 +382,43 @@ public class SpielController {
 		stoneImage.setFitWidth( spielbrett.getGitterWeite());
 		stoneImage.setFitHeight(spielbrett.getGitterWeite());
 	}
+	
 
 	// to emulate a default parameter (of false)
 	@FXML private void handleSizeChanged()
 	{	handleSizeChanged(false);	}
 	
+	
 	private void handleSizeChanged(boolean forceIt)
 	{
 //		System.out.println("handleSizeChanged()");
-		if(forceIt||currWidth!=gameAnchorPane.getWidth()||currHeight!=gameAnchorPane.getHeight())
+		if(forceIt||currWidth!=wrapAnchorPane.getWidth()||currHeight!=wrapAnchorPane.getHeight())
 		{
-			currWidth=gameAnchorPane.getWidth();
-			currHeight=gameAnchorPane.getHeight();
+			currWidth=wrapAnchorPane.getWidth();
+			currHeight=wrapAnchorPane.getHeight();
 		}
 		else // nothing to fix
 			return;
+		
+		// change sizes for inner thingies
+		tabPaneSwitch.setPrefWidth(currWidth);
+		tabPaneSwitch.setPrefHeight(currHeight);
+		currHeight-=33; // the tabs have a height
+		gameAnchorPane.setPrefWidth(currWidth);
+		gameAnchorPane.setPrefHeight(currHeight);
+		
+		newGameButton.setLayoutX(currWidth-newGameButton.getPrefWidth()-2);
+		newGameButton.setLayoutY(2); // 2=(33-29)/2
+		
+		pauseGameButton.setLayoutX(newGameButton.getLayoutX()-pauseGameButton.getPrefWidth()-2);
+		pauseGameButton.setLayoutY(2);
+		
+		aiSpeedSlider.setLayoutX(pauseGameButton.getLayoutX()-aiSpeedSlider.getPrefWidth()-2);
+		
+		aiSpeedSlider.setLayoutY(8.5); // =(33-16)/2
+		
+		startenButton.setLayoutX(currWidth/2-startenButton.getPrefWidth()/2);
+		startenButton.setLayoutY(currHeight/2-startenButton.getPrefHeight()/2);
 		
 		// this only lets the background image expand, never shrink
 		if(backgroundImage.getFitHeight()<currHeight)
@@ -353,7 +432,7 @@ public class SpielController {
 				
 		if(spielbrett!=null)
 		{	
-			spielbrett.redrawGitter(currWidth==0?gameAnchorPane.getPrefWidth():currWidth, currHeight==0?gameAnchorPane.getPrefHeight():currHeight);
+			spielbrett.redrawGitter(currWidth==0?wrapAnchorPane.getPrefWidth():currWidth, currHeight==0?wrapAnchorPane.getPrefHeight():currHeight);
 			stoneImage.setFitWidth(spielbrett.getGitterWeite());
 		}
 		
@@ -363,6 +442,7 @@ public class SpielController {
 	}
 	
 	// only update the relative position of the circle on the screen
+	
 	private void updatePlayMarkers()
 	{
 		if(spielbrett!=null&&spielbrett.getSpielZuege().size()!=0)
@@ -384,7 +464,11 @@ public class SpielController {
 		handleMouseMoved(event);
 	}
 	
-	// emulates a mouseclick at a given position
+	/**
+	 * emulates a mouseclick at a given position on the games Pane
+	 * @param x
+	 * @param y
+	 */
 	private void handleMouseClicked(int x, int y)
 	{
 //		System.out.println(x+" "+y);
@@ -598,7 +682,7 @@ public class SpielController {
 		}
 		return erg;
 	}
-	
+		
 	@FXML
 	private void handleKeyPressed(KeyEvent event)
 	{

@@ -14,6 +14,14 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.StrokeLineCap;
 
+/**
+ * @author Joshua
+ *
+ */
+/**
+ * @author Joshua
+ *
+ */
 public class Brett {
 	
 	private int _dim; // Dimension des Spielbretts
@@ -35,9 +43,13 @@ public class Brett {
 	
 	// wether a next move has to be adjacent diagonally or horizontally or vertically to any previous move
 	private boolean _CheckAdjacent;
-	/*
+
+	/**
 	 * Konstruiert ein leeres Brett mit dim Feldern im Quadrat
-	 * @param dim Dimension des Brettes
+	 * @param dim dimension des brettes (wieviele steine)
+	 * 
+	 * @param x dimension der Pane auf welcher das Brett angelegt werden soll
+	 * @param y
 	 */
 	public Brett(int dim, double x, double y)
 	{		
@@ -79,6 +91,11 @@ public class Brett {
 		});
 	}
 	
+	
+	/**
+	 * @param x Neue dimension der Pane wo das Brett drauf ist
+	 * @param y
+	 */
 	public void redrawGitter(double x, double y)
 	{		
 		double min=Math.min(x, y);
@@ -129,6 +146,16 @@ public class Brett {
 		_gitterHorz.get(_dim-1).setStrokeWidth(_gitterWeite/10);
 	}
 	
+	
+	/**
+	 * @param x position auf der Pane wo das Brett drauf ist
+	 * @param y
+	 * @return
+	 * Double array, mit einträgen: 
+	 * 
+	 * 0,1: Pane Koordinaten
+	 * 2,3: Index der Position im Brett 
+	 */
 	public double[] roundCoord(double x, double y)
 	{
 if((boolean) Main.optionen.getOption("debug"))System.out.println("Brett::roundCoord:: \n"+x+" "+y+"  inc");
@@ -294,5 +321,4 @@ if((boolean) Main.optionen.getOption("debug"))System.out.println("Brett::steinAt
 	
 	public final SpielStein[][] getBrett()
 	{	return _brett;	}
-
 }
