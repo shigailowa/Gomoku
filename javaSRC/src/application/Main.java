@@ -11,10 +11,11 @@ public class Main extends Application
 {
 	
 	public static Options optionen=new Options();
-	
+	public static Stage primaryStage ;
 	@Override
 	public void start(Stage primaryStage)
 	{
+		Main.primaryStage=primaryStage;
 		try
 		{
 			FXMLLoader loader=new FXMLLoader();
@@ -64,7 +65,7 @@ public class Main extends Application
 		optionen.setOption("BackgroundImageAhornMasern", new Image("resources/AhornMaser01.JPG"));
 		optionen.setOption("nextStoneOpacity", .7);
 		optionen.setOption("aiFaengtAn", true);
-		optionen.setOption("anzahlAi", 2); // \in \{0, 1, 2\}
+		optionen.setOption("anzahlAi", 0); // \in \{0, 1, 2\}
 		optionen.setOption("inEinerReihe", 5);
 		optionen.setOption("brettgroesse", 19);
 		optionen.setOption("anfangInMitte", true);
