@@ -17,7 +17,7 @@
                      <children>
                         <ImageView fx:id="backgroundImage" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
                         <ImageView fx:id="stoneImage" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
-                        <Button fx:id="startenButton" layoutX="110.0" layoutY="238.0" mnemonicParsing="false" onAction="#handleStartButton" prefHeight="99.0" prefWidth="145.0" text="Spiel starten" />
+                        <Button fx:id="startButton" layoutX="110.0" layoutY="238.0" mnemonicParsing="false" onAction="#handleStartButton" prefHeight="99.0" prefWidth="145.0" text="Spiel starten" />
                      </children>
                   </AnchorPane>
             </content>
@@ -48,7 +48,8 @@
                         <Label layoutX="100.0" layoutY="189.0" text="x" />
                         <ToggleButton fx:id="bild1Button" layoutX="36.0" layoutY="366.0" mnemonicParsing="false" onAction="#handleBackground" prefHeight="143.0" prefWidth="205.0" />
                         <ToggleButton fx:id="bild2Button" layoutX="335.0" layoutY="366.0" mnemonicParsing="false" onAction="#handleBackground" prefHeight="143.0" prefWidth="205.0" />
-                        <Button fx:id="neuButton" layoutX="225.0" layoutY="14.0" mnemonicParsing="false" onAction="#handleNeuButton" prefHeight="33.0" prefWidth="119.0" text="Spiel neu starten" />
+                        <Button fx:id="spielStartenButton" layoutX="319.0" layoutY="14.0" mnemonicParsing="false" onAction="#handleSpielStartenButton" prefHeight="33.0" prefWidth="190.0" text="Spiel starten" />
+                        <Button fx:id="zuruecksetzenButton" layoutX="95.0" layoutY="14.0" mnemonicParsing="false" onAction="#handleZuruecksetzenButton" prefHeight="33.0" prefWidth="190.0" text="Einstellungen zurücksetzen" />
                      </children>
                   </AnchorPane>
             </content>
@@ -57,7 +58,7 @@
               <content>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
-                        <TextArea fx:id="hilfeText" layoutX="35.0" layoutY="27.0" prefHeight="478.0" prefWidth="530.0" text="Spielanleitung Gomoku hier einfügen&#10;&#10;" />
+                        <TextArea fx:id="hilfeText" layoutX="35.0" layoutY="27.0" prefHeight="531.0" prefWidth="530.0" text="&#10;Zum Spiel&#10;&#10;Gomoku ist eine Spielart des Spiels Go, welches ursprünglich aus China stammt. &#10;Dort wurde es schon im 4. Jahrhundert vor Christus gespielt. Go hat sich aber vor allem in &#10;Korea, Japan und Ostasien verbeitet und wurde dort zu Gomoku weiterentwickelt.&#10;&#10;Mit Beharrlichkeit und taktischer Überlegung versucht jeder der beiden Spieler, den Sieg &#10;davonzutragen. Ein Spiel des stillen, konzentrierten Überlegens, bei dem Spannung und&#10;Nervenkitzel garantiert sind.&#10;&#10;&#10;Spielregeln&#10;&#10;Das klassische Gomoku wird auf einem 19 x 19 Brett gespielt. Dabei legt jeder Spieler &#10;abwechselnd einen Stein seiner Farbe auf das Brett. Die Steine dürfen nicht mehr bewegt&#10;werden, nachdem sie gesetzt wurden. Jeder versucht eine gerade, ununterbrochen Reihe&#10;aus 5 Speilsteinen zu legen. Die Reihe kann waagerecht, senkrecht oder diagonal verlaufen. &#10;Gleichzeitig muss jeder Spieler verhindern, dass der andere Spieler dieses Ziel vor ihm erreicht.&#10;Das Spiel ist beendet, wenn ein Spieler 5 Steine in einer ununterbrochenen Reihe gelegt hat. &#10;&#10;&#10;Varianten&#10;&#10;Gomoku kann im Prinzip mit beliebiger Brettgröße gespielt werden. Dabei darf auch &#10;entschieden werden, wie viele in einer Reihe für den Sieg benötigt werden, ob in der &#10;Mitte des Bretts begonnen werden soll und ob nur Anlegen an einen anderen Stein erlaubt ist. &#10;Es kann sowohl gegen den Computer als auch gegen einen realen Gegner gespielt werden.&#10;Wer möchte, kann auch die künstliche Intelligenz gegen sich selbst antreten lassen. &#10;Alle Kombinationsmöglichkeiten bleiben also offen! &#10;&#10;&#10;&#10;Viel Spaß!&#10;&#10;&#10;&#10;&#10;" wrapText="true" />
                      </children>
                   </AnchorPane>
               </content>
@@ -66,7 +67,10 @@
                <content>
                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
-                        <TextArea fx:id="uberText" layoutX="35.0" layoutY="27.0" prefHeight="478.0" prefWidth="530.0" text="Gomoku&#10;&#10;Autoren:&#10;&#10;Joshua Laskowski&#10;Mauricio Heß&#10;Tatjana Shigailow" />
+                        <TextArea fx:id="uberText" layoutX="35.0" layoutY="27.0" prefHeight="478.0" prefWidth="530.0" text="Gomoku&#10;&#10;Version 1.0 erstellt am 27.01.2018&#10;&#10;&#10;Autoren:&#10;&#10;Joshua Laskowski&#10;Mauricio Heß&#10;Tatjana Shigailow">
+                           <font>
+                              <Font name="System Bold" size="12.0" />
+                           </font></TextArea>
                      </children>
                   </AnchorPane>
                </content>
