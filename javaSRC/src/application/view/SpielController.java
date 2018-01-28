@@ -447,10 +447,10 @@ public class SpielController {
 		startButton.setVisible(false);
 
 		bildeBrett();
-		
 	}
 	
-	private void disable() {
+	private void disable()
+	{
 		//disable all settings options
 		zuruecksetzenButton.setDisable(true);
 		spielStartenButton.setDisable(true);
@@ -463,10 +463,10 @@ public class SpielController {
 		anlegenCheckBox.setDisable(true);
 		aiCheckBox.setDisable(true);
 		mitteBeginnCheckBox.setDisable(true);
-		
 	}
 	
-	private void enable() {
+	private void enable()
+	{
 		//enable all settings options
 		zuruecksetzenButton.setDisable(false);
 		spielStartenButton.setDisable(false);
@@ -541,8 +541,8 @@ public class SpielController {
 	// restart with same settings
 	@FXML private void handleNewGameButton()
 	{
-	
-		if ((int) Main.optionen.getOption("anzahlAi") == 2) {
+		if ((int) Main.optionen.getOption("anzahlAi") == 2)
+		{
 			aiPaused=true;
 			pauseGameButton.setText("Play");
 		}
@@ -560,44 +560,40 @@ public class SpielController {
 		alert.getButtonTypes().setAll(buttonTypeOne, buttonTypeTwo, buttonTypeThree);
 		Optional<ButtonType> result = alert.showAndWait();
 		
-		if (result.get() == buttonTypeOne) {
-			
+		if (result.get() == buttonTypeOne)
+		{	
 			enable();
 			neustart();
-			
 			
 			newGameButton.setDisable(true);
 			newGameButton.setVisible(false);
 
 			bildeBrett();
 			
-			if ((int) Main.optionen.getOption("anzahlAi") != 2) {
-				
+			if ((int) Main.optionen.getOption("anzahlAi") != 2)
+			{	
 				pauseGameButton.setDisable(true);
 				pauseGameButton.setVisible(false);
 
 				aiSpeedSlider.setDisable(true);
 				aiSpeedSlider.setVisible(false);
 			} 
-			else {
+			else
+			{
 				aiPaused=true;
 				pauseGameButton.setText("Play");
 				pauseGameButton.setSelected(true);
 			}
-			
-
 		}
 		else
 		{
 		    alert.close();
-		    
-		    if ((int) Main.optionen.getOption("anzahlAi") == 2) {
+		    if ((int) Main.optionen.getOption("anzahlAi") == 2)
+		    {
 		    	  aiPaused=true;
 		    	  pauseGameButton.setText("Play");
 		    }
-		  
 		}
-
 	}
 
 	@FXML private void handlePauseGameButton(ActionEvent event)
