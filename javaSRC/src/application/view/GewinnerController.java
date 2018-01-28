@@ -33,7 +33,8 @@ public class GewinnerController
     {
 //		System.out.println("GewinnerController::handleNeuButton");	
 		gewinnerStage.close();
-		spielController.handleNewGameButton();
+		spielController.neustart();
+		spielController.bildeBrett();
     }
     
     public void setgewinnerimage(Image image)

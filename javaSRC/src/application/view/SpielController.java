@@ -1,5 +1,6 @@
 package application.view;
 
+import java.io.Externalizable;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -170,7 +171,7 @@ public class SpielController {
 	}
 	
 	//baue Brett auf und starte das spiel
-	private void bildeBrett()
+	public void bildeBrett()
 	{
 //		System.out.println(Main.optionen);
 //		System.out.println();
@@ -224,7 +225,7 @@ public class SpielController {
 			zweiAiTimer.start();
 		} // only ai
 		
-		if((int)Main.optionen.getOption("anzahlAi")>0 ) // es gibt nur einen ai Gegner
+		if((int)Main.optionen.getOption("anzahlAi")>0) // es gibt nur einen ai Gegner
 		{
 			gegner=new SpielAI(spielbrett);
 			gegner.updateMoves();
@@ -350,7 +351,7 @@ public class SpielController {
 	}
 	
 	//neustart, setzt alles zurueck
-	@FXML private void handleNeuButton()
+	public void neustart()
 	{
 //		System.out.println("handleNeuButton");
 		if(spielbrett!=null)
@@ -372,46 +373,33 @@ public class SpielController {
 		if(stoneImage!=null)
 			stoneImage.setX(-1000);
 		spielbrett=null;
-		
-		pauseGameButton.setDisable(true);
-		pauseGameButton.setVisible(false);
-
-		newGameButton.setDisable(true);
-		newGameButton.setVisible(false);
-
-		aiSpeedSlider.setDisable(true);
-		aiSpeedSlider.setVisible(false);
-
-		startButton.setDisable(false);
-		startButton.setVisible(true);
 	}
 	
 	//neustart
 	@FXML private void handleSpielStartenButton()
 	{
 		//disable all settings options
-		zuruecksetzenButton.setDisable(true);
-		spielStartenButton.setDisable(true);
-		einSpielerButton.setDisable(true);
-		zweiSpielerButton.setDisable(true);
-		aiButton.setDisable(true);
-		brettGroesseTextField.setDisable(true);
-		brettGroesseBox.setDisable(true);
-		anzahlReiheTextField.setDisable(true);
-		anlegenCheckBox.setDisable(true);
-		aiCheckBox.setDisable(true);
-		mitteBeginnCheckBox.setDisable(true);
+		disable();
+		
+		startButton.setDisable(true);
+		startButton.setVisible(false);
+		
+		neustart();
+		bildeBrett();
 		
 		if ((int)Main.optionen.getOption("anzahlAi") == 2)
 		{
-			startButton.setDisable(false);
-			startButton.setVisible(true);
+		
+			pauseGameButton.setDisable(false);
+			pauseGameButton.setVisible(true);
+			aiPaused=true;
+			pauseGameButton.setText("Play");
+			pauseGameButton.setSelected(true);
 		}
 		else
 		{
-			startButton.setDisable(true);
-			startButton.setVisible(false);
-			neuStart();
+			pauseGameButton.setDisable(true);
+			pauseGameButton.setVisible(false);
 		}
 		
 		//switch to game tab
@@ -427,6 +415,27 @@ public class SpielController {
 	//is only visible at beginning or when 2 ai is selected
 	@FXML private void handleStartButton()
 	{
+		disable();
+		
+		if((int)Main.optionen.getOption("anzahlAi")!=2)
+		{
+			pauseGameButton.setDisable(true);
+			pauseGameButton.setVisible(false);
+		}
+		else
+		{
+			pauseGameButton.setDisable(false);
+			pauseGameButton.setVisible(true);
+		}
+		
+		startButton.setDisable(true);
+		startButton.setVisible(false);
+
+		bildeBrett();
+		
+	}
+	
+	private void disable() {
 		//disable all settings options
 		zuruecksetzenButton.setDisable(true);
 		spielStartenButton.setDisable(true);
@@ -440,10 +449,21 @@ public class SpielController {
 		aiCheckBox.setDisable(true);
 		mitteBeginnCheckBox.setDisable(true);
 		
-		startButton.setDisable(true);
-		startButton.setVisible(false);
-		
-		neuStart();
+	}
+	
+	private void enable() {
+		//enable all settings options
+		zuruecksetzenButton.setDisable(false);
+		spielStartenButton.setDisable(false);
+		einSpielerButton.setDisable(false);
+		zweiSpielerButton.setDisable(false);
+		aiButton.setDisable(false);
+		brettGroesseTextField.setDisable(false);
+		brettGroesseBox.setDisable(false);
+		anzahlReiheTextField.setDisable(false);
+		anlegenCheckBox.setDisable(false);
+		aiCheckBox.setDisable(false);
+		mitteBeginnCheckBox.setDisable(false);
 	}
 	
 	/*
@@ -501,31 +521,68 @@ public class SpielController {
 		}
 	}
 	*/
-	
-	//
-	private void neuStart()
+
+
+	// restart with same settings
+	@FXML private void handleNewGameButton()
 	{
+	
+		if ((int) Main.optionen.getOption("anzahlAi") == 2) {
+			aiPaused=true;
+			pauseGameButton.setText("Play");
+		}
 		
-		if((int)Main.optionen.getOption("anzahlAi")!=2)
-		{
-			pauseGameButton.setDisable(true);
-			pauseGameButton.setVisible(false);
+//		System.out.println("handleNewGameButton");
+		//warn user about new start
+		Alert alert = new Alert(AlertType.CONFIRMATION);
+		alert.setTitle("Neustart");
+		alert.setHeaderText("Wenn du neu startest, geht dein ganzer bisheriger Fortschritt verloren");
+		alert.setContentText("Willst du wirklich neu starten?");
+		
+		ButtonType buttonTypeOne = new ButtonType("Ja");
+		ButtonType buttonTypeTwo = new ButtonType("Nein");
+		ButtonType buttonTypeThree = new ButtonType("Abbrechen");
+		alert.getButtonTypes().setAll(buttonTypeOne, buttonTypeTwo, buttonTypeThree);
+		Optional<ButtonType> result = alert.showAndWait();
+		
+		if (result.get() == buttonTypeOne) {
+			
+			enable();
+			neustart();
+			
+			
+			newGameButton.setDisable(true);
+			newGameButton.setVisible(false);
+
+			bildeBrett();
+			
+			if ((int) Main.optionen.getOption("anzahlAi") != 2) {
+				
+				pauseGameButton.setDisable(true);
+				pauseGameButton.setVisible(false);
+
+				aiSpeedSlider.setDisable(true);
+				aiSpeedSlider.setVisible(false);
+			} 
+			else {
+				aiPaused=true;
+				pauseGameButton.setText("Play");
+				pauseGameButton.setSelected(true);
+			}
+			
+
 		}
 		else
 		{
-			pauseGameButton.setDisable(false);
-			pauseGameButton.setVisible(true);
+		    alert.close();
+		    
+		    if ((int) Main.optionen.getOption("anzahlAi") == 2) {
+		    	  aiPaused=true;
+		    	  pauseGameButton.setText("Play");
+		    }
+		  
 		}
 
-		bildeBrett();
-	}
-
-	// restart with same settings
-	@FXML public void handleNewGameButton()
-	{
-//		System.out.println("handleNewGameButton");
-		handleNeuButton();
-		handleStartButton();
 	}
 
 	@FXML private void handlePauseGameButton(ActionEvent event)
