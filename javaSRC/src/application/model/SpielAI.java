@@ -452,11 +452,11 @@ public class SpielAI
 			
 			Double[] beschraenktFaktor={1., 2., 3., Double.POSITIVE_INFINITY}; //TODO: find better values
 			for (int i = 0; i<beschraenkteReihe.size()&&beschraenkteReihe.get(i)!=null; i++)
-				multDoubleArray(beschraenkteReihe.get(i), beschraenktFaktor[i]);
+				multDoubleArray(beschraenkteReihe.get(i), beschraenktFaktor.length>i?beschraenktFaktor[i]:beschraenktFaktor[beschraenktFaktor.length-1]);
 
 			Double[] unbeschraenktFaktor={1., 2., Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY}; //TODO: find better values
 			for (int i = 0; i<unbeschraenkteReihe.size()&&unbeschraenkteReihe.get(i)!=null; i++)
-				multDoubleArray(unbeschraenkteReihe.get(i), unbeschraenktFaktor[i]);
+				multDoubleArray(unbeschraenkteReihe.get(i), unbeschraenktFaktor.length>i?unbeschraenktFaktor[i]:beschraenktFaktor[beschraenktFaktor.length-1]);
 			
 			
 			for (Double[][] d : beschraenkteReihe)

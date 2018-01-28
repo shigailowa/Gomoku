@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import com.sun.org.apache.bcel.internal.generic.IF_ACMPEQ;
 import com.sun.xml.internal.fastinfoset.algorithm.BooleanEncodingAlgorithm;
 
 import application.Main;
@@ -162,7 +163,7 @@ public class SpielController {
 				if(aiSpeedSlider.getValue()<eps)
 					aiSpeedSlider.setValue(eps);
 //				System.out.println("Slider "+(Math.pow(1.06, aiSpeedSlider.getValue())-.975));
-				Main.optionen.setOption("twoAiSpeed", (long)((Math.pow(1.06, aiSpeedSlider.getMax()- aiSpeedSlider.getValue())-.975)*1000000000));
+				Main.optionen.setOption("twoAiSpeed", (long)((Math.pow(1.06, aiSpeedSlider.getMax()- aiSpeedSlider.getValue())-.9875)*1000000000));
 //				System.out.println("set to: "+((long)Main.optionen.getOption("twoAiSpeed"))/1000000000.);
 			}
 		});
@@ -186,7 +187,9 @@ public class SpielController {
 		backgroundImage.setImage((Image) Main.optionen.getOption("BackgroundImageAhornHolz"));
 	}
 	
-	//baue Brett auf und starte das spiel
+	/**
+	 * baue Brett auf und starte das spiel
+	 */
 	public void bildeBrett()
 	{
 //		System.out.println(Main.optionen);
@@ -231,7 +234,7 @@ public class SpielController {
 				public void handle(long time)
 				{
 					stoneImage.setX(-1042); // move out of view
-					if(time>lastTime+(long)Main.optionen.getOption("twoAiSpeed")&&!aiPaused)
+					if(time>lastTime+(long)Main.optionen.getOption("twoAiSpeed")&&!aiPaused&& gameTab.isSelected())
 					{
 						lastTime=time;
 						letAImakeMove();
@@ -538,7 +541,6 @@ public class SpielController {
 		}
 	}
 	*/
-
 
 	// restart with same settings
 	@FXML private void handleNewGameButton()
