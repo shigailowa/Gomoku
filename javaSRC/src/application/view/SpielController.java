@@ -3,6 +3,7 @@ package application.view;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import application.Main;
 import application.model.Brett;
@@ -26,9 +27,6 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
-import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
@@ -58,9 +56,11 @@ public class SpielController {
 	@FXML private TextArea hilfeText;
 	@FXML private TextArea uberText;
 	@FXML private Button neuButton;
-	@FXML private Button startenButton;
+	@FXML private Button spielStartenButton;
+	@FXML private Button startButton;
 	@FXML private Button newGameButton;
 	@FXML private ToggleButton pauseGameButton;
+	@FXML private Button zuruecksetzenButton;
 	@FXML private AnchorPane wrapAnchorPane;
 	@FXML private Slider aiSpeedSlider;
 	
@@ -81,7 +81,7 @@ public class SpielController {
 			);
 	
 	Brett spielbrett;
-		
+
 	boolean gameDone;
 	SpielStein s;
 	double currWidth, currHeight;
@@ -93,7 +93,8 @@ public class SpielController {
 	static long lastTime=0;
 	boolean aiPaused = false;
 	AnimationTimer zweiAiTimer;
-
+	
+	
 	@FXML private void initialize()
 	{	
 		gameDone=false;
@@ -110,7 +111,7 @@ public class SpielController {
 		zweiSpielerButton.setToggleGroup(radioButtonGroup);
 		aiButton.setToggleGroup(radioButtonGroup);
 		
-		einSpielerButton.setSelected(true);
+		einSpielerButton.setSelected(true); //TODO: oder was auch immer aus den Einstellungen
 		brettGroesseBox.setItems(choiceBoxOptions);
 
 		ImageView bild1 = new ImageView("resources/Ahorn_Holz.JPG");
@@ -153,17 +154,19 @@ public class SpielController {
 	//alle standardeinstellungen
 	private void standardEinstellungen()
 	{
-		einSpielerButton.setSelected(true);
+		aiButton.setSelected(true);
 		brettGroesseTextField.setText("19");
 		brettGroesseLabel.setText("19");
 		brettGroesseBox.setValue("Gomoku 19 (Go)");
 		anzahlReiheTextField.setText("5");
 		anlegenCheckBox.setSelected(true);
 		aiCheckBox.setSelected(true);
+		aiCheckBox.setDisable(true);
 		mitteBeginnCheckBox.setSelected(true);
 		hilfeText.setEditable(false);
 		uberText.setEditable(false);
 		bild1Button.setSelected(true);
+		backgroundImage.setImage((Image) Main.optionen.getOption("BackgroundImageAhornHolz"));
 	}
 	
 	//baue Brett auf und starte das spiel
@@ -257,13 +260,23 @@ public class SpielController {
 	@FXML private void handleSpielerAnzahlButton(ActionEvent event)
 	{
 		if (einSpielerButton.isSelected())
+		{
 			Main.optionen.setOption("anzahlAi", 1);
+			aiCheckBox.setDisable(false);
+		}
+			
 		
 		if (zweiSpielerButton.isSelected())
+		{
 			Main.optionen.setOption("anzahlAi", 0);
-		
+			aiCheckBox.setDisable(true);
+		}
+			
 		if (aiButton.isSelected())
+		{
 			Main.optionen.setOption("anzahlAi", 2);
+			aiCheckBox.setDisable(true);
+		}
 	}
 	
 	//brettgroesse box
@@ -301,7 +314,7 @@ public class SpielController {
 	{
 		String brettGroesse = brettGroesseTextField.getText();		
 		brettGroesseLabel.setText(brettGroesse);
-	
+
 		switch (brettGroesse)
 		{
 		case "3":  brettGroesseBox.setValue("Tic Tac Toe"); break;
@@ -312,6 +325,9 @@ public class SpielController {
 		}
 	
 		Main.optionen.setOption("brettgroesse", Integer.parseInt(brettGroesse));
+
+		//eingegebener String darf nicht verschwinden
+		brettGroesseTextField.setText(brettGroesse);
 	}
 
 	//spielregeln
@@ -323,7 +339,7 @@ public class SpielController {
 		Main.optionen.setOption("anfangInMitte", mitteBeginnCheckBox.isSelected());
 	}
 	
-	//hintergrund bild 1
+	//hintergrund bild
 	@FXML private void handleBackground(ActionEvent event)
 	{
 		if (bild1Button.isSelected())
@@ -345,7 +361,7 @@ public class SpielController {
 		if(spielbrett!=null)
 			for (int i = 0; i < spielbrett.getSpielZuege().size(); i++)
 				gameAnchorPane.getChildren().removeAll(spielbrett.getSpielZuege().get(i).iView);
-		
+
 		// move out of the way, not just forget it
 		if(lastPlayed!=null)
 			lastPlayed.setX(-1000);
@@ -359,22 +375,136 @@ public class SpielController {
 		
 		pauseGameButton.setDisable(true);
 		pauseGameButton.setVisible(false);
-		
+
 		newGameButton.setDisable(true);
 		newGameButton.setVisible(false);
-		
+
 		aiSpeedSlider.setDisable(true);
 		aiSpeedSlider.setVisible(false);
 
-		startenButton.setDisable(false);
-		startenButton.setVisible(true);
+		startButton.setDisable(false);
+		startButton.setVisible(true);
 	}
 	
-	//start the game
+	//neustart
+	@FXML private void handleSpielStartenButton()
+	{
+		//disable all settings options
+		zuruecksetzenButton.setDisable(true);
+		spielStartenButton.setDisable(true);
+		einSpielerButton.setDisable(true);
+		zweiSpielerButton.setDisable(true);
+		aiButton.setDisable(true);
+		brettGroesseTextField.setDisable(true);
+		brettGroesseBox.setDisable(true);
+		anzahlReiheTextField.setDisable(true);
+		anlegenCheckBox.setDisable(true);
+		aiCheckBox.setDisable(true);
+		mitteBeginnCheckBox.setDisable(true);
+		
+		if ((int)Main.optionen.getOption("anzahlAi") == 2)
+		{
+			startButton.setDisable(false);
+			startButton.setVisible(true);
+		}
+		else
+		{
+			startButton.setDisable(true);
+			startButton.setVisible(false);
+			neuStart();
+		}
+		
+		//switch to game tab
+		tabPaneSwitch.getSelectionModel().select(gameTab);
+	}
+	
+	//einstellungen auf standard zurücksetzen
+	@FXML private void handleZuruecksetzenButton(ActionEvent event)
+	{
+		standardEinstellungen();
+	}
+	
+	//is only visible at beginning or when 2 ai is selected
 	@FXML private void handleStartButton()
 	{
-		startenButton.setDisable(true);
-		startenButton.setVisible(false);
+		//disable all settings options
+		zuruecksetzenButton.setDisable(true);
+		spielStartenButton.setDisable(true);
+		einSpielerButton.setDisable(true);
+		zweiSpielerButton.setDisable(true);
+		aiButton.setDisable(true);
+		brettGroesseTextField.setDisable(true);
+		brettGroesseBox.setDisable(true);
+		anzahlReiheTextField.setDisable(true);
+		anlegenCheckBox.setDisable(true);
+		aiCheckBox.setDisable(true);
+		mitteBeginnCheckBox.setDisable(true);
+		
+		startButton.setDisable(true);
+		startButton.setVisible(false);
+		
+		neuStart();
+	}
+	
+	/*
+	//restart game with same settings as game before
+	@FXML public void handleNewGameButton()
+	{
+		//warn user about new start
+		Alert alert = new Alert(AlertType.CONFIRMATION);
+		alert.setTitle("Neustart");
+		alert.setHeaderText("Wenn du neu startest, geht dein ganzer bisheriger Fortschritt verloren");
+		alert.setContentText("Willst du wirklich neu starten?");
+		
+		ButtonType buttonTypeOne = new ButtonType("Ja");
+		ButtonType buttonTypeTwo = new ButtonType("Nein");
+		ButtonType buttonTypeThree = new ButtonType("Abbrechen");
+		alert.getButtonTypes().setAll(buttonTypeOne, buttonTypeTwo, buttonTypeThree);
+
+		
+		Optional<ButtonType> result = alert.showAndWait();
+		if (result.get() == buttonTypeOne){
+		    
+			//enable all settings options
+			zuruecksetzenButton.setDisable(false);
+			spielStartenButton.setDisable(false);
+			einSpielerButton.setDisable(false);
+			zweiSpielerButton.setDisable(false);
+			aiButton.setDisable(false);
+			brettGroesseTextField.setDisable(false);
+			brettGroesseBox.setDisable(false);
+			anzahlReiheTextField.setDisable(false);
+			anlegenCheckBox.setDisable(false);
+			aiCheckBox.setDisable(false);
+			mitteBeginnCheckBox.setDisable(false);
+			
+			//gameAnchorPane.getChildren().removeAll(spielbrett.getGitter());
+			if(zweiAiTimer!=null)
+				zweiAiTimer.stop();
+			
+			for (int i = 0; i < spielbrett.getSpielZuege().size(); i++)
+				gameAnchorPane.getChildren().removeAll(spielbrett.getSpielZuege().get(i).iView);
+			
+			// move out of the way, not just forget it
+			lastPlayed.setX(-1000); 
+			if(winningStone!=null)
+				winningStone.forEach(v->{
+					v.setX(-1000);
+				});
+			
+			//TODO: first stone needs to be placed
+			
+		}
+		else
+		{
+		    alert.close();
+		}
+	}
+	*/
+	
+	//
+	private void neuStart()
+	{
 		
 		if((int)Main.optionen.getOption("anzahlAi")!=2)
 		{
@@ -389,7 +519,7 @@ public class SpielController {
 
 		bildeBrett();
 	}
-	
+
 	// restart with same settings
 	@FXML public void handleNewGameButton()
 	{
@@ -397,7 +527,7 @@ public class SpielController {
 		handleNeuButton();
 		handleStartButton();
 	}
-	
+
 	@FXML private void handlePauseGameButton(ActionEvent event)
 	{
 		if((int)Main.optionen.getOption("anzahlAi")!=2 || zweiAiTimer==null)
@@ -462,8 +592,8 @@ public class SpielController {
 		
 		aiSpeedSlider.setLayoutY(8.5); // =(33-16)/2
 		
-		startenButton.setLayoutX(currWidth/2-startenButton.getPrefWidth()/2);
-		startenButton.setLayoutY(currHeight/2-startenButton.getPrefHeight()/2);
+		startButton.setLayoutX(currWidth/2-startButton.getPrefWidth()/2);
+		startButton.setLayoutY(currHeight/2-startButton.getPrefHeight()/2);
 		
 		// this only lets the background image expand, never shrink
 		if(backgroundImage.getFitHeight()<currHeight)
@@ -506,8 +636,7 @@ public class SpielController {
 		// to make the move count where the mouse ended up at the end of the drag
 		handleMouseMoved(event);
 	}
-	
-	
+
 	/**
 	 * emulates a mouseclick at a given position on the games Pane
 	 * @param x
@@ -542,7 +671,6 @@ public class SpielController {
 //		handleMouseMoved(e);
 		handleMouseClicked(e);
 	}
-	
 	
 	@FXML private void handleMouseClicked(MouseEvent event)
 	{
@@ -604,7 +732,6 @@ public class SpielController {
 		}
 	}
 	
-	
 	private void letAImakeMove()
 	{
 //		System.out.println("letAImakeMove");
@@ -663,7 +790,7 @@ public class SpielController {
 		}
 	}
 	
-	
+	// wird gerufen um gewinnerbehandlung zu starten	
 	private boolean handleGewinner()
 	{
 		boolean erg=checkIfGewinner();
@@ -716,14 +843,12 @@ public class SpielController {
 		} // gibt gewinner
 		return erg;
 	}
-	
-	
-	
+
 	private boolean checkIfGewinner()
 	{
 		if(spielbrett==null||spielbrett.getSpielZuege().size()==0)
 			return false; // noch nichts da zum ueberpruefen
-		
+
 		SpielZug letzterZug = spielbrett.getSpielZuege().get(spielbrett.getSpielZuege().size()-1);
 
 		if(winningStone!=null) // remove potential leftovers
@@ -774,7 +899,6 @@ public class SpielController {
 		}
 		return erg;
 	}
-		
 
 	@FXML private void handleKeyPressed(KeyEvent event)
 	{
@@ -808,8 +932,7 @@ public class SpielController {
 			break;
 		}
 	}
-	
-	
+
 	@FXML private void handleKeyReleased(KeyEvent event)
 	{
 //		System.out.println("handleKeyReleased: "+event.getCode()+" "+event.toString());
