@@ -569,31 +569,17 @@ public class SpielController {
 			
 			newGameButton.setDisable(true);
 			newGameButton.setVisible(false);
-
-			bildeBrett();
 			
-			if ((int) Main.optionen.getOption("anzahlAi") != 2)
-			{	
-				pauseGameButton.setDisable(true);
-				pauseGameButton.setVisible(false);
-
-				aiSpeedSlider.setDisable(true);
-				aiSpeedSlider.setVisible(false);
-			} 
-			else
-			{
-				aiPaused=true;
-				pauseGameButton.setText("Play");
-				pauseGameButton.setSelected(true);
-			}
+			startButton.setVisible(true);
+			startButton.setDisable(false);
 		}
 		else
 		{
 		    alert.close();
 		    if ((int) Main.optionen.getOption("anzahlAi") == 2)
 		    {
-		    	  aiPaused=true;
-		    	  pauseGameButton.setText("Play");
+		    	  aiPaused=false;
+		    	  pauseGameButton.setText("Pause");
 		    }
 		}
 	}
