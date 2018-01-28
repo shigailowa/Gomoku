@@ -11,10 +11,11 @@ public class Main extends Application
 {
 	
 	public static Options optionen=new Options();
-	
+	public static Stage primaryStage ;
 	@Override
 	public void start(Stage primaryStage)
 	{
+		Main.primaryStage=primaryStage;
 		try
 		{
 			FXMLLoader loader=new FXMLLoader();
@@ -69,7 +70,7 @@ public class Main extends Application
 		optionen.setOption("brettgroesse", 19);
 		optionen.setOption("anfangInMitte", true);
 		optionen.setOption("anfangsFarbe", 0);
-		optionen.setOption("twoAiSpeed", (int)Math.floor(0.01*1000000000)/*makes it seconds*/);
+		optionen.setOption("twoAiSpeed", (int)Math.floor(1*1000000000)/*makes it seconds*/);
 		optionen.setOption("WinningStone", new Image("resources/WinningStone.png"));
 		launch(args);
 	}

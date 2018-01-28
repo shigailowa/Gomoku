@@ -18,18 +18,18 @@ public class SpielAI
 	{
 		_brett=brett;
 		_possibleMoves=new ArrayList<LinkedHashSet<Savegame>>();
-		System.out.println("_pm:"+_possibleMoves);
-		System.out.println("pm.size:"+_possibleMoves.size());
+//		System.out.println("_pm:"+_possibleMoves);
+//		System.out.println("pm.size:"+_possibleMoves.size());
 		if(brett.getSpielZuege().size() > 0)
 		{
 			Savegame wurzel = new Savegame(brett);
 			LinkedHashSet<Savegame>menge =new LinkedHashSet<Savegame>();
 			menge.add(wurzel);
-			System.out.println("moveNr:"+wurzel.moveNr);
+//			System.out.println("moveNr:"+wurzel.moveNr);
 			_possibleMoves.add(wurzel.moveNr-1, menge);
 		}
-		else
-			System.out.println("das brett hat noch keine steine!");
+//		else
+//			System.out.println("das brett hat noch keine steine!");
 	}
 	
 	public void generateNextMoves()
@@ -46,14 +46,14 @@ public class SpielAI
 //			_possibleMoves.get(tiefe).addAll(newLeaves); // add generated leaves to possibleMoves
 			
 			Double[][] h=leaf.generateHeuristic();
-			System.out.println("Heuristic: ");
-			for (int j = 0; j < leaf.dim; j++)
-			{
-				for (int i = 0; i < leaf.dim; i++)
-					System.out.print(h[i][j]==null?(leaf.steine[i][j]<0?".":(leaf.steine[i][j]==0?"W":"B")):String.format("%1.0f", h[i][j]));
-				System.out.println();
-			}
-			System.out.println();
+//			System.out.println("Heuristic: ");
+//			for (int j = 0; j < leaf.dim; j++)
+//			{
+//				for (int i = 0; i < leaf.dim; i++)
+//					System.out.print(h[i][j]==null?(leaf.steine[i][j]<0?".":(leaf.steine[i][j]==0?"W":"B")):String.format("%1.0f", h[i][j]));
+//				System.out.println();
+//			}
+//			System.out.println();
 		
 		}
 		
@@ -68,7 +68,7 @@ public class SpielAI
 		for (LinkedHashSet<Savegame> moeglicherZug : _possibleMoves) {
 			if (moeglicherZug.size()>1)
 			{
-				System.out.println("move:"+_brett.getSpielZuege().get(moeglicherZug.iterator().next().moveNr));
+//				System.out.println("move:"+_brett.getSpielZuege().get(moeglicherZug.iterator().next().moveNr));
 			}
 		}
 
@@ -86,7 +86,7 @@ public class SpielAI
 			else if(_possibleMoves.get(i).size()!=1)
 			{
 				//TODO: clip tree
-				System.out.println(zug);
+//				System.out.println(zug);
 			}
 		}
 
@@ -161,7 +161,7 @@ public class SpielAI
 		@Deprecated // da erstmal nur die heuristik via matrix benutzt werden soll
 		public LinkedHashSet<Savegame> generateNextMoves()
 		{
-			System.out.println("Savegame::generateNextMoves");
+//			System.out.println("Savegame::generateNextMoves");
 
 			LinkedHashSet<Savegame> erg = new LinkedHashSet<Savegame>();
 			for (int i = 0; i < dim; i++) {

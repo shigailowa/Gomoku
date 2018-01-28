@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane fx:id="gewinnerPane" maxHeight="200.0" maxWidth="300.0" prefHeight="200.0" prefWidth="300.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.view.GewinnerController">
+   <children>
+      <Button fx:id="abbrechenButton" layoutX="86.0" layoutY="117.0" mnemonicParsing="false" onAction="#handleAbbrechenButton" text="abbrechen" />
+      <Button fx:id="neuButton" layoutX="174.0" layoutY="117.0" mnemonicParsing="false" onAction="#handleNeuButton" text="neu" />
+      <ImageView fx:id="gewinneriView" fitHeight="50.0" fitWidth="50.0" layoutX="158.0" layoutY="54.0" pickOnBounds="true" preserveRatio="true" />
+      <Text layoutX="91.0" layoutY="83.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Gewinner:" />
+   </children>
+</AnchorPane>
