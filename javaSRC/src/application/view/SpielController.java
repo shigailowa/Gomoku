@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import com.sun.xml.internal.fastinfoset.algorithm.BooleanEncodingAlgorithm;
+
 import application.Main;
 import application.model.Brett;
 import application.model.Brett.SpielZug;
@@ -160,7 +162,7 @@ public class SpielController {
 				if(aiSpeedSlider.getValue()<eps)
 					aiSpeedSlider.setValue(eps);
 //				System.out.println("Slider "+(Math.pow(1.06, aiSpeedSlider.getValue())-.975));
-				Main.optionen.setOption("twoAiSpeed", (long)((Math.pow(1.06, aiSpeedSlider.getValue())-.975)*1000000000));
+				Main.optionen.setOption("twoAiSpeed", (long)((Math.pow(1.06, aiSpeedSlider.getMax()- aiSpeedSlider.getValue())-.975)*1000000000));
 //				System.out.println("set to: "+((long)Main.optionen.getOption("twoAiSpeed"))/1000000000.);
 			}
 		});
@@ -447,10 +449,10 @@ public class SpielController {
 		startButton.setVisible(false);
 
 		bildeBrett();
-		
 	}
 	
-	private void disable() {
+	private void disable()
+	{
 		//disable all settings options
 		zuruecksetzenButton.setDisable(true);
 		spielStartenButton.setDisable(true);
@@ -463,10 +465,10 @@ public class SpielController {
 		anlegenCheckBox.setDisable(true);
 		aiCheckBox.setDisable(true);
 		mitteBeginnCheckBox.setDisable(true);
-		
 	}
 	
-	private void enable() {
+	private void enable()
+	{
 		//enable all settings options
 		zuruecksetzenButton.setDisable(false);
 		spielStartenButton.setDisable(false);
@@ -541,8 +543,8 @@ public class SpielController {
 	// restart with same settings
 	@FXML private void handleNewGameButton()
 	{
-	
-		if ((int) Main.optionen.getOption("anzahlAi") == 2) {
+		if ((int) Main.optionen.getOption("anzahlAi") == 2)
+		{
 			aiPaused=true;
 			pauseGameButton.setText("Play");
 		}
@@ -560,44 +562,40 @@ public class SpielController {
 		alert.getButtonTypes().setAll(buttonTypeOne, buttonTypeTwo, buttonTypeThree);
 		Optional<ButtonType> result = alert.showAndWait();
 		
-		if (result.get() == buttonTypeOne) {
-			
+		if (result.get() == buttonTypeOne)
+		{	
 			enable();
 			neustart();
-			
 			
 			newGameButton.setDisable(true);
 			newGameButton.setVisible(false);
 
 			bildeBrett();
 			
-			if ((int) Main.optionen.getOption("anzahlAi") != 2) {
-				
+			if ((int) Main.optionen.getOption("anzahlAi") != 2)
+			{	
 				pauseGameButton.setDisable(true);
 				pauseGameButton.setVisible(false);
 
 				aiSpeedSlider.setDisable(true);
 				aiSpeedSlider.setVisible(false);
 			} 
-			else {
+			else
+			{
 				aiPaused=true;
 				pauseGameButton.setText("Play");
 				pauseGameButton.setSelected(true);
 			}
-			
-
 		}
 		else
 		{
 		    alert.close();
-		    
-		    if ((int) Main.optionen.getOption("anzahlAi") == 2) {
+		    if ((int) Main.optionen.getOption("anzahlAi") == 2)
+		    {
 		    	  aiPaused=true;
 		    	  pauseGameButton.setText("Play");
 		    }
-		  
 		}
-
 	}
 
 	@FXML private void handlePauseGameButton(ActionEvent event)
@@ -814,6 +812,7 @@ public class SpielController {
 			{
 				// handle Unentschieden
 //				System.out.println("brett voll!");
+				handleGewinner(true);
 				return;
 			}
 			else if (zuege.length==1)
@@ -861,11 +860,27 @@ public class SpielController {
 		}
 	}
 	
-	// wird gerufen um gewinnerbehandlung zu starten	
+	/**	wird gerufen um gewinnerbehandlung zu starten	
+	 * @param unentschieden = false
+	 * 		sollte es ein volles brett geben, oder unentschieden festgestellt worden sein, 
+	 * 		setze auf true und erzwinge beendigung des spieles
+	 * 
+	 * @return ob es einen gewinner gibt
+	 */
 	private boolean handleGewinner()
+	{	return handleGewinner(false);	}
+	
+	/**	wird gerufen um gewinnerbehandlung zu starten	
+	 * @param unentschieden = false
+	 * 		sollte es ein volles brett geben, oder unentschieden festgestellt worden sein, 
+	 * 		setze auf true und erzwinge beendigung des spieles
+	 * 
+	 * @return ob es einen gewinner gibt
+	 */
+	private boolean handleGewinner(boolean unentschieden)
 	{
 		boolean erg=checkIfGewinner();
-		if(erg)
+		if(erg || unentschieden)
 		{
 			gameDone=true;
 			if(zweiAiTimer!=null)
@@ -885,8 +900,7 @@ public class SpielController {
 
 				// Erzeuge neue Buehne fuer das Dialogfenster
 				Stage gewinnerStage = new Stage();
-				gewinnerStage.setTitle("Es gibt einen Gewinner!");
-				
+
 				// Das Hauptfenster wird blockiert
 				gewinnerStage.initModality(Modality.WINDOW_MODAL);
 				gewinnerStage.initOwner(Main.primaryStage);
@@ -898,7 +912,20 @@ public class SpielController {
 				GewinnerController controller = loader.getController();
 				controller.setDialogStage(gewinnerStage);
 				controller.setDialogSpielController(this);
-				controller.setgewinnerimage((spielbrett.getSpielZuege().get(spielbrett.getSpielZuege().size()-1)).iView.getImage());
+				
+				// set approptiate texts
+				if(unentschieden)
+				{
+					gewinnerStage.setTitle("Es ist Unentschieden!");
+					controller.setGewinnerText("Unentschieden!");
+				}
+				else
+				{
+					gewinnerStage.setTitle("Es gibt einen Gewinner!");
+					controller.setGewinnerText("Gewinner:");
+					controller.setGewinnerImage((spielbrett.getSpielZuege().get(spielbrett.getSpielZuege().size()-1)).iView.getImage());
+				}
+				
 				gewinnerStage.setResizable(false);
 				gewinnerStage.setOnCloseRequest(event->{
 //					System.out.println(event);

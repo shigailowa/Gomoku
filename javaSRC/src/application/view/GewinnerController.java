@@ -7,6 +7,7 @@ import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.text.Text;
 
 public class GewinnerController
 {
@@ -14,6 +15,7 @@ public class GewinnerController
     @FXML private Button abbrechenButton;
     @FXML private Button neuButton;
     @FXML private ImageView gewinneriView;
+    @FXML private Text gewinnerText;
     
     private SpielController spielController;
     private Stage gewinnerStage;
@@ -37,7 +39,7 @@ public class GewinnerController
 		spielController.bildeBrett();
     }
     
-    public void setgewinnerimage(Image image)
+    public void setGewinnerImage(Image image)
     {
     	gewinneriView.setImage(image);
     }
@@ -48,9 +50,28 @@ public class GewinnerController
 //		System.out.println("GewinnerController::setDialogStage");		
 	}
     
+    public void setGewinnerText(String s)
+    {
+    	gewinnerText.setText(s);
+    }
+    
     public void setDialogSpielController(SpielController spielController)
 	{
 		this.spielController = spielController;
 //		System.out.println("GewinnerController::setDialogSpielController");		
 	}
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+

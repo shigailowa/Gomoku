@@ -12,6 +12,6 @@
       <Button fx:id="abbrechenButton" layoutX="86.0" layoutY="117.0" mnemonicParsing="false" onAction="#handleAbbrechenButton" text="abbrechen" />
       <Button fx:id="neuButton" layoutX="174.0" layoutY="117.0" mnemonicParsing="false" onAction="#handleNeuButton" text="neu" />
       <ImageView fx:id="gewinneriView" fitHeight="50.0" fitWidth="50.0" layoutX="158.0" layoutY="54.0" pickOnBounds="true" preserveRatio="true" />
-      <Text layoutX="91.0" layoutY="83.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Gewinner:" />
+      <Text fx:id="gewinnerText" layoutX="91.0" layoutY="83.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Gewinner:" />
    </children>
 </AnchorPane>
