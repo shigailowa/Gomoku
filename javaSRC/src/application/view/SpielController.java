@@ -95,7 +95,6 @@ public class SpielController {
 	boolean aiPaused = false;
 	AnimationTimer zweiAiTimer;
 	
-	
 	@FXML private void initialize()
 	{	
 		gameDone=false;
@@ -150,6 +149,21 @@ public class SpielController {
 		wrapAnchorPane.heightProperty().addListener(new ChangeListener<Number>()
 		{	@Override public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue)
 			{	handleSizeChanged();	}	});
+		aiSpeedSlider.setValue(12);
+//		aiSpeedSlider.setValue((long)Main.optionen.getOption("twoAiSpeed")/100000000);
+		aiSpeedSlider.valueProperty().addListener(new ChangeListener<Number>()
+		{
+			@Override
+			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue)
+			{
+				Double eps=1e-10;
+				if(aiSpeedSlider.getValue()<eps)
+					aiSpeedSlider.setValue(eps);
+//				System.out.println("Slider "+(Math.pow(1.06, aiSpeedSlider.getValue())-.975));
+				Main.optionen.setOption("twoAiSpeed", (long)((Math.pow(1.06, aiSpeedSlider.getValue())-.975)*1000000000));
+//				System.out.println("set to: "+((long)Main.optionen.getOption("twoAiSpeed"))/1000000000.);
+			}
+		});
 	}
 	
 	//alle standardeinstellungen
@@ -215,10 +229,11 @@ public class SpielController {
 				public void handle(long time)
 				{
 					stoneImage.setX(-1042); // move out of view
-					if(time>lastTime&&!aiPaused)
+					if(time>lastTime+(long)Main.optionen.getOption("twoAiSpeed")&&!aiPaused)
 					{
-						lastTime=time+(int)Main.optionen.getOption("twoAiSpeed");
+						lastTime=time;
 						letAImakeMove();
+//						System.out.println(((long)Main.optionen.getOption("twoAiSpeed"))/1000000000.);
 					}
 				}
 			};
@@ -498,7 +513,7 @@ public class SpielController {
 			aiCheckBox.setDisable(false);
 			mitteBeginnCheckBox.setDisable(false);
 			
-			//gameAnchorPane.getChildren().removeAll(spielbrett.getGitter());
+			//gameAnchorPane.ge)tChildren().removeAll(spielbrett.getGitter());
 			if(zweiAiTimer!=null)
 				zweiAiTimer.stop();
 			
@@ -646,7 +661,6 @@ public class SpielController {
 		pauseGameButton.setLayoutY(2);
 		
 		aiSpeedSlider.setLayoutX(pauseGameButton.getLayoutX()-aiSpeedSlider.getPrefWidth()-2);
-		
 		aiSpeedSlider.setLayoutY(8.5); // =(33-16)/2
 		
 		startButton.setLayoutX(currWidth/2-startButton.getPrefWidth()/2);

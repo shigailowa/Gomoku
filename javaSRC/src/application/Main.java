@@ -70,7 +70,7 @@ public class Main extends Application
 		optionen.setOption("brettgroesse", 19);
 		optionen.setOption("anfangInMitte", true);
 		optionen.setOption("anfangsFarbe", 0);
-		optionen.setOption("twoAiSpeed", (int)Math.floor(1*1000000000)/*makes it seconds*/);
+		optionen.setOption("twoAiSpeed", (long)Math.floor(1*1000000000)/*makes it seconds*/);
 		optionen.setOption("WinningStone", new Image("resources/WinningStone.png"));
 		launch(args);
 	}
