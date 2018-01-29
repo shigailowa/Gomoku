@@ -52,7 +52,7 @@
 %  Headings and Footings :
 \usepackage{fancyhdr}
 \headheight15pt
-\lhead{Numerische Mathematik III, \ueberschrift}
+\lhead{AWP oder so, \ueberschrift}
 
 \chead{}
 \rhead{\thepage}
@@ -60,7 +60,7 @@
 
 \lfoot{\today}
 \cfoot{}
-\rfoot{Joshua Laskowski, Matr.-Nr.~844094}
+\rfoot{Name...}
 \renewcommand{\footrulewidth}{.4pt}
 
 %----------------------------------------------------------------
@@ -87,7 +87,7 @@
 \newcommand{\rot}{}
 
 % ------------------  edit Ueberschrift ---------------------
-\newcommand{\ueberschrift}{2. Projekt: Adaptive Schrittweitensteuerung}
+\newcommand{\ueberschrift}{Dokumentation oder so}
 
 
 \usepackage{pgf-umlcd}
@@ -97,52 +97,37 @@
 	
 	\begin{tikzpicture}
 		\begin{package}{application}
+			\begin{package}{model}
+				\begin{class}[text width=\linewidth]{SpielStein}{0, 0}
+					\attribute{- farbe : int}
+					\attribute{- img : Image}
+					\attribute{- blackStone : static Image }
+					\attribute{- whiteStone : static Image }
+					
+					\operation{+ getColor() : final int}
+					\operation{+ getImage() : final Image}
+				\end{class}
+			\end{package}%model
+		\end{package}%application
+	\end{tikzpicture}
+	
+	\begin{tikzpicture}
+		\begin{package}{application}		
 			\begin{package}{view}
-				\begin{class}[text width=8cm]{GewinnerController}{0, 0}
-				\operation{name ( parameter list ) : type of value returned}
-				% virtual operation
-				\operation [0]{name ( parameters list ) : type of value returned}
-
-				\attribute{-gewinnerPane : AnchorPane }
-				\attribute{-abbrechenButton : Button }
-				\attribute{-neuButton : Button }
-				\attribute{-gewinneriView :ImageView }
-				\attribute{-gewinnerText : Text }
-				
-				\attribute{-spielController : SpielController }
-				\attribute{-gewinnerStage : Stage}
-
-@FXML void handleAbbrechenButton(ActionEvent event)
-{
-	gewinnerStage.close();
-}
-
-@FXML void handleNeuButton(ActionEvent event)
-{
-	gewinnerStage.close();
-	spielController.neustart();
-	spielController.bildeBrett();
-}
-
-public void setGewinnerImage(Image image)
-{
-	gewinneriView.setImage(image);
-}
-
-public void setDialogStage(Stage gewinnerStage)
-{
-	this.gewinnerStage=gewinnerStage;
-}
-
-public void setGewinnerText(String s)
-{
-	gewinnerText.setText(s);
-}
-
-public void setDialogSpielController(SpielController spielController)
-{
-	this.spielController = spielController;
-}
+				\begin{class}[text width=\linewidth]{GewinnerController}{0, 0}
+					\attribute{- gewinnerPane : AnchorPane }
+					\attribute{- abbrechenButton : Button }
+					\attribute{- neuButton : Button }
+					\attribute{- gewinneriView :ImageView }
+					\attribute{- gewinnerText : Text }				
+					\attribute{- spielController : SpielController }
+					\attribute{- gewinnerStage : Stage}
+					\operation{handleAbbrechenButton(ActionEvent event) : void}
+					\operation{handleNeuButton(ActionEvent event) : void}
+					\operation{setGewinnerImage(Image image) : void}		
+					\operation{setDialogStage(Stage gewinnerStage) : void}
+					\operation{setGewinnerText(String s) : void}
+					\operation{setDialogSpielController(SpielController spielController):void}
 				\end{class}
 			\end{package}%view
 		\end{package}%application
