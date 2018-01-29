@@ -2,6 +2,9 @@ package application.model;
 
 import javafx.scene.image.Image;
 
+/*
+ * Klasse für Spielsteine
+ */
 public class SpielStein
 {
 	int _farbe;
@@ -10,6 +13,10 @@ public class SpielStein
 	static Image blackStone=new Image("resources/stone-black.png");
 	static Image whiteStone=new Image("resources/stone-white.png");
 	
+	/*
+	 * Konstruktor
+	 * @param farbe  Farbe des Spielsteins
+	 */
 	public SpielStein(int farbe)
 	{
 		_farbe=farbe;
@@ -28,11 +35,17 @@ public class SpielStein
 		}
 	}
 	
+	/*
+	 * Gebe Farbe des Steins zurück
+	 */
 	public final int getColor()
 	{
 		return _farbe;
 	}
 	
+	/*
+	 * Gebe Bild zurück
+	 */
 	public final Image getImage()
 	{
 		return _img;

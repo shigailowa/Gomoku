@@ -20,6 +20,7 @@ import javafx.scene.shape.StrokeLineCap;
  */
 /**
  * @author Joshua
+ * Klasse zur Darstellung eines Bretts
  *
  */
 public class Brett {
@@ -85,6 +86,7 @@ public class Brett {
 	
 	
 	/**
+	 * zeichne Gitter
 	 * @param x Neue dimension der Pane wo das Brett drauf ist
 	 * @param y
 	 */
@@ -167,6 +169,11 @@ public class Brett {
 		return new double[]{x, y, Math.round((x-_randX)/_gitterWeite), Math.round((y-_randY)/_gitterWeite)};
 	}
 	
+	/*
+	 * 
+	 * @param x  x-Koordinate
+	 * @param y	 y-Koordinate
+	 */
 	public SpielStein steinAt(int x, int y)
 	{
 		if(x>=0&&x<_dim  &&  y>=0&&y<_dim) // liegt (x, y) auf brett?
@@ -174,10 +181,20 @@ public class Brett {
 		return null;
 	}
 	
-	// allow implicit cast from double to int
+	/*
+	 * allow implicit cast from double to int
+	 * @param x	 x-Koordinate
+	 * @param y  y-Koordinate
+	 */
 	public SpielStein steinAt(double x, double y)
 	{	return steinAt((int)x, (int)y);	}
 	
+	/*
+	 * 
+	 * @param x  x-Koordinate
+	 * @param y  y-Koordinate
+	 * @param s	 Spielstein
+	 */
 	private boolean steinSet(int x, int y, SpielStein s)
 	{
 		if(x>=0&&x<_dim && y>=0&&y<_dim  &&  _brett[x][y] == null)
@@ -188,6 +205,9 @@ public class Brett {
 		return false;
 	}
 		
+	/*
+	 * @param zug  Spielzug
+	 */
 	public boolean makeMove(SpielZug zug)
 	{
 		// check if there is an adjacent stone
@@ -237,13 +257,22 @@ public class Brett {
 		return b;
 	}
 	
-	// to wrap the data of an occured move
+	/*
+	 * to wrap the data of an occured move
+	 * 
+	 */
 	public static class SpielZug
 	{
 		public int x, y;
 		public SpielStein stein;
 		public ImageView iView;
 		
+		/*
+		 * @param x  x-Koordinate
+		 * @param y  y-Koordinate
+		 * @param stein  Spielstein
+		 * @param iView	 Bild
+		 */
 		public SpielZug(int x, int y, SpielStein stein, ImageView iView)
 		{
 			this.x=x;
@@ -252,12 +281,18 @@ public class Brett {
 			this.iView=iView;
 		}
 		
+		/*
+		 * 
+		 */
 		public String toString()
 		{
 			return String.format("x:%2d ", x)+String.format("y:%2d", y)+" f:"+stein._farbe + " [Vx:"+iView.getX() + "Vy:" + iView.getY()+"]";
 		}
 	}
 	
+	/*
+	 * 
+	 */
 	public void printMoves()
 	{
 		for (int i = 0; i < _SpielZuege.size(); i++)
@@ -265,30 +300,57 @@ public class Brett {
 		System.out.println();
 	}
 	
+	/*
+	 * 
+	 */
 	public int getNextMoveColour()
 	{	return _SpielZuege.size()%_spieler;	}
 
+	/*
+	 * 
+	 */
 	public final List<SpielZug> getSpielZuege()
 	{	return _SpielZuege;	}
 	
+	/*
+	 * 
+	 */
 	public int getDim() 
 	{	return _dim;	}
 	
+	/*
+	 * 
+	 */
 	public List<Line> getGitter()
 	{	return _gitter;	}
 	
+	/*
+	 * 
+	 */
 	public double getGitterWeite() 
 	{	return _gitterWeite;	}
 	
+	/*
+	 * 
+	 */
 	public double getRandX()
 	{	return _randX;	}
 
+	/*
+	 * 
+	 */
 	public double getRandY()
 	{	return _randY;	}
 	
+	/*
+	 * 
+	 */
 	public final int getSpieler()
 	{	return _spieler;	}
 	
+	/*
+	 * 
+	 */
 	public final SpielStein[][] getBrett()
 	{	return _brett;	}
 }

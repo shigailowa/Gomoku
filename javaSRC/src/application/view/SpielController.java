@@ -25,6 +25,9 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
+/*
+ * Controller für das Spiel
+ */
 public class SpielController {
 	
 	@FXML private CheckBox mitteBeginnCheckBox;
@@ -89,6 +92,9 @@ public class SpielController {
 	boolean aiPaused = false;
 	AnimationTimer zweiAiTimer;
 	
+	/*
+	 * erstelle Hintergrundbild, stelle Standardeinstellungen ein
+	 */
 	@FXML private void initialize()
 	{	
 		gameDone=false;
@@ -157,7 +163,9 @@ public class SpielController {
 		});
 	}
 	
-	//alle standardeinstellungen
+	/*
+	 * setze Standardeinstellungen zurück
+	 */
 	private void standardEinstellungen()
 	{
 		aiButton.setSelected(true);
@@ -176,7 +184,7 @@ public class SpielController {
 	}
 	
 	/**
-	 * baue Brett auf und starte das spiel
+	 * baue Brett auf und starte das spiel 
 	 */
 	public void bildeBrett()
 	{
@@ -246,7 +254,10 @@ public class SpielController {
 		} // 1 ai
 	} // bildeBrett()
 	
-	//spieler auswahl
+	/*
+	 * Handler für Einstellen der Spielanzahl
+	 * @param event
+	 */
 	@FXML private void handleSpielerAnzahlButton(ActionEvent event)
 	{
 		if (einSpielerButton.isSelected())
@@ -269,7 +280,10 @@ public class SpielController {
 		}
 	}
 	
-	//brettgroesse box
+	/*
+	 * Handler für Einstellen der Brettgroesse mitHilfe der ComboBox
+	 * @param event
+	 */
 	@FXML private void handleBrettGroesseBox(ActionEvent event)
 	{	
 		String brettGroesseText = brettGroesseBox.getSelectionModel().getSelectedItem();
@@ -299,7 +313,10 @@ public class SpielController {
 		}
 	}
 	
-	//brettgroesse textfeld
+	/*
+	 * Handler für Einstllen der Brettgroesse mit Hilfe des Textfelds
+	 * @param event
+	 */
 	@FXML private void handleBrettGroesseFeld(ActionEvent event)
 	{
 		String brettGroesse = brettGroesseTextField.getText();		
@@ -320,7 +337,10 @@ public class SpielController {
 		brettGroesseTextField.setText(brettGroesse);
 	}
 
-	//spielregeln
+	/*
+	 * Handler für Einstellen der Spielregeln
+	 * @param event 
+	 */
 	@FXML private void handleSpielregeln(ActionEvent event)
 	{
 		Main.optionen.setOption("inEinerReihe", Integer.parseInt(anzahlReiheTextField.getText()));
@@ -329,7 +349,10 @@ public class SpielController {
 		Main.optionen.setOption("anfangInMitte", mitteBeginnCheckBox.isSelected());
 	}
 	
-	//hintergrund bild
+	/*
+	 * Handler zum Einstellen des Hintergrundbilds
+	 * @param event
+	 */
 	@FXML private void handleBackground(ActionEvent event)
 	{
 		if (bild1Button.isSelected())
@@ -339,7 +362,9 @@ public class SpielController {
 			backgroundImage.setImage((Image) Main.optionen.getOption("BackgroundImageAhornMasern"));
 	}
 	
-	//neustart, setzt alles zurueck
+	/*
+	 * Methode zum Entfernen aller Spielzüge und des Gitters
+	 */
 	public void neustart()
 	{
 		if(spielbrett!=null)
@@ -363,7 +388,9 @@ public class SpielController {
 		spielbrett=null;
 	}
 	
-	//neustart
+	/*
+	 * Handler zum Spiel starten(Spiel starten Button im Einstellungen Tab)
+	 */
 	@FXML private void handleSpielStartenButton()
 	{
 		//disable all settings options
@@ -393,12 +420,18 @@ public class SpielController {
 		tabPaneSwitch.getSelectionModel().select(gameTab);
 	}
 	
+	/*
+	 * Handler zum Zurücksetzen der Standardeinstellungen
+	 */
 	//einstellungen auf standard zurücksetzen
 	@FXML private void handleZuruecksetzenButton(ActionEvent event)
 	{
 		standardEinstellungen();
 	}
 	
+	/*
+	 * Handler für Start-Button in der GameTab
+	 */
 	//is only visible at beginning or when 2 ai is selected
 	@FXML private void handleStartButton()
 	{
@@ -421,6 +454,9 @@ public class SpielController {
 		bildeBrett();
 	}
 	
+	/*
+	 * deaktiviere alle Einstellungen außer Hintergrundbild
+	 */
 	private void disable()
 	{
 		//disable all settings options
@@ -437,6 +473,9 @@ public class SpielController {
 		mitteBeginnCheckBox.setDisable(true);
 	}
 	
+	/*
+	 * aktiviere alle Einstellungen
+	 */
 	private void enable()
 	{
 		//enable all settings options
@@ -453,6 +492,9 @@ public class SpielController {
 		mitteBeginnCheckBox.setDisable(false);
 	}
 
+	/*
+	 * Handler für Neues Spiel
+	 */
 	// restart with same settings
 	@FXML private void handleNewGameButton()
 	{
@@ -496,6 +538,9 @@ public class SpielController {
 		}
 	} //handleNewGameButton()
 
+	/*
+	 * handler zum Pausieren, falls zwei AI vorhanden
+	 */
 	@FXML private void handlePauseGameButton(ActionEvent event)
 	{
 		if((int)Main.optionen.getOption("anzahlAi")!=2 || zweiAiTimer==null)
@@ -513,6 +558,9 @@ public class SpielController {
 		}
 	}
 	
+	/*
+	 * 
+	 */
 	@FXML private void handleMouseMoved(MouseEvent event)
 	{
 		if(spielbrett==null||gameDone)
@@ -590,6 +638,9 @@ public class SpielController {
 		stoneImage.setX(-1001); // move out of view until next mouse movement
 	}
 	
+	/*
+	 * 
+	 */
 	// only update the relative position of the circle on the screen
 	private void updatePlayMarkers()
 	{
@@ -605,12 +656,16 @@ public class SpielController {
 		checkIfGewinner(); // this implicitly removes old playMarkers and redraws them
 	}
 	
+	/*
+	 * 
+	 */
 	@FXML void handleDragDetected(MouseEvent event)
 	{
 		// to make the move count where the mouse ended up at the end of the drag
 		handleMouseMoved(event);
 	}
 
+	
 	/**
 	 * emulates a mouseclick at a given position on the games Pane
 	 * @param x position
@@ -642,6 +697,9 @@ public class SpielController {
 		));
 	}
 	
+	/*
+	 * 
+	 */
 	@FXML private void handleMouseClicked(MouseEvent event)
 	{
 		if(spielbrett==null||gameDone)
@@ -700,6 +758,9 @@ public class SpielController {
 		}
 	}
 	
+	/*
+	 * 
+	 */
 	private void letAImakeMove()
 	{
 		if(gegner!=null&&!gameDone)
@@ -831,6 +892,9 @@ public class SpielController {
 		return erg;
 	} //handleGewinner()
 
+	/*
+	 * 
+	 */
 	private boolean checkIfGewinner()
 	{
 		if(spielbrett==null||spielbrett.getSpielZuege().size()==0)
@@ -887,6 +951,9 @@ public class SpielController {
 		return erg;
 	} // checkIfGewinner()
 
+	/*
+	 * @param event
+	 */
 	// for debbugging purposes
 	@FXML private void handleKeyPressed(KeyEvent event)
 	{
@@ -920,6 +987,10 @@ public class SpielController {
 		}
 	}
 
+	/**
+	 * 
+	 * @param event
+	 */
 	// for debbugging purposes
 	@FXML private void handleKeyReleased(KeyEvent event)
 	{

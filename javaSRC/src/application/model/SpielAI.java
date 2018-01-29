@@ -18,7 +18,9 @@ public class SpielAI
 	private Brett _brett;
 	private ArrayList<LinkedHashSet<Savegame>> _possibleMoves;
 	
-	
+	/*
+	 * 
+	 */
 	public SpielAI(Brett brett) 
 	{
 		_brett=brett;
@@ -37,6 +39,9 @@ public class SpielAI
 //			System.out.println("das brett hat noch keine steine!");
 	}
 	
+	/*
+	 * 
+	 */
 	public void generateNextMoves()
 	{
 		int tiefe=_possibleMoves.size()-1;
@@ -61,6 +66,9 @@ public class SpielAI
 //		System.out.println("_pm.gen}:"+_possibleMoves);
 	}
 	
+	/*
+	 * 
+	 */
 	public void updateMoves()
 	{
 //		for (LinkedHashSet<Savegame> moeglicherZug : _possibleMoves) {
@@ -93,6 +101,9 @@ public class SpielAI
 		//		generateNextMoves();
 	}
 	
+	/*
+	 * 
+	 */
 	public Integer[][] getBestMoves()
 	{
 		Double[][] heuristic=_possibleMoves.get(_possibleMoves.size()-1).iterator().next().generateHeuristic();
@@ -127,6 +138,9 @@ public class SpielAI
 		return erg;
 	}
 	
+	/*
+	 * 
+	 */
 	public static class Savegame
 	{
 		int moveNr;
@@ -152,8 +166,11 @@ public class SpielAI
 			spielerAnz=brett.getSpieler();
 		}
 
-		// placeholder for future generation
-		// this would generate leaves and their heuristic
+		/*
+		 * placeholder for future generation
+		 * this would generate leaves and their heuristic
+		 */
+		
 		@Deprecated // da erstmal nur die heuristik via matrix benutzt werden soll
 		public LinkedHashSet<Savegame> generateNextMoves()
 		{
@@ -171,6 +188,9 @@ public class SpielAI
 			return erg;
 		}
 
+		/*
+		 * 
+		 */
 		public Double[][] generateHeuristic()
 		{
 			//TODO: almost everything, this has been put on hold untill anythigng else if completely done
@@ -502,6 +522,9 @@ public class SpielAI
 			return erg;
 		}
 
+		/*
+		 * 
+		 */
 		@Override
 		public int hashCode() {
 			final int prime = 31;
@@ -514,6 +537,9 @@ public class SpielAI
 			return result;
 		}
 
+		/*
+		 * 
+		 */
 		@Override
 		public String toString() {
 			String erg="Savegame[moveNr=" + moveNr + ", spielerAnz=" + spielerAnz + ", dim=" + dim ;
@@ -534,6 +560,10 @@ public class SpielAI
 			return erg;
 		}
 
+		/*
+		 * 
+		 * @param obj
+		 */
 		@Override
 		public boolean equals(Object obj) {
 			if (this == obj)
@@ -632,6 +662,9 @@ public class SpielAI
 		return erg;
 	}
 
+	/*
+	 * @param a
+	 */
 	public static void printDoubleArray(Double[][] a)
 	{
 		for (int i = 0; i < a.length; i++)

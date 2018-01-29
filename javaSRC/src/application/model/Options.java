@@ -2,18 +2,27 @@ package application.model;
 
 import java.util.HashSet;
 
+/*
+ * Klasse zum speichern der Optionen
+ */
 public class Options {
 	
 	 // holds every option that has been set
 	private HashSet<Tupel> _menge;
 	
-	// create new empty options obj
+	/*
+	 * create new empty options obj
+	 */
 	public Options()
 	{
 		_menge = new HashSet<Tupel>();
 	}
 	
-	// set for a given string an obj, if already present, overwrite
+	/*
+	 * set for a given string an obj, if already present, overwrite
+	 * @param name
+	 * @param objekt 
+	 */
 	public void setOption(String name, Object objekt)
 	{
 		Tupel tupelNeu = new Tupel(name, objekt);
@@ -22,8 +31,10 @@ public class Options {
 		_menge.add(tupelNeu);
 	}
 	
-	// if the string name is present, return the corresponding obj
-	// otherwise null
+	/*if the string name is present, return the corresponding obj
+	 * otherwise null
+	 * @param name  Name of string 
+	 */
 	public Object getOption(String name)
 	{	
 		for (Tupel tupel : _menge)
@@ -33,12 +44,19 @@ public class Options {
 		return null;
 	}
 	
+	/*
+	 * Print name of Option
+	 * @param name  Name of String
+	 */
 	public void printOption(String name)
 	{
 		System.out.print(name+": ");
 		System.out.println(getOption(name));
 	}
 	
+	/*
+	 * 
+	 */
 	@Override
 	public String toString() {
 		int longestName=0;
@@ -59,13 +77,20 @@ public class Options {
 		public String name;	
 		public Object objekt;
 		
+		/*
+		 * Constructor
+		 * @param name	Name of option
+		 * @param objekt option 
+		 */
 		public Tupel(String name, Object objekt)
 		{
 			this.name = name;
 			this.objekt = objekt;
 		}
 
-		// generated methods so the tupel can be put inside a hashSet
+		/*
+		 * generated methods so the tupel can be put inside a hashSet
+		 */
 		@Override
 		public int hashCode() {
 			final int prime = 31;
@@ -75,6 +100,10 @@ public class Options {
 			return result;
 		}
 
+		/*
+		 *Returns whether an Object of class Tupel equals an object of Type Object
+		 *@param obj  object
+		 */
 		@Override
 		public boolean equals(Object obj) {
 			if (this == obj)
@@ -94,10 +123,16 @@ public class Options {
 			return true;
 		}
 
+		/*
+		 * 
+		 */
 		private Options getOuterType() {
 			return Options.this;
 		}
 
+		/*
+		 * Output for Tupel
+		 */
 		@Override
 		public String toString() {
 			return "Tupel [name=" + name + ", objekt=" + objekt + "]";

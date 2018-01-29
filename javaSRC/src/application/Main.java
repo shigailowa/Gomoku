@@ -34,6 +34,7 @@ public class Main extends Application
 	
 	public static void main(String[] args)
 	{
+		//Setze Standardeinstellungen
 		optionen.setOption("debug", false);
 		optionen.setOption("BackgroundImageAhornHolz", new Image("resources/Ahorn_Holz.JPG"));
 		optionen.setOption("BackgroundImageAhornMasern", new Image("resources/AhornMaser01.JPG"));
