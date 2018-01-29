@@ -1,0 +1,196 @@
+\documentclass[11pt]{article}
+
+\usepackage{amsmath,amssymb, a4, verbatim}
+\usepackage[german]{babel}
+%\usepackage[latin1]{inputenc}
+\usepackage[utf8]{inputenc} % üöäß
+\usepackage{listings} % für inline codelistings
+\lstset{%
+	basicstyle=\ttfamily,  % the size of the fonts 
+	columns=fixed, % anything else is horrifying
+	showspaces=false,       % show spaces using underscores?
+	showstringspaces=false, % underline spaces within strings?
+	showtabs=false,% show tabs within strings?
+	xleftmargin=1.5em,      % left margin space
+}
+\lstdefinestyle{inline}{basicstyle=\ttfamily}
+\newcommand{\listline}[1]{\lstinline[style=inline]!#1!}
+
+
+\usepackage{caption}
+\newcommand{\tinycaption}[1]{\captionsetup{labelformat=empty}\caption{#1}}
+
+%\usepackage{color}
+%\usepackage{epsfig} % eps
+\usepackage{graphicx} % eps
+%\usepackage[shortcuts]{extdash}
+%\usepackage{dsfont}
+%\usepackage{epstopdf} % eps
+%\usepackage[pdf]{pstricks} % eps
+%\usepackage{auto-pst-pdf}
+\usepackage{mathtools}
+\usepackage{dsfont} % $ \mathds{1} $
+\usepackage{icomma}
+\usepackage{tikz}
+%\usepackage{pgfplots}
+%\pgfplotsset{compat=1.8}
+\usepackage[bottom]{footmisc} % put footnotes at the bottom of page
+\usepackage{nicefrac} % für brüche die aussehen wie prozentzeichen
+% \usepackage{ps2pdf}
+\usetikzlibrary{automata,positioning}
+
+\usepackage{algorithmicx}
+\usepackage{algpseudocode}
+\usepackage{algorithm}
+
+\usepackage{multicol}
+\usepackage{wrapfig} % make stuff float
+\usepackage{placeins} % stop stuff from floating
+\usepackage{seqsplit} % very long numbers
+\usepackage{framed} % begin{framed}
+
+%  Headings and Footings :
+\usepackage{fancyhdr}
+\headheight15pt
+\lhead{Numerische Mathematik III, \ueberschrift}
+
+\chead{}
+\rhead{\thepage}
+\renewcommand{\headrulewidth}{.4pt}
+
+\lfoot{\today}
+\cfoot{}
+\rfoot{Joshua Laskowski, Matr.-Nr.~844094}
+\renewcommand{\footrulewidth}{.4pt}
+
+%----------------------------------------------------------------
+
+\textwidth16.5cm
+\oddsidemargin0.cm
+\evensidemargin0.cm
+
+\parindent0cm
+
+\newcommand{\R}{ {\mathbb R} }
+\newcommand{\C}{ {\mathbb C} }
+\newcommand{\1}{ {\mathds{1}} }
+\newcommand{\abs}[1]{\lvert#1\rvert}
+\newcommand{\norm}[1]{\left\lVert#1\right\rVert}
+\newcommand{\xt}{\tilde{x}}
+\newcommand{\dotleq}{\dot{\leq}}
+\newcommand{\m}{\hphantom{-} }
+
+\newcommand{\dashfill}[1]{\vspace{11pt}\def\dashfill{\cleaders\hbox{#1}\hfill}\hbox to \hsize{\dashfill\hfil}\vspace{11pt}}
+\newcommand{\scdot}{\!\cdot\!}
+
+\newcommand{\sig}{\text{signum}}
+\newcommand{\rot}{}
+
+% ------------------  edit Ueberschrift ---------------------
+\newcommand{\ueberschrift}{2. Projekt: Adaptive Schrittweitensteuerung}
+
+
+\usepackage{pgf-umlcd}
+% -----------------------------------------------------------
+\begin{document}
+	\pagestyle{fancy}
+	
+	\begin{tikzpicture}
+		\begin{package}{application}
+			\begin{package}{view}
+				\begin{class}[text width=8cm]{GewinnerController}{0, 0}
+				\operation{name ( parameter list ) : type of value returned}
+				% virtual operation
+				\operation [0]{name ( parameters list ) : type of value returned}
+
+				\attribute{-gewinnerPane : AnchorPane }
+				\attribute{-abbrechenButton : Button }
+				\attribute{-neuButton : Button }
+				\attribute{-gewinneriView :ImageView }
+				\attribute{-gewinnerText : Text }
+				
+				\attribute{-spielController : SpielController }
+				\attribute{-gewinnerStage : Stage}
+
+@FXML void handleAbbrechenButton(ActionEvent event)
+{
+	gewinnerStage.close();
+}
+
+@FXML void handleNeuButton(ActionEvent event)
+{
+	gewinnerStage.close();
+	spielController.neustart();
+	spielController.bildeBrett();
+}
+
+public void setGewinnerImage(Image image)
+{
+	gewinneriView.setImage(image);
+}
+
+public void setDialogStage(Stage gewinnerStage)
+{
+	this.gewinnerStage=gewinnerStage;
+}
+
+public void setGewinnerText(String s)
+{
+	gewinnerText.setText(s);
+}
+
+public void setDialogSpielController(SpielController spielController)
+{
+	this.spielController = spielController;
+}
+				\end{class}
+			\end{package}%view
+		\end{package}%application
+	\end{tikzpicture}
+\end{document}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

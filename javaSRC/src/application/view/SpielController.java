@@ -116,7 +116,6 @@ public class SpielController {
 		bild1Button.setGraphic(bild1);
 		bild1Button.setToggleGroup(bildGroup);
 		
-		
 		ImageView bild2 = new ImageView("resources/AhornMaser01.JPG");
 		
 		bild2.setFitHeight(bild2Button.getPrefHeight());
