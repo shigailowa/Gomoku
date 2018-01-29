@@ -8,6 +8,11 @@ import java.util.LinkedHashSet;
 import application.Main;
 import application.model.Brett.SpielZug;
 
+// this is littered with commented sysouts
+// and needs work to be a capable ai
+// currently this just plays possible
+// moves and sometimes ones that where detected
+// by an attempt at implementing chain-detection
 public class SpielAI
 {
 	private Brett _brett;
@@ -34,8 +39,6 @@ public class SpielAI
 	
 	public void generateNextMoves()
 	{
-//		System.out.println("_pm.gen{:"+_possibleMoves);
-
 		int tiefe=_possibleMoves.size()-1;
 //		System.out.println("generateNextMoves::tiefe:"+tiefe);
 		for (Iterator<Savegame> it = (_possibleMoves.get(tiefe)).iterator(); it.hasNext();) // for each leaf
@@ -54,23 +57,18 @@ public class SpielAI
 //				System.out.println();
 //			}
 //			System.out.println();
-		
 		}
-		
 //		System.out.println("_pm.gen}:"+_possibleMoves);
 	}
 	
 	public void updateMoves()
 	{
-//		System.out.println("SpielAi::makeMove brett.zuege.size:"+_brett.getSpielZuege().size());
-//		System.out.println("SpielAi::makeMove _possibleMo.size:"+_possibleMoves.size());
-		
-		for (LinkedHashSet<Savegame> moeglicherZug : _possibleMoves) {
-			if (moeglicherZug.size()>1)
-			{
+//		for (LinkedHashSet<Savegame> moeglicherZug : _possibleMoves) {
+//			if (moeglicherZug.size()>1)
+//			{
 //				System.out.println("move:"+_brett.getSpielZuege().get(moeglicherZug.iterator().next().moveNr));
-			}
-		}
+//			}
+//		}
 
 		for (int i = 0; i < _brett.getSpielZuege().size(); i++) 
 		{
@@ -86,6 +84,7 @@ public class SpielAI
 			else if(_possibleMoves.get(i).size()!=1)
 			{
 				//TODO: clip tree
+				// if fiture minimax gets implemented
 //				System.out.println(zug);
 			}
 		}
@@ -97,10 +96,6 @@ public class SpielAI
 	public Integer[][] getBestMoves()
 	{
 		Double[][] heuristic=_possibleMoves.get(_possibleMoves.size()-1).iterator().next().generateHeuristic();
-		
-//		System.out.println("HEURISTIC:");
-//		printDoubleArray(heuristic);
-//		System.out.println();
 		
 		double bestValue=Double.NEGATIVE_INFINITY;
 		int amountBest=0;
@@ -118,7 +113,6 @@ public class SpielAI
 					else if (bestValue==heuristic[i][j])
 						amountBest++;
 
-//		System.out.println("amountBest: "+amountBest+"  bestValue:"+bestValue);
 		Integer[][] erg = new Integer[amountBest][2];
 		
 		for (int i = 0; i < heuristic.length; i++)
@@ -158,11 +152,12 @@ public class SpielAI
 			spielerAnz=brett.getSpieler();
 		}
 
+		// placeholder for future generation
+		// this would generate leaves and their heuristic
 		@Deprecated // da erstmal nur die heuristik via matrix benutzt werden soll
 		public LinkedHashSet<Savegame> generateNextMoves()
 		{
 //			System.out.println("Savegame::generateNextMoves");
-
 			LinkedHashSet<Savegame> erg = new LinkedHashSet<Savegame>();
 			for (int i = 0; i < dim; i++) {
 				for (int j = 0; j < dim; j++) {
@@ -178,6 +173,9 @@ public class SpielAI
 
 		public Double[][] generateHeuristic()
 		{
+			//TODO: almost everything, this has been put on hold untill anythigng else if completely done
+			// this was not the focus, so it was abandoned
+			
 			Double[][] erg= new Double[dim][dim];
 			
 			// generate possible location
@@ -210,7 +208,6 @@ public class SpielAI
 				for (int j = 0; j < erg.length; j++)
 					if(steine[i][j]>=0)
 						erg[i][j]=null;
-			
 			
 			// bewertung:
 			int spielendeFarbe=moveNr%spielerAnz;
@@ -504,25 +501,6 @@ public class SpielAI
 */
 			return erg;
 		}
-		
-		/*
-		public Savegame(Savegame s, int xNew, int yNew)
-		{
-			// remember move to make next
-			nextMove=new int[2];
-			nextMove[0]=xNew;
-			nextMove[1]=yNew;
-			
-			spielerAnz=s.spielerAnz;
-			moveNr=s.moveNr+1;
-			steine=new int[dim][dim];
-			dim=s.dim;
-			System.arraycopy(s.steine, 0, steine, 0, dim);
-
-			//make last to-make move count
-			steine[s.nextMove[1]][s.nextMove[2]]=moveNr%spielerAnz;
-		}
-		*/
 
 		@Override
 		public int hashCode() {
@@ -635,7 +613,7 @@ public class SpielAI
 					else
 						a[i][j] *= f;
 	}
-	
+
 	/**
 	 * Not only clones the first layer, but also the second
 	 * 
@@ -653,8 +631,7 @@ public class SpielAI
 
 		return erg;
 	}
-	
-	
+
 	public static void printDoubleArray(Double[][] a)
 	{
 		for (int i = 0; i < a.length; i++)

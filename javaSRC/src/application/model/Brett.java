@@ -33,7 +33,6 @@ public class Brett {
 	private List<Line> _gitterVert;
 	private List<Line> _gitterHorz;
 	private List<Line> _gitter;
-	private List<Line> _punkte;
 	
 	private List<SpielZug> _SpielZuege;
 	
@@ -62,7 +61,6 @@ public class Brett {
 		_gitterVert=new ArrayList<Line>();
 		_gitterHorz=new ArrayList<Line>();
 		_gitter=new ArrayList<Line>();
-		_punkte=new ArrayList<Line>();
 		
 		_SpielZuege=new ArrayList<SpielZug>();
 		_CheckAdjacent=true;
@@ -72,17 +70,11 @@ public class Brett {
 			_gitterVert.add(new Line()); // vertikale linien
 			_gitterHorz.add(new Line()); // horizonatale linien
 		}
-
-		if(_dim%2!=0)
-			_punkte.add(new Line(x/2, y/2, x/2, y/2));
 		
 		redrawGitter(x, y);
 		
-		_punkte.forEach(l->l.setStrokeWidth(_gitterWeite/10));
-		
 		_gitter.addAll(_gitterVert);
 		_gitter.addAll(_gitterHorz);
-		_gitter.addAll(_punkte);
 		
 		_gitter.forEach(l->{
 			l.setFill(Color.WHITE);
@@ -100,9 +92,6 @@ public class Brett {
 	{		
 		double min=Math.min(x, y);
 		_gitterWeite=min/_dim;
-
-		_punkte.forEach(l->l.relocate(x/2, y/2));
-		_punkte.forEach(l->l.setStrokeWidth(_gitterWeite/2));
 
 		_randX=_gitterWeite/2;
 		_randY=_gitterWeite/2;
@@ -131,7 +120,6 @@ public class Brett {
 			s.iView.setY(_randY + s.y*_gitterWeite-_gitterWeite/2);
 			s.iView.setFitWidth(_gitterWeite);
 			s.iView.setFitHeight(_gitterWeite);
-//			System.out.println("s.iView"+s.iView.getX()+" "+s.iView.getY());
 		});
 
 		
@@ -157,46 +145,30 @@ public class Brett {
 	 * 2,3: Index der Position im Brett 
 	 */
 	public double[] roundCoord(double x, double y)
-	{
-if((boolean) Main.optionen.getOption("debug"))System.out.println("Brett::roundCoord:: \n"+x+" "+y+"  inc");
-		
+	{		
 		x=Math.max(_randX, x);
 		y=Math.max(_randY, y);
-
-if((boolean) Main.optionen.getOption("debug"))System.out.println("Brett::roundCoord:: "+x+" "+y+"  max");
 		
 		x=Math.min(x, _randX + (_dim-1)*_gitterWeite);
 		y=Math.min(y, _randY + (_dim-1)*_gitterWeite);
 
-if((boolean) Main.optionen.getOption("debug"))System.out.println("Brett::roundCoord:: "+x+" "+y+"  min");
-
 		x+=_gitterWeite/2;
 		y+=_gitterWeite/2;
-
-if((boolean) Main.optionen.getOption("debug"))System.out.println("Brett::roundCoord:: "+x+" "+y+"  +gi  "+_gitterWeite/2);
 		
 		x-=_randX;
 		y-=_randY;
-		
-if((boolean) Main.optionen.getOption("debug"))System.out.println("Brett::roundCoord:: "+x+" "+y+"  -ra  "+_randX+" "+_randY);
-		
+				
 		x-=x%_gitterWeite;
 		y-=y%_gitterWeite;
-
-if((boolean) Main.optionen.getOption("debug"))System.out.println("Brett::roundCoord:: "+x+" "+y+"  -mo  "+_gitterWeite);
 
 		x+=_randX;
 		y+=_randY;
 		
-if((boolean) Main.optionen.getOption("debug"))System.out.println("Brett::roundCoord:: "+x+" "+y+"  fin");
-
 		return new double[]{x, y, Math.round((x-_randX)/_gitterWeite), Math.round((y-_randY)/_gitterWeite)};
-		//first pair is in display coordinates, second pair is borad indices
 	}
 	
 	public SpielStein steinAt(int x, int y)
 	{
-if((boolean) Main.optionen.getOption("debug"))System.out.println("Brett::steinAt:: "+x+" "+y);
 		if(x>=0&&x<_dim  &&  y>=0&&y<_dim) // liegt (x, y) auf brett?
 			return _brett[x][y];
 		return null;
@@ -294,9 +266,7 @@ if((boolean) Main.optionen.getOption("debug"))System.out.println("Brett::steinAt
 	}
 	
 	public int getNextMoveColour()
-	{
-		return _SpielZuege.size()%_spieler;
-	}
+	{	return _SpielZuege.size()%_spieler;	}
 
 	public final List<SpielZug> getSpielZuege()
 	{	return _SpielZuege;	}

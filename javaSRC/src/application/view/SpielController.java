@@ -1,19 +1,13 @@
 package application.view;
 
-import java.io.Externalizable;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import com.sun.org.apache.bcel.internal.generic.IF_ACMPEQ;
-import com.sun.xml.internal.fastinfoset.algorithm.BooleanEncodingAlgorithm;
-
 import application.Main;
-import application.model.Brett;
+import application.model.*;
 import application.model.Brett.SpielZug;
-import application.model.SpielAI;
-import application.model.SpielStein;
 import javafx.animation.AnimationTimer;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -25,11 +19,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.input.KeyEvent;
-import javafx.scene.input.MouseButton;
-import javafx.scene.input.MouseEvent;
+import javafx.scene.image.*;
+import javafx.scene.input.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -153,7 +144,6 @@ public class SpielController {
 		{	@Override public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue)
 			{	handleSizeChanged();	}	});
 		aiSpeedSlider.setValue(12);
-//		aiSpeedSlider.setValue((long)Main.optionen.getOption("twoAiSpeed")/100000000);
 		aiSpeedSlider.valueProperty().addListener(new ChangeListener<Number>()
 		{
 			@Override
@@ -162,9 +152,7 @@ public class SpielController {
 				Double eps=1e-10;
 				if(aiSpeedSlider.getValue()<eps)
 					aiSpeedSlider.setValue(eps);
-//				System.out.println("Slider "+(Math.pow(1.06, aiSpeedSlider.getValue())-.975));
 				Main.optionen.setOption("twoAiSpeed", (long)((Math.pow(1.06, aiSpeedSlider.getMax()- aiSpeedSlider.getValue())-.9875)*1000000000));
-//				System.out.println("set to: "+((long)Main.optionen.getOption("twoAiSpeed"))/1000000000.);
 			}
 		});
 	}
@@ -192,8 +180,6 @@ public class SpielController {
 	 */
 	public void bildeBrett()
 	{
-//		System.out.println(Main.optionen);
-//		System.out.println();
 		gameDone=false;
 		newGameButton.setDisable(false);
 		newGameButton.setVisible(true);
@@ -238,7 +224,6 @@ public class SpielController {
 					{
 						lastTime=time;
 						letAImakeMove();
-//						System.out.println(((long)Main.optionen.getOption("twoAiSpeed"))/1000000000.);
 					}
 				}
 			};
@@ -251,26 +236,10 @@ public class SpielController {
 			gegner.updateMoves();
 
 			// let ai make a move
-//			System.out.println("aimove");
-//			Main.optionen.printOption("aiFaengtAn");
 			if(!(boolean) Main.optionen.getOption("aiFaengtAn"))
 			{
-//				System.out.println("anzZuege:"+spielbrett.getSpielZuege().size());
 				Integer[][] zuege=gegner.getBestMoves();
-				
-//				System.out.println("pseudoGitterWeite"+pseudoGitterWeite);
-				
-//				System.out.println("AIMOVES:");
-//				for (int i = 0; i < zuege.length; i++) {
-//					for (int j = 0; j < zuege[i].length; j++) {
-//						System.out.print(i+" "+j+" : "+(zuege[i][j]*pseudoGitterWeite+spielbrett.getRandX())+"; ");
-//					}
-//					System.out.println();
-//				}
-//				System.out.println("END AIMOVES:");
-				
-				int zugNum=(int)(Math.random()*zuege.length); // of the generated best moves, take one at random
-								
+				int zugNum=(int)(Math.random()*zuege.length); // of the generated best moves, take one at random								
 				handleMouseClicked((int)(zuege[zugNum][0]*pseudoGitterWeite+spielbrett.getRandX()),
 								   (int)(zuege[zugNum][1]*pseudoGitterWeite+spielbrett.getRandY()));
 			}
@@ -373,7 +342,6 @@ public class SpielController {
 	//neustart, setzt alles zurueck
 	public void neustart()
 	{
-//		System.out.println("handleNeuButton");
 		if(spielbrett!=null)
 			gameAnchorPane.getChildren().removeAll(spielbrett.getGitter());
 		if(zweiAiTimer!=null)
@@ -409,7 +377,6 @@ public class SpielController {
 		
 		if ((int)Main.optionen.getOption("anzahlAi") == 2)
 		{
-		
 			pauseGameButton.setDisable(false);
 			pauseGameButton.setVisible(true);
 			aiPaused=true;
@@ -485,62 +452,6 @@ public class SpielController {
 		aiCheckBox.setDisable(false);
 		mitteBeginnCheckBox.setDisable(false);
 	}
-	
-	/*
-	//restart game with same settings as game before
-	@FXML public void handleNewGameButton()
-	{
-		//warn user about new start
-		Alert alert = new Alert(AlertType.CONFIRMATION);
-		alert.setTitle("Neustart");
-		alert.setHeaderText("Wenn du neu startest, geht dein ganzer bisheriger Fortschritt verloren");
-		alert.setContentText("Willst du wirklich neu starten?");
-		
-		ButtonType buttonTypeOne = new ButtonType("Ja");
-		ButtonType buttonTypeTwo = new ButtonType("Nein");
-		ButtonType buttonTypeThree = new ButtonType("Abbrechen");
-		alert.getButtonTypes().setAll(buttonTypeOne, buttonTypeTwo, buttonTypeThree);
-
-		
-		Optional<ButtonType> result = alert.showAndWait();
-		if (result.get() == buttonTypeOne){
-		    
-			//enable all settings options
-			zuruecksetzenButton.setDisable(false);
-			spielStartenButton.setDisable(false);
-			einSpielerButton.setDisable(false);
-			zweiSpielerButton.setDisable(false);
-			aiButton.setDisable(false);
-			brettGroesseTextField.setDisable(false);
-			brettGroesseBox.setDisable(false);
-			anzahlReiheTextField.setDisable(false);
-			anlegenCheckBox.setDisable(false);
-			aiCheckBox.setDisable(false);
-			mitteBeginnCheckBox.setDisable(false);
-			
-			//gameAnchorPane.ge)tChildren().removeAll(spielbrett.getGitter());
-			if(zweiAiTimer!=null)
-				zweiAiTimer.stop();
-			
-			for (int i = 0; i < spielbrett.getSpielZuege().size(); i++)
-				gameAnchorPane.getChildren().removeAll(spielbrett.getSpielZuege().get(i).iView);
-			
-			// move out of the way, not just forget it
-			lastPlayed.setX(-1000); 
-			if(winningStone!=null)
-				winningStone.forEach(v->{
-					v.setX(-1000);
-				});
-			
-			//TODO: first stone needs to be placed
-			
-		}
-		else
-		{
-		    alert.close();
-		}
-	}
-	*/
 
 	// restart with same settings
 	@FXML private void handleNewGameButton()
@@ -551,7 +462,6 @@ public class SpielController {
 			pauseGameButton.setText("Play");
 		}
 		
-//		System.out.println("handleNewGameButton");
 		//warn user about new start
 		Alert alert = new Alert(AlertType.CONFIRMATION);
 		alert.setTitle("Neustart");
@@ -584,7 +494,7 @@ public class SpielController {
 		    	  pauseGameButton.setText("Pause");
 		    }
 		}
-	}
+	} //handleNewGameButton()
 
 	@FXML private void handlePauseGameButton(ActionEvent event)
 	{
@@ -618,13 +528,21 @@ public class SpielController {
 		stoneImage.setFitHeight(spielbrett.getGitterWeite());
 	}
 	
-	// to emulate a default parameter (of false)
+	/** checks and potentially redraws the game-objects that are rendered
+	 * @param forceIt = false
+	 * 
+	 * allows skip of any check wether a redraw is necessary
+	 */
 	@FXML private void handleSizeChanged()
 	{	handleSizeChanged(false);	}
 	
+	/** checks and potentially redraws the game-objects that are rendered
+	 * @param forceIt = false
+	 * 
+	 * allows skip of any check wether a redraw is necessary
+	 */
 	private void handleSizeChanged(boolean forceIt)
 	{
-//		System.out.println("handleSizeChanged()");
 		if(forceIt||currWidth!=wrapAnchorPane.getWidth()||currHeight!=wrapAnchorPane.getHeight())
 		{
 			currWidth=wrapAnchorPane.getWidth();
@@ -658,7 +576,6 @@ public class SpielController {
 		if(backgroundImage.getFitWidth()<currWidth)
 			backgroundImage.setFitWidth(currWidth);
 		
-		//TODO: make the background image always stick nicely to the grid when resizing
 		backgroundImage.setLayoutX(-(backgroundImage.getFitWidth ()-currWidth )/2);
 		backgroundImage.setLayoutY(-(backgroundImage.getFitHeight()-currHeight)/2);
 				
@@ -685,7 +602,7 @@ public class SpielController {
 			lastPlayed.setFitWidth(spielbrett.getGitterWeite());
 			lastPlayed.toFront();
 		}
-		checkIfGewinner(); // this implicitly removes old and redraws them
+		checkIfGewinner(); // this implicitly removes old playMarkers and redraws them
 	}
 	
 	@FXML void handleDragDetected(MouseEvent event)
@@ -696,43 +613,37 @@ public class SpielController {
 
 	/**
 	 * emulates a mouseclick at a given position on the games Pane
-	 * @param x
-	 * @param y
+	 * @param x position
+	 * @param y position
 	 */
 	private void handleMouseClicked(int x, int y)
 	{
-//		System.out.println(x+" "+y);
-		// emulate mouse click in the middle
-		MouseEvent e=new MouseEvent(null, // source - the source of the event. Can be null.
-									null, // target - the target of the event. Can be null.
-									MouseEvent.MOUSE_CLICKED, //new EventType<MouseEvent>(), // eventType - The type of the event.
-									x, // x - The x with respect to the source. Should be in scene coordinates if source == null or source is not a Node.
-									y, // y - The y with respect to the source. Should be in scene coordinates if source == null or source is not a Node.
-						/* dummy */ -1, // screenX - The x coordinate relative to screen.
-									-1, // screenY - The y coordinate relative to screen.
-									MouseButton.PRIMARY, // button - the mouse button used
-									1, // clickCount - number of click counts
-									false, // shiftDown - true if shift modifier was pressed.
-									false, // controlDown - true if control modifier was pressed.
-									false, // altDown - true if alt modifier was pressed.
-									false, // metaDown - true if meta modifier was pressed.
-									true, // primaryButtonDown - true if primary button was pressed.
-									false, // middleButtonDown - true if middle button was pressed.
-									false, // secondaryButtonDown - true if secondary button was pressed.
-									true, // synthesized - if this event was synthesized
-									false, // popupTrigger - whether this event denotes a popup trigger for current platform
-									true, // stillSincePress - see isStillSincePress()
-									null // pickResult - pick result. Can be null, in this case a 2D pick result without any further values is constructed based on the scene coordinates and target
-								   );
-		// let it do its thing
-//		handleMouseMoved(e);
-		handleMouseClicked(e);
+		// synthesize mouseClickEvent and fire it
+		handleMouseClicked(new MouseEvent(null, // source - the source of the event. Can be null.
+						null, // target - the target of the event. Can be null.
+						MouseEvent.MOUSE_CLICKED, //new EventType<MouseEvent>(), // eventType - The type of the event.
+						x, // x - The x with respect to the source. Should be in scene coordinates if source == null or source is not a Node.
+						y, // y - The y with respect to the source. Should be in scene coordinates if source == null or source is not a Node.
+			/* dummy */ -1, // screenX - The x coordinate relative to screen.
+						-1, // screenY - The y coordinate relative to screen.
+						MouseButton.PRIMARY, // button - the mouse button used
+						1, // clickCount - number of click counts
+						false, // shiftDown - true if shift modifier was pressed.
+						false, // controlDown - true if control modifier was pressed.
+						false, // altDown - true if alt modifier was pressed.
+						false, // metaDown - true if meta modifier was pressed.
+						true, // primaryButtonDown - true if primary button was pressed.
+						false, // middleButtonDown - true if middle button was pressed.
+						false, // secondaryButtonDown - true if secondary button was pressed.
+						true, // synthesized - if this event was synthesized
+						false, // popupTrigger - whether this event denotes a popup trigger for current platform
+						true, // stillSincePress - see isStillSincePress()
+						null // pickResult - pick result. Can be null, in this case a 2D pick result without any further values is constructed based on the scene coordinates and target
+		));
 	}
 	
 	@FXML private void handleMouseClicked(MouseEvent event)
 	{
-//		System.out.println("Click "+event.getX()+" "+event.getY());
-
 		if(spielbrett==null||gameDone)
 			return; // ohne begonenes spiel nichts zu tun
 
@@ -791,7 +702,6 @@ public class SpielController {
 	
 	private void letAImakeMove()
 	{
-//		System.out.println("letAImakeMove");
 		if(gegner!=null&&!gameDone)
 		{
 			Integer[][] zuege=gegner.getBestMoves();
@@ -799,15 +709,11 @@ public class SpielController {
 			if(zuege.length==0)
 			{
 				// handle Unentschieden
-//				System.out.println("brett voll!");
 				handleGewinner(true);
 				return;
 			}
 			else if (zuege.length==1)
-			{
 				zugNum=0;
-//				System.out.println("nur einer frei!");
-			}
 			
 			SpielZug naechsterZug = new Brett.SpielZug(zuege[zugNum][0], zuege[zugNum][1], s, stoneImage);
 			
@@ -878,7 +784,6 @@ public class SpielController {
 			aiSpeedSlider.setDisable(true);
 			aiSpeedSlider.setVisible(false);
 			
-//			System.out.println("es jibt nen Gewinner!");
 			try
 			{
 				// Lade XML-Datei mit WaehrungLayout
@@ -915,10 +820,6 @@ public class SpielController {
 				}
 				
 				gewinnerStage.setResizable(false);
-				gewinnerStage.setOnCloseRequest(event->{
-//					System.out.println(event);
-				});
-
 				gewinnerStage.show();
 			}
 			catch (IOException e)
@@ -928,7 +829,7 @@ public class SpielController {
 			} // catch()
 		} // gibt gewinner
 		return erg;
-	}
+	} //handleGewinner()
 
 	private boolean checkIfGewinner()
 	{
@@ -984,11 +885,11 @@ public class SpielController {
 			}
 		}
 		return erg;
-	}
+	} // checkIfGewinner()
 
+	// for debbugging purposes
 	@FXML private void handleKeyPressed(KeyEvent event)
 	{
-//		System.out.println("handleKeyPressed: "+event.getCode()+" "+event.toString());
 		switch(event.getCode())
 		{
 		case S:
@@ -1019,6 +920,7 @@ public class SpielController {
 		}
 	}
 
+	// for debbugging purposes
 	@FXML private void handleKeyReleased(KeyEvent event)
 	{
 //		System.out.println("handleKeyReleased: "+event.getCode()+" "+event.toString());

@@ -19,21 +19,14 @@ public class GewinnerController
     
     private SpielController spielController;
     private Stage gewinnerStage;
-
-	@FXML private void initialize()
-	{
-
-	}
     
     @FXML void handleAbbrechenButton(ActionEvent event)
     {
-//		System.out.println("GewinnerController::handleAbbrechenButton");		
 		gewinnerStage.close();
     }
 
     @FXML void handleNeuButton(ActionEvent event)
     {
-//		System.out.println("GewinnerController::handleNeuButton");	
 		gewinnerStage.close();
 		spielController.neustart();
 		spielController.bildeBrett();
@@ -47,7 +40,6 @@ public class GewinnerController
     public void setDialogStage(Stage gewinnerStage)
 	{
 		this.gewinnerStage=gewinnerStage;
-//		System.out.println("GewinnerController::setDialogStage");		
 	}
     
     public void setGewinnerText(String s)
@@ -58,7 +50,6 @@ public class GewinnerController
     public void setDialogSpielController(SpielController spielController)
 	{
 		this.spielController = spielController;
-//		System.out.println("GewinnerController::setDialogSpielController");		
 	}
 }
 
