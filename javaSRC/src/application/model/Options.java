@@ -2,15 +2,15 @@ package application.model;
 
 import java.util.HashSet;
 
-/*
- * Klasse zum speichern der Optionen
+/**
+ * Klasse zum speichern von Optionen
  */
 public class Options {
 	
-	 // holds every option that has been set
+	// holds every option that has been set
 	private HashSet<Tupel> _menge;
 	
-	/*
+	/**
 	 * create new empty options obj
 	 */
 	public Options()
@@ -18,10 +18,10 @@ public class Options {
 		_menge = new HashSet<Tupel>();
 	}
 	
-	/*
+	/**
 	 * set for a given string an obj, if already present, overwrite
-	 * @param name
-	 * @param objekt 
+	 * @param name String that the object gets registered with
+	 * @param objekt that gets registered
 	 */
 	public void setOption(String name, Object objekt)
 	{
@@ -31,7 +31,8 @@ public class Options {
 		_menge.add(tupelNeu);
 	}
 	
-	/*if the string name is present, return the corresponding obj
+	/**
+	 * if the string name is present, return the corresponding obj
 	 * otherwise null
 	 * @param name  Name of string 
 	 */
@@ -44,8 +45,8 @@ public class Options {
 		return null;
 	}
 	
-	/*
-	 * Print name of Option
+	/**
+	 * Print name and data of Option
 	 * @param name  Name of String
 	 */
 	public void printOption(String name)
@@ -54,8 +55,8 @@ public class Options {
 		System.out.println(getOption(name));
 	}
 	
-	/*
-	 * 
+	/**
+	 * a string representation of the object.
 	 */
 	@Override
 	public String toString() {
@@ -71,15 +72,17 @@ public class Options {
 		return erg;
 	}
 
-	// inner class that wraps a string and an object
+	/**
+	 * inner class that wraps a string and an object
+	 */
 	private class Tupel
 	{	
 		public String name;	
 		public Object objekt;
 		
-		/*
+		/**
 		 * Constructor
-		 * @param name	Name of option
+		 * @param name Name of option
 		 * @param objekt option 
 		 */
 		public Tupel(String name, Object objekt)
@@ -88,7 +91,7 @@ public class Options {
 			this.objekt = objekt;
 		}
 
-		/*
+		/**
 		 * generated methods so the tupel can be put inside a hashSet
 		 */
 		@Override
@@ -100,7 +103,7 @@ public class Options {
 			return result;
 		}
 
-		/*
+		/**
 		 *Returns whether an Object of class Tupel equals an object of Type Object
 		 *@param obj  object
 		 */
@@ -123,15 +126,11 @@ public class Options {
 			return true;
 		}
 
-		/*
-		 * 
-		 */
-		private Options getOuterType() {
-			return Options.this;
-		}
+		private Options getOuterType()
+		{	return Options.this;	}
 
-		/*
-		 * Output for Tupel
+		/**
+		 * a string representation of the object.
 		 */
 		@Override
 		public String toString() {

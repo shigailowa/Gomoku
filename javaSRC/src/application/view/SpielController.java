@@ -92,11 +92,11 @@ public class SpielController {
 	boolean aiPaused = false;
 	AnimationTimer zweiAiTimer;
 	
-	/*
+	/**
 	 * erstelle Hintergrundbild, stelle Standardeinstellungen ein
 	 */
 	@FXML private void initialize()
-	{	
+	{
 		gameDone=false;
 		currWidth=gameAnchorPane.getPrefWidth();
 		currHeight=gameAnchorPane.getPrefHeight();
@@ -163,8 +163,8 @@ public class SpielController {
 		});
 	}
 	
-	/*
-	 * setze Standardeinstellungen zurück
+	/**
+	 * setze Standardeinstellungen wieder her
 	 */
 	private void standardEinstellungen()
 	{
@@ -254,7 +254,7 @@ public class SpielController {
 		} // 1 ai
 	} // bildeBrett()
 	
-	/*
+	/**
 	 * Handler für Einstellen der Spielanzahl
 	 * @param event
 	 */
@@ -280,8 +280,8 @@ public class SpielController {
 		}
 	}
 	
-	/*
-	 * Handler für Einstellen der Brettgroesse mitHilfe der ComboBox
+	/**
+	 * Handler für Einstellen der Brettgroesse mithilfe der ComboBox
 	 * @param event
 	 */
 	@FXML private void handleBrettGroesseBox(ActionEvent event)
@@ -313,7 +313,7 @@ public class SpielController {
 		}
 	}
 	
-	/*
+	/**
 	 * Handler für Einstllen der Brettgroesse mit Hilfe des Textfelds
 	 * @param event
 	 */
@@ -337,7 +337,7 @@ public class SpielController {
 		brettGroesseTextField.setText(brettGroesse);
 	}
 
-	/*
+	/**
 	 * Handler für Einstellen der Spielregeln
 	 * @param event 
 	 */
@@ -349,7 +349,7 @@ public class SpielController {
 		Main.optionen.setOption("anfangInMitte", mitteBeginnCheckBox.isSelected());
 	}
 	
-	/*
+	/**
 	 * Handler zum Einstellen des Hintergrundbilds
 	 * @param event
 	 */
@@ -362,7 +362,7 @@ public class SpielController {
 			backgroundImage.setImage((Image) Main.optionen.getOption("BackgroundImageAhornMasern"));
 	}
 	
-	/*
+	/**
 	 * Methode zum Entfernen aller Spielzüge und des Gitters
 	 */
 	public void neustart()
@@ -388,7 +388,7 @@ public class SpielController {
 		spielbrett=null;
 	}
 	
-	/*
+	/**
 	 * Handler zum Spiel starten(Spiel starten Button im Einstellungen Tab)
 	 */
 	@FXML private void handleSpielStartenButton()
@@ -420,19 +420,18 @@ public class SpielController {
 		tabPaneSwitch.getSelectionModel().select(gameTab);
 	}
 	
-	/*
+	/**
 	 * Handler zum Zurücksetzen der Standardeinstellungen
 	 */
-	//einstellungen auf standard zurücksetzen
 	@FXML private void handleZuruecksetzenButton(ActionEvent event)
 	{
 		standardEinstellungen();
 	}
 	
-	/*
-	 * Handler für Start-Button in der GameTab
+	/**
+	 * Handler für Start-Button in der GameTab.
+	 * Makes it only visible at beginning or when 2 ai is selected
 	 */
-	//is only visible at beginning or when 2 ai is selected
 	@FXML private void handleStartButton()
 	{
 		disable();
@@ -454,7 +453,7 @@ public class SpielController {
 		bildeBrett();
 	}
 	
-	/*
+	/**
 	 * deaktiviere alle Einstellungen außer Hintergrundbild
 	 */
 	private void disable()
@@ -473,7 +472,7 @@ public class SpielController {
 		mitteBeginnCheckBox.setDisable(true);
 	}
 	
-	/*
+	/**
 	 * aktiviere alle Einstellungen
 	 */
 	private void enable()
@@ -492,10 +491,10 @@ public class SpielController {
 		mitteBeginnCheckBox.setDisable(false);
 	}
 
-	/*
+
+	/**
 	 * Handler für Neues Spiel
 	 */
-	// restart with same settings
 	@FXML private void handleNewGameButton()
 	{
 		if ((int) Main.optionen.getOption("anzahlAi") == 2)
@@ -538,7 +537,8 @@ public class SpielController {
 		}
 	} //handleNewGameButton()
 
-	/*
+
+	/**
 	 * handler zum Pausieren, falls zwei AI vorhanden
 	 */
 	@FXML private void handlePauseGameButton(ActionEvent event)
@@ -558,8 +558,8 @@ public class SpielController {
 		}
 	}
 	
-	/*
-	 * 
+	/**
+	 * Moves the next-to-play marker if needed
 	 */
 	@FXML private void handleMouseMoved(MouseEvent event)
 	{
@@ -576,7 +576,8 @@ public class SpielController {
 		stoneImage.setFitHeight(spielbrett.getGitterWeite());
 	}
 	
-	/** checks and potentially redraws the game-objects that are rendered
+	/** 
+	 * checks and potentially redraws the game-objects that are rendered
 	 * @param forceIt = false
 	 * 
 	 * allows skip of any check wether a redraw is necessary
@@ -584,7 +585,8 @@ public class SpielController {
 	@FXML private void handleSizeChanged()
 	{	handleSizeChanged(false);	}
 	
-	/** checks and potentially redraws the game-objects that are rendered
+	/** 
+	 * checks and potentially redraws the game-objects that are rendered
 	 * @param forceIt = false
 	 * 
 	 * allows skip of any check wether a redraw is necessary
@@ -638,10 +640,9 @@ public class SpielController {
 		stoneImage.setX(-1001); // move out of view until next mouse movement
 	}
 	
-	/*
-	 * 
+	/**
+	 * only update the relative position of the circle on the screen
 	 */
-	// only update the relative position of the circle on the screen
 	private void updatePlayMarkers()
 	{
 		if(spielbrett!=null&&spielbrett.getSpielZuege().size()!=0)
@@ -656,8 +657,9 @@ public class SpielController {
 		checkIfGewinner(); // this implicitly removes old playMarkers and redraws them
 	}
 	
-	/*
-	 * 
+	/**
+	 * handles drag such that if a player tries to make a move but then drags the mouse
+	 * over another tile, the move gets registered on the ending tile
 	 */
 	@FXML void handleDragDetected(MouseEvent event)
 	{
@@ -697,8 +699,10 @@ public class SpielController {
 		));
 	}
 	
-	/*
-	 * 
+	/**
+	 * eventHandler for a mouseclick.
+	 * if a human player is able to make a move it is performed, else it gets discarded 
+	 * if the event is not synthesised.
 	 */
 	@FXML private void handleMouseClicked(MouseEvent event)
 	{
@@ -758,8 +762,8 @@ public class SpielController {
 		}
 	}
 	
-	/*
-	 * 
+	/**
+	 * Performs an ai-move for the next-to-move colour
 	 */
 	private void letAImakeMove()
 	{
@@ -815,7 +819,8 @@ public class SpielController {
 		}
 	}
 	
-	/**	wird gerufen um gewinnerbehandlung zu starten	
+	/**	
+	 * wird gerufen um gewinnerbehandlung zu starten	
 	 * @param unentschieden = false
 	 * 		sollte es ein volles brett geben, oder unentschieden festgestellt worden sein, 
 	 * 		setze auf true und erzwinge beendigung des spieles
@@ -825,7 +830,8 @@ public class SpielController {
 	private boolean handleGewinner()
 	{	return handleGewinner(false);	}
 	
-	/**	wird gerufen um gewinnerbehandlung zu starten	
+	/**	
+	 * wird gerufen um gewinnerbehandlung zu starten	
 	 * @param unentschieden = false
 	 * 		sollte es ein volles brett geben, oder unentschieden festgestellt worden sein, 
 	 * 		setze auf true und erzwinge beendigung des spieles
@@ -892,8 +898,11 @@ public class SpielController {
 		return erg;
 	} //handleGewinner()
 
-	/*
-	 * 
+	
+	/**
+	 * checks for a winning move, if the last move was a winning move returns true, else false
+	 * @return boolean, if there is a winner (from the lastest move)
+	 * if there was a winner previously this gets not detected
 	 */
 	private boolean checkIfGewinner()
 	{
@@ -951,10 +960,11 @@ public class SpielController {
 		return erg;
 	} // checkIfGewinner()
 
-	/*
-	 * @param event
+
+	/**
+	 * for debbugging purposes
+	 * @param event KeyEvent
 	 */
-	// for debbugging purposes
 	@FXML private void handleKeyPressed(KeyEvent event)
 	{
 		switch(event.getCode())
@@ -987,11 +997,11 @@ public class SpielController {
 		}
 	}
 
+	
 	/**
-	 * 
-	 * @param event
+	 * for debbugging purposes
+	 * @param event KeyEvent
 	 */
-	// for debbugging purposes
 	@FXML private void handleKeyReleased(KeyEvent event)
 	{
 //		System.out.println("handleKeyReleased: "+event.getCode()+" "+event.toString());

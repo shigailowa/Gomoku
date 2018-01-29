@@ -11,6 +11,7 @@ public class Main extends Application
 {
 	public static Options optionen=new Options();
 	public static Stage primaryStage ;
+	
 	@Override
 	public void start(Stage primaryStage)
 	{

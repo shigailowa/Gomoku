@@ -15,13 +15,7 @@ import javafx.scene.shape.Line;
 import javafx.scene.shape.StrokeLineCap;
 
 /**
- * @author Joshua
- *
- */
-/**
- * @author Joshua
- * Klasse zur Darstellung eines Bretts
- *
+ * Klasse zur Darstellung und internen speicherverwaltung eines Bretts
  */
 public class Brett {
 	
@@ -169,10 +163,10 @@ public class Brett {
 		return new double[]{x, y, Math.round((x-_randX)/_gitterWeite), Math.round((y-_randY)/_gitterWeite)};
 	}
 	
-	/*
-	 * 
-	 * @param x  x-Koordinate
-	 * @param y	 y-Koordinate
+	/**
+	 * @return SpielStein at (x, y)
+	 * @param x -Koordinate
+	 * @param y -Koordinate
 	 */
 	public SpielStein steinAt(int x, int y)
 	{
@@ -181,19 +175,19 @@ public class Brett {
 		return null;
 	}
 	
-	/*
+	/**
 	 * allow implicit cast from double to int
-	 * @param x	 x-Koordinate
-	 * @param y  y-Koordinate
+	 * @param x -Koordinate
+	 * @param y -Koordinate
 	 */
 	public SpielStein steinAt(double x, double y)
 	{	return steinAt((int)x, (int)y);	}
 	
-	/*
-	 * 
-	 * @param x  x-Koordinate
-	 * @param y  y-Koordinate
-	 * @param s	 Spielstein
+	/**
+	 * Sets the SpielStein s at (x, y) if there is not a stone present already
+	 * @param x -Koordinate
+	 * @param y -Koordinate
+	 * @param s	Spielstein
 	 */
 	private boolean steinSet(int x, int y, SpielStein s)
 	{
@@ -205,7 +199,9 @@ public class Brett {
 		return false;
 	}
 		
-	/*
+	/**
+	 * Makes a move from a given SpielZug obj
+	 * @return success of action
 	 * @param zug  Spielzug
 	 */
 	public boolean makeMove(SpielZug zug)
@@ -257,9 +253,8 @@ public class Brett {
 		return b;
 	}
 	
-	/*
+	/**
 	 * to wrap the data of an occured move
-	 * 
 	 */
 	public static class SpielZug
 	{
@@ -268,10 +263,10 @@ public class Brett {
 		public ImageView iView;
 		
 		/*
-		 * @param x  x-Koordinate
-		 * @param y  y-Koordinate
-		 * @param stein  Spielstein
-		 * @param iView	 Bild
+		 * @param x -Koordinate
+		 * @param y -Koordinate
+		 * @param stein Spielstein
+		 * @param iView	Bild
 		 */
 		public SpielZug(int x, int y, SpielStein stein, ImageView iView)
 		{
@@ -281,17 +276,14 @@ public class Brett {
 			this.iView=iView;
 		}
 		
-		/*
-		 * 
-		 */
 		public String toString()
 		{
 			return String.format("x:%2d ", x)+String.format("y:%2d", y)+" f:"+stein._farbe + " [Vx:"+iView.getX() + "Vy:" + iView.getY()+"]";
 		}
 	}
 	
-	/*
-	 * 
+	/**
+	 * prints formatted list of occured moves
 	 */
 	public void printMoves()
 	{
@@ -300,57 +292,36 @@ public class Brett {
 		System.out.println();
 	}
 	
-	/*
-	 * 
+	/**
+	 * @return the colour of the next move
 	 */
 	public int getNextMoveColour()
 	{	return _SpielZuege.size()%_spieler;	}
 
-	/*
-	 * 
+	/**
+	 * Gives insight into the internal list of played moves
 	 */
 	public final List<SpielZug> getSpielZuege()
 	{	return _SpielZuege;	}
 	
-	/*
-	 * 
-	 */
 	public int getDim() 
 	{	return _dim;	}
 	
-	/*
-	 * 
-	 */
 	public List<Line> getGitter()
 	{	return _gitter;	}
 	
-	/*
-	 * 
-	 */
 	public double getGitterWeite() 
 	{	return _gitterWeite;	}
 	
-	/*
-	 * 
-	 */
 	public double getRandX()
 	{	return _randX;	}
 
-	/*
-	 * 
-	 */
 	public double getRandY()
 	{	return _randY;	}
 	
-	/*
-	 * 
-	 */
 	public final int getSpieler()
 	{	return _spieler;	}
 	
-	/*
-	 * 
-	 */
 	public final SpielStein[][] getBrett()
 	{	return _brett;	}
 }

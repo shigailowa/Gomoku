@@ -9,7 +9,9 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
 
-//Controller für Pop-Up-Fenster, wenn es einen Gewinner gibt
+/**
+ * Controller für Pop-Up-Fenster, wenn es einen Gewinner gibt
+ */
 public class GewinnerController
 {
     @FXML private AnchorPane gewinnerPane;
@@ -21,7 +23,7 @@ public class GewinnerController
     private SpielController spielController;
     private Stage gewinnerStage;
     
-    /*
+    /**
      * Handler für Abbrechen Button
      * @param event  
      */
@@ -30,7 +32,7 @@ public class GewinnerController
 		gewinnerStage.close();
     }
 
-    /*
+    /**
      * Handler für Neu Button
      * @param event
      */
@@ -41,8 +43,8 @@ public class GewinnerController
 		spielController.bildeBrett();
     }
     
-    /*
-     * 
+    /**
+     * Setzt das angezeigte Bild der gewinnenden Farbe
      * @param image  Bild
      */
     public void setGewinnerImage(Image image)
@@ -50,8 +52,8 @@ public class GewinnerController
     	gewinneriView.setImage(image);
     }
 
-    /*
-     * 
+    /**
+     * sets the stage this is on
      * @param gewinnerStage
      */
     public void setDialogStage(Stage gewinnerStage)
@@ -59,16 +61,19 @@ public class GewinnerController
 		this.gewinnerStage=gewinnerStage;
 	}
     
-    /*
-     * @param s  Text
+    /**
+     * Sets the Text in fron of the winners image
+     * @param s Text
      */
     public void setGewinnerText(String s)
     {
     	gewinnerText.setText(s);
     }
     
-    /*
-     * @ param spielController
+    /**
+     * sets the spielController
+     * which is then talked to when closed
+     * @param spielController
      */
     public void setDialogSpielController(SpielController spielController)
 	{

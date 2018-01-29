@@ -8,18 +8,23 @@ import java.util.LinkedHashSet;
 import application.Main;
 import application.model.Brett.SpielZug;
 
-// this is littered with commented sysouts
-// and needs work to be a capable ai
-// currently this just plays possible
-// moves and sometimes ones that where detected
-// by an attempt at implementing chain-detection
+/**
+ * Class that generates next possible moves.
+ * 
+ * this is littered with commented sysouts
+ * and needs work to be a capable ai
+ * currently this just plays possible
+ * moves and sometimes ones that where detected
+ * by an attempt at implementing chain-detection
+ */
 public class SpielAI
 {
 	private Brett _brett;
 	private ArrayList<LinkedHashSet<Savegame>> _possibleMoves;
 	
-	/*
-	 * 
+	/** 
+	 * Creates an ai obj and sets the internal data according to the present brett
+	 * @param brett Brett of which an ai gets created
 	 */
 	public SpielAI(Brett brett) 
 	{
@@ -39,8 +44,10 @@ public class SpielAI
 //			System.out.println("das brett hat noch keine steine!");
 	}
 	
-	/*
-	 * 
+	/**
+	 * Room for future expansion
+	 * should look at every possible move at the end of the List of possible moves and generate a Savegame for each
+	 * such that those can be evaluated via heuristic
 	 */
 	public void generateNextMoves()
 	{
@@ -66,8 +73,8 @@ public class SpielAI
 //		System.out.println("_pm.gen}:"+_possibleMoves);
 	}
 	
-	/*
-	 * 
+	/**
+	 * looks at its brett and updatesa and ads untracked occured moves
 	 */
 	public void updateMoves()
 	{
@@ -101,8 +108,9 @@ public class SpielAI
 		//		generateNextMoves();
 	}
 	
-	/*
-	 * 
+	/**
+	 * @return Integer[][] list of Brett Positions of possible moves.
+	 * Data Representation: [Nr][0=x, 1=y]
 	 */
 	public Integer[][] getBestMoves()
 	{
@@ -138,8 +146,9 @@ public class SpielAI
 		return erg;
 	}
 	
-	/*
-	 * 
+	/**
+	 * Internal Class to save a gamestate such that future possile moves can be generated.
+	 * And the current state of the board can be saved more simplified
 	 */
 	public static class Savegame
 	{
@@ -166,7 +175,7 @@ public class SpielAI
 			spielerAnz=brett.getSpieler();
 		}
 
-		/*
+		/**
 		 * placeholder for future generation
 		 * this would generate leaves and their heuristic
 		 */
@@ -188,8 +197,9 @@ public class SpielAI
 			return erg;
 		}
 
-		/*
-		 * 
+		/**
+		 * Generates a Double[][] Matrix which holds all possible locations for a future move from this SaveGame
+		 * each Position that is not playable contains null any other a score for that positions move
 		 */
 		public Double[][] generateHeuristic()
 		{
@@ -522,9 +532,6 @@ public class SpielAI
 			return erg;
 		}
 
-		/*
-		 * 
-		 */
 		@Override
 		public int hashCode() {
 			final int prime = 31;
@@ -537,9 +544,6 @@ public class SpielAI
 			return result;
 		}
 
-		/*
-		 * 
-		 */
 		@Override
 		public String toString() {
 			String erg="Savegame[moveNr=" + moveNr + ", spielerAnz=" + spielerAnz + ", dim=" + dim ;
@@ -560,10 +564,6 @@ public class SpielAI
 			return erg;
 		}
 
-		/*
-		 * 
-		 * @param obj
-		 */
 		@Override
 		public boolean equals(Object obj) {
 			if (this == obj)
@@ -662,7 +662,8 @@ public class SpielAI
 		return erg;
 	}
 
-	/*
+	/** 
+	 * prints the Double[][] matrix
 	 * @param a
 	 */
 	public static void printDoubleArray(Double[][] a)
