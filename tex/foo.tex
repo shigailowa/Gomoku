@@ -90,6 +90,12 @@
 \newcommand{\ueberschrift}{Dokumentation oder so} % TODO
 
 
+\usepackage{varwidth}
+\newcommand{\umrandet}[1]{\pbox{\textwidth}{\boxed{\text{#1}}}}
+
+\newcommand{\aGreatFramedBox}[1]{\fbox{\begin{varwidth}{\textwidth}#1\end{varwidth}}\ignorespacesafterend}
+\newcommand{\umramt}[1]{\begin{minipage}{\widthof{\aGreatFramedBox{#1}}}\aGreatFramedBox{#1}\ignorespacesafterend\end{minipage}\ignorespacesafterend}
+
 \usepackage{pgf-umlcd}
 % variables to tweak appearance of uml stuff
 \newcommand{\umlScale}{0.9}
@@ -332,7 +338,41 @@
 		%\end{package}%application
 	\end{tikzpicture}
 	
+
+		
+
 	
+	\begin{wrapfigure}{L}{\textwidth}
+		getBestMoves():\\
+		\umramt{\begin{varwidth}{\textwidth}
+			\begin{algorithmic}[1]
+				\State $h\leftarrow$ generateHeuristic()
+				\State $max \leftarrow-\infty$
+				\State $n\leftarrow 0$
+				\For{$i \in \{0, dim(h)\} $}
+					\For{$j \in \{0, dim(h)\} $}
+						\If{$max < h_{i, j}$}
+							\State $max \leftarrow h_{i, j}$
+							\State $n\leftarrow 1$
+						\ElsIf{$max=h_{i, j}$}
+							\State $n++$
+						\EndIf
+					\EndFor
+				\EndFor
+				\State $erg :\in {\mathbb{N}}^{\text{n}\times 2}$
+				\For{$i \in \{0, dim(h)\} $}
+					\For{$j \in \{0, dim(h)\} $}
+						\If{ $max = h_{i, j}$ }
+							\State 	$n \leftarrow n-1$
+							\State 	$erg_{n, 0}\leftarrow i$
+							\State 	$erg_{n, 1}\leftarrow j$
+						\EndIf
+					\EndFor
+				\EndFor
+				\State\Return erg
+			\end{algorithmic}
+		\end{varwidth}}%
+	\end{wrapfigure}
 	
 \end{document}
 
