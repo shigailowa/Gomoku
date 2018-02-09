@@ -52,7 +52,7 @@
 %  Headings and Footings :
 \usepackage{fancyhdr}
 \headheight15pt
-\lhead{AWP oder so, \ueberschrift}
+\lhead{AWP oder so, \ueberschrift} % TODO
 
 \chead{}
 \rhead{\thepage}
@@ -60,7 +60,7 @@
 
 \lfoot{\today}
 \cfoot{}
-\rfoot{Name...}
+\rfoot{Name...} %TODO
 \renewcommand{\footrulewidth}{.4pt}
 
 %----------------------------------------------------------------
@@ -71,14 +71,14 @@
 
 \parindent0cm
 
-\newcommand{\R}{ {\mathbb R} }
-\newcommand{\C}{ {\mathbb C} }
-\newcommand{\1}{ {\mathds{1}} }
+\newcommand{\R}{{\mathbb R}}
+\newcommand{\C}{{\mathbb C}}
+\newcommand{\1}{{\mathds{1}}}
 \newcommand{\abs}[1]{\lvert#1\rvert}
 \newcommand{\norm}[1]{\left\lVert#1\right\rVert}
 \newcommand{\xt}{\tilde{x}}
 \newcommand{\dotleq}{\dot{\leq}}
-\newcommand{\m}{\hphantom{-} }
+\newcommand{\m}{\hphantom{-}}
 
 \newcommand{\dashfill}[1]{\vspace{11pt}\def\dashfill{\cleaders\hbox{#1}\hfill}\hbox to \hsize{\dashfill\hfil}\vspace{11pt}}
 \newcommand{\scdot}{\!\cdot\!}
@@ -87,51 +87,253 @@
 \newcommand{\rot}{}
 
 % ------------------  edit Ueberschrift ---------------------
-\newcommand{\ueberschrift}{Dokumentation oder so}
+\newcommand{\ueberschrift}{Dokumentation oder so} % TODO
 
 
 \usepackage{pgf-umlcd}
+% variables to tweak appearance of uml stuff
+\newcommand{\umlScale}{0.9}
+\newcommand{\umlScaleSpielController}{0.6}
+\newcommand{\umlWidth}{.74\linewidth}
 % -----------------------------------------------------------
 \begin{document}
 	\pagestyle{fancy}
 	
-	\begin{tikzpicture}
-		\begin{package}{application}
-			\begin{package}{model}
-				\begin{class}[text width=\linewidth]{SpielStein}{0, 0}
-					\attribute{- farbe : int}
-					\attribute{- img : Image}
-					\attribute{- blackStone : static Image }
-					\attribute{- whiteStone : static Image }
+	\begin{tikzpicture}[thick, scale=\umlScale, every node/.style={scale=\umlScale}]
+		%\begin{package}{application}
+			%\begin{package}{model}{0,-10}
+				\begin{class}[text width=\umlWidth]{SpielStein}{0, 0}
+					\attribute{$-$ farbe : int}
+					\attribute{$-$ img : Image}
+					\attribute{$-$ blackStone : static Image}
+					\attribute{$-$ whiteStone : static Image}
 					
 					\operation{+ getColor() : final int}
 					\operation{+ getImage() : final Image}
 				\end{class}
-			\end{package}%model
-		\end{package}%application
+			%\end{package}%model
+		%\end{package}%application
 	\end{tikzpicture}
 	
-	\begin{tikzpicture}
-		\begin{package}{application}		
-			\begin{package}{view}
-				\begin{class}[text width=\linewidth]{GewinnerController}{0, 0}
-					\attribute{- gewinnerPane : AnchorPane }
-					\attribute{- abbrechenButton : Button }
-					\attribute{- neuButton : Button }
-					\attribute{- gewinneriView :ImageView }
-					\attribute{- gewinnerText : Text }				
-					\attribute{- spielController : SpielController }
-					\attribute{- gewinnerStage : Stage}
-					\operation{handleAbbrechenButton(ActionEvent event) : void}
-					\operation{handleNeuButton(ActionEvent event) : void}
-					\operation{setGewinnerImage(Image image) : void}		
-					\operation{setDialogStage(Stage gewinnerStage) : void}
-					\operation{setGewinnerText(String s) : void}
-					\operation{setDialogSpielController(SpielController spielController):void}
+	\begin{tikzpicture}[thick, scale=\umlScale, every node/.style={scale=\umlScale}]
+		%\begin{package}{application}
+			%\begin{package}{view}
+				\begin{class}[text width=\umlWidth]{GewinnerController}{0, 0}
+					\attribute{$-$ gewinnerPane : AnchorPane}
+					\attribute{$-$ abbrechenButton : Button}
+					\attribute{$-$ neuButton : Button}
+					\attribute{$-$ gewinneriView :ImageView}
+					\attribute{$-$ gewinnerText : Text}				
+					\attribute{$-$ spielController : SpielController}
+					\attribute{$-$ gewinnerStage : Stage}
+					\operation{+ handleAbbrechenButton(event : ActionEvent) : void}
+					\operation{+ handleNeuButton(event : ActionEvent) : void}
+					\operation{+ setGewinnerImage(image Image) : void}		
+					\operation{+ setDialogStage(gewinnerStage : Stage) : void}
+					\operation{+ setGewinnerText(s : String) : void}
+					\operation{+ setDialogSpielController(spielController : SpielController):void}
 				\end{class}
-			\end{package}%view
-		\end{package}%application
+			%\end{package}%view
+		%\end{package}%application
 	\end{tikzpicture}
+	
+	\begin{tikzpicture}[thick, scale=\umlScale, every node/.style={scale=\umlScale}]
+		%\begin{package}{application}	
+			%\begin{package}{model}
+				\begin{class}[text width=\umlWidth]{Brett}{0, 0}
+					\attribute{$-$ \_dim : int}
+					\attribute{$-$ \_spieler : int}
+					\attribute{$-$ \_brett : SpielStein[ ][ ]}
+					\attribute{$-$ \_gitterVert : List$<$Line$>$}
+					\attribute{$-$ \_gitterHorz : List$<$Line$>$}
+					\attribute{$-$ \_gitter : List$<$Line$>$}
+					\attribute{$-$ \_SpielZuege : List$<$SpielZug$>$} 
+					\attribute{$-$ \_gitterWeite : double}
+					\attribute{$-$ \_randX : double}
+					\attribute{$-$ \_randY : double} 
+					\attribute{$-$ \_CheckAdjacent : boolean}
+					\operation{+ Brett(dim : int, x : double, y : double)} 
+					\operation{+ redrawGitter(x : double, y : double) : void}
+					\operation{+ roundCoord(x : double, y : double) : double[ ]}
+					\operation{+ steinAt(int x, int y) : SpielStein}
+					\operation{+ steinAt(double x, double y) : SpielStein}
+					\operation{$-$ steinSet(int x, int y, SpielStein s) : boolean}
+					\operation{+ makeMove(SpielZug zug) : boolean}
+					
+					\operation{+ printMoves() : void}
+					\operation{+ getNextMoveColour() : int}
+					\operation{+ List$<$SpielZug$>$ getSpielZuege() : final}
+					\operation{+ getDim() : int}
+					\operation{+ getGitter() : List$<$Line$>$}
+					\operation{+ getGitterWeite() : double}
+					\operation{+ getRandX() : double}
+					\operation{+ getRandY() : double}
+					\operation{+ getSpieler() : final int}
+					\operation{+ getBrett() : final SpielStein[ ][ ]}
+				\end{class}
+				\begin{class}[text width=\umlWidth]{+ static SpielZug}{0, -14.5}
+					\attribute{+ x, y : int}
+					\attribute{+ stein:SpielStein}
+					\attribute{+ iView:ImageView}
+					\operation{+ SpielZug(x:int, y:int, stein:SpielStein, iView:ImageView)}
+					\operation{+ toString():String}
+				\end{class}
+			%\end{package}%model
+		%\end{package}%application
+	\end{tikzpicture}
+
+	\begin{tikzpicture}[thick, scale=\umlScale, every node/.style={scale=\umlScale}]
+		%\begin{package}{application}	
+			%\begin{package}{model}
+				\begin{class}[text width=\umlWidth]{Options}{0, 0}
+					\attribute{$-$ \_menge : HashSet$<$Tupel$>$}
+					\operation{+ Options()}
+					\operation{+ setOption(name : String , objekt : Object) : void}
+					\operation{+ getOption(name : String) : Object}
+					\operation{+ printOption(name : String) : void}
+					\operation{+ toString() : String}
+				\end{class}
+				\begin{class}[text width=\umlWidth]{-Tupel}{0, -4.0}
+					\attribute{+ name : String}
+					\attribute{+ objekt : Object}
+					\operation{+ Tupel(name : String, objekt : Object)}
+					\operation{+ hashCode() : int}
+					\operation{+ equals(Object obj) : boolean}
+					\operation{$-$ getOuterType() : Options}
+					\operation{+ toString() : String}
+				\end{class}
+			%\end{package}%model
+		%\end{package}%application
+	\end{tikzpicture}
+	
+	\begin{tikzpicture}[thick, scale=\umlScale, every node/.style={scale=\umlScale}]
+		%\begin{package}{application}
+			\begin{class}[text width=\umlWidth]{Main}{0, 0}
+				\attribute{+ optionen : static Options}
+				\attribute{+ primaryStage : static Stage}
+				\operation{+ start(primaryStage : Stage) : void}
+				\operation{+ main(args : String[]) : static void}
+			\end{class}
+		%\end{package}%application
+	\end{tikzpicture}
+	
+	\begin{tikzpicture}[thick, scale=\umlScale, every node/.style={scale=\umlScale}]
+		%\begin{package}{application}
+			%\begin{package}{model}
+				\begin{class}[text width=\umlWidth]{SpielAI}{0, 0}
+					\attribute{$-$ \_brett : Brett}
+					\attribute{$-$ \_possibleMoves : ArrayList$<$LinkedHashSet$<$Savegame$>>$}
+					\operation{+ SpielAI(brett : Brett) }
+					\operation{+ generateNextMoves() : void}
+					\operation{+ updateMoves() : void}
+					\operation{+ getBestMoves() : Integer[ ][ ]}		
+					\operation{+ addDoubleArray(a : Double[ ][ ], b : Double[ ][ ]) : static Double[ ][ ] }
+					\operation{+ multDoubleArray(a : Double[ ][ ], f : double) : static void }
+					\operation{+ twoDeepCloneDouble(a : Double[ ][ ]) : static Double[ ][ ] }
+					\operation{+ printDoubleArray(a : Double[ ][ ]) : static void }
+				\end{class}
+				\begin{class}[text width=\umlWidth]{Savegame}{0, -6}
+					\attribute{$-$ moveNr : int}
+					\attribute{$-$ steine : int[ ][ ]}
+					\attribute{$-$ spielerAnz : int}
+					\attribute{$-$ dim : int}
+					\attribute{$-$ nextMove : int[ ]}
+					\operation{+ Savegame(brett : Brett)}
+					\operation{+ generateNextMoves() : LinkedHashSet$<$Savegame$>$}
+					\operation{+ generateHeuristic() : Double[ ][ ]}
+					\operation{+ hashCode() : int}
+					\operation{+ toString() : String}
+					\operation{+ equals(obj : Object) : boolean}
+				\end{class}
+			%\end{package}%model
+		%\end{package}%application
+	\end{tikzpicture}
+	
+	\begin{tikzpicture}[thick, scale=\umlScaleSpielController, every node/.style={scale=\umlScaleSpielController}]
+		%\begin{package}{application}
+			%\begin{package}{view}
+				\begin{class}[text width=\umlWidth]{SpielController}{0, 0}
+					\attribute{$-$ mitteBeginnCheckBox : CheckBox }
+					\attribute{$-$ backgroundImage : ImageView }
+					\attribute{$-$ tabPaneSwitch : TabPane }
+					\attribute{$-$ ueberTab : Tab }
+					\attribute{$-$ anlegenCheckBox : CheckBox }
+					\attribute{$-$ brettGroesseLabel : Label }
+					\attribute{$-$ einstellungenAnchorPane : AnchorPane }
+					\attribute{$-$ gameAnchorPane : AnchorPane }
+					\attribute{$-$ aiCheckBox : CheckBox }
+					\attribute{$-$ helpTab : Tab }
+					\attribute{$-$ gameTab : Tab }
+					\attribute{$-$ brettGroesseTextField : TextField }
+					\attribute{$-$ zweiSpielerButton : RadioButton }
+					\attribute{$-$ stoneImage : ImageView }
+					\attribute{$-$ brettGroesseBox : ComboBox$<$String$>$ }
+					\attribute{$-$ bild2Button : ToggleButton }
+					\attribute{$-$ einstellungenTab : Tab }
+					\attribute{$-$ anzahlReiheTextField : TextField }
+					\attribute{$-$ bild1Button : ToggleButton }
+					\attribute{$-$ einSpielerButton : RadioButton }
+					\attribute{$-$ aiButton : RadioButton }
+					\attribute{$-$ hilfeText : TextArea }
+					\attribute{$-$ uberText : TextArea }
+					\attribute{$-$ neuButton : Button }
+					\attribute{$-$ spielStartenButton : Button }
+					\attribute{$-$ startButton : Button }
+					\attribute{$-$ newGameButton : Button }
+					\attribute{$-$ pauseGameButton : ToggleButton }
+					\attribute{$-$ zuruecksetzenButton : Button }
+					\attribute{$-$ wrapAnchorPane : AnchorPane }
+					\attribute{$-$ aiSpeedSlider : Slider }
+					\attribute{$-$ radioButtonGroup : final ToggleGroup }
+					\attribute{$-$ bildGroup : final ToggleGroup }
+					\attribute{$-$ choiceBoxOptions : ObservableList$<$String$>$ } 
+					\attribute{$-$ spielbrett : Brett }
+					\attribute{$-$ gameDone : boolean }
+					\attribute{$-$ s : SpielStein }
+					\attribute{$-$ currWidth, currHeight : double }
+					\attribute{$-$ lastPlayed : ImageView }
+					\attribute{$-$ winningStone : List$<$ImageView$>$ }
+					\attribute{$-$ gegner : SpielAI }
+					\attribute{$-$ lastTime : static long }
+					\attribute{$-$ aiPaused : boolean }
+					\attribute{$-$ zweiAiTimer : AnimationTimer }
+					 
+					\operation{ $-$ initialize() : void }
+					\operation{ $-$ standardEinstellungen() : void }
+					\operation{ + bildeBrett() : void }
+					\operation{ $-$ handleSpielerAnzahlButton(ActionEvent event) : void }
+					\operation{ $-$ handleBrettGroesseBox(ActionEvent event) : void }
+					\operation{ $-$ handleBrettGroesseFeld(ActionEvent event) : void }
+					\operation{ $-$ handleSpielregeln(ActionEvent event) : void }
+					\operation{ $-$ handleBackground(ActionEvent event) : void }
+					\operation{ + neustart() : void }
+					\operation{ $-$ handleSpielStartenButton() : void }
+					\operation{ $-$ handleZuruecksetzenButton(ActionEvent event) : void }
+					\operation{ $-$ handleStartButton() : void }
+					\operation{ $-$ disable() : void }
+					\operation{ $-$ enable() : void }
+					\operation{ $-$ handleNewGameButton() : void }
+					\operation{ $-$ handlePauseGameButton(ActionEvent event) : void }
+					\operation{ $-$ handleMouseMoved(MouseEvent event) : void }
+					\operation{ $-$ handleSizeChanged() : void }
+					\operation{ $-$ handleSizeChanged(boolean forceIt) : void }
+					\operation{ $-$ updatePlayMarkers() : void }
+					\operation{ $-$ handleDragDetected(MouseEvent event) : void }
+					\operation{ $-$ handleMouseClicked(int x, int y) : void }
+					\operation{ $-$ handleMouseClicked(MouseEvent event) : void }
+					\operation{ $-$ letAImakeMove() : void }
+					\operation{ $-$ handleGewinner() : boolean }
+					\operation{ $-$ handleGewinner(boolean unentschieden) : boolean }
+					\operation{ $-$ checkIfGewinner() : boolean }
+					\operation{ $-$ handleKeyPressed(KeyEvent event) : void }
+					\operation{ $-$ handleKeyReleased(KeyEvent event) : void }
+				\end{class}
+			%\end{package}%model
+		%\end{package}%application
+	\end{tikzpicture}
+	
+	
+	
 \end{document}
 
 

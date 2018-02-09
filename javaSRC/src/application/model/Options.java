@@ -102,6 +102,5 @@ public class Options {
 		public String toString() {
 			return "Tupel [name=" + name + ", objekt=" + objekt + "]";
 		}
-		
-	}
+	} // Tupel()
 }
