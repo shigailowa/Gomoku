@@ -52,7 +52,7 @@
 %  Headings and Footings :
 \usepackage{fancyhdr}
 \headheight15pt
-\lhead{AWP oder so, \ueberschrift} % TODO
+\lhead{Anwendungsprogrammierung \ueberschrift} % TODO
 
 \chead{}
 \rhead{\thepage}
@@ -60,14 +60,18 @@
 
 \lfoot{\today}
 \cfoot{}
-\rfoot{Name...} %TODO
+\rfoot{Name...} %TODO, würde ich erst am ende eintragen und generieren vorm abschicken, muss ja nicht bei github rumhängen
 \renewcommand{\footrulewidth}{.4pt}
 
 %----------------------------------------------------------------
 
-\textwidth16.5cm
+
+\textwidth17.5cm % 16.5cm
+\textheight23cm
 \oddsidemargin0.cm
 \evensidemargin0.cm
+\voffset-1.5cm % move page up
+\hoffset-0.5cm % move page to the left
 
 \parindent0cm
 
@@ -87,7 +91,7 @@
 \newcommand{\rot}{}
 
 % ------------------  edit Ueberschrift ---------------------
-\newcommand{\ueberschrift}{Dokumentation oder so} % TODO
+\newcommand{\ueberschrift}{Dokumentation} % TODO
 
 
 \usepackage{varwidth}
@@ -97,51 +101,149 @@
 \newcommand{\umramt}[1]{\begin{minipage}{\widthof{\aGreatFramedBox{#1}}}\aGreatFramedBox{#1}\ignorespacesafterend\end{minipage}\ignorespacesafterend}
 
 \usepackage{pgf-umlcd}
+\renewcommand{\umltextcolor}{black}
+\renewcommand{\umldrawcolor}{gray}
+\renewcommand{\umlfillcolor}{white}
 % variables to tweak appearance of uml stuff
 \newcommand{\umlScale}{0.9}
 \newcommand{\umlScaleSpielController}{0.6}
 \newcommand{\umlWidth}{.74\linewidth}
+\newcommand{\imagewidth}{.8\linewidth}
 % -----------------------------------------------------------
 \begin{document}
 	\pagestyle{fancy}
 	
-	\begin{tikzpicture}[thick, scale=\umlScale, every node/.style={scale=\umlScale}]
-		%\begin{package}{application}
-			%\begin{package}{model}{0,-10}
-				\begin{class}[text width=\umlWidth]{SpielStein}{0, 0}
-					\attribute{$-$ farbe : int}
-					\attribute{$-$ img : Image}
-					\attribute{$-$ blackStone : static Image}
-					\attribute{$-$ whiteStone : static Image}
-					
-					\operation{+ getColor() : final int}
-					\operation{+ getImage() : final Image}
-				\end{class}
-			%\end{package}%model
-		%\end{package}%application
-	\end{tikzpicture}
+	\section*{Beschreibung des Programms aus Sicht der Anwender:}
 	
-	\begin{tikzpicture}[thick, scale=\umlScale, every node/.style={scale=\umlScale}]
-		%\begin{package}{application}
-			%\begin{package}{view}
-				\begin{class}[text width=\umlWidth]{GewinnerController}{0, 0}
-					\attribute{$-$ gewinnerPane : AnchorPane}
-					\attribute{$-$ abbrechenButton : Button}
-					\attribute{$-$ neuButton : Button}
-					\attribute{$-$ gewinneriView :ImageView}
-					\attribute{$-$ gewinnerText : Text}				
-					\attribute{$-$ spielController : SpielController}
-					\attribute{$-$ gewinnerStage : Stage}
-					\operation{+ handleAbbrechenButton(event : ActionEvent) : void}
-					\operation{+ handleNeuButton(event : ActionEvent) : void}
-					\operation{+ setGewinnerImage(image Image) : void}		
-					\operation{+ setDialogStage(gewinnerStage : Stage) : void}
-					\operation{+ setGewinnerText(s : String) : void}
-					\operation{+ setDialogSpielController(spielController : SpielController):void}
-				\end{class}
-			%\end{package}%view
-		%\end{package}%application
-	\end{tikzpicture}
+	Das Programm bietet die Möglichkeit, mehrere Versionen des Spiels Gomoku bzw. 5 Gewinnt zu spielen.
+	Dabei ist dem Spieler überlassen, ob er gegen den Computer, einen realen Gegner oder die künstliche Intelligenz gegen sich selbst spielen lassen möchte.
+	Zusätzlich kann noch entschieden werden, wie viele in einer Reihe zum Sieg benötigt werden, 
+	ob in der Mitte des Bretts begonnen werden soll und ob nur Anlegen an einen anderen Stein erlaubt ist.
+	Die Brettgröße ist auch flexibel wählbar.
+	
+	\subsection*{Es sind folgende Spielregeln zu beachten:}
+	Das klassische Gomoku wird auf einem $19 \times 19$ Brett gespielt.
+	Dabei legt jeder Spieler abwechselnd einen Stein seiner Farbe auf das Brett.
+	Die Steine dürfen nicht mehr bewegt werden, nachdem sie gesetzt wurden. Jeder versucht eine gerade, ununterbrochene Reihe aus 5 Spielsteinen zu legen.
+	Die Reihe kann waagerecht, senkrecht oder diagonal verlaufen. 
+	
+	Gleichzeitig muss jeder Spieler verhindern, dass der andere Spieler dieses Ziel vor ihm erreicht.
+	Das Spiel ist beendet, wenn ein Spieler 5 Steine in einer ununterbrochenen Reihe gelegt hat. 
+	Die Spielregeln für alle anderen Versionen sind analog, es ändert sich nur die Brettgröße und die Anzahl Steine in einer Reihe, die zum Sieg benötigt werden. 
+	
+	
+	\section*{Bedienungsanleitung}
+	
+	\section{Spiel Starten}
+	Beim Starten des Programms erscheint folgende Oberfläche
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=\imagewidth]{starten.png}
+		\caption{Aussehen nach Programmstart}
+		\label{starten}
+	\end{figure}
+	
+	Startet man nun das Spiel, indem man auf den \textit{Spiel starten} Button drückt, so werden die Standardeinstellungen geladen.
+	Das heißt die AI spielt gegen sich selbst auf einem $19 \times 19$ Brett. 
+	
+	
+	\section{Einstellungen ändern}
+	Möchte man mit anderen Einstellungen spielen, so hat man die Möglichkeit diese zu ändern, indem man auf den \textit{Einstellungen Tab} wechselt. 
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=\imagewidth]{einstellungen.png}
+		\caption{Einstellungen Tab}
+		\label{einstellungen}
+	\end{figure}
+	
+	Die Anzahl der Spieler lässt sich einfach anklicken.
+	Die gewünschte Brettgröße kann man eintippen, oder man entscheidet sich für eine der klassischen Varianten, auswählbar aus der Combo Box.
+	Zur Auswahl stehen dabei Gomoku 19, 17 und 15 und Tic Tac Toe.
+	Die Anzahl Steine in einer Reihe lassen sich auch einfach eintippen, die restlichen Einstellungen kann man auch beliebig an- bzw. wegklicken.
+	Das Hintergrundbild ist auch veränderbar, zur Auswahl stehen die beiden unten abgebildetem Bilder, welche man nur anklicken braucht.
+	
+	Ist man mit seinen Einstellungen zufrieden, so klickt man auf den \textit{Spiel Starten} Button oben rechts.
+	Dann wird automatisch zum \textit{Spiel} Tab gewechselt und man kann mit dem Spielen beginnen.
+	
+	Möchte man die Einstellungen wieder auf die Standardeinstellungen zurücksetzen, so braucht man nur den Button \textit{Einstellungen zurücksetzen} oben links zu klicken. 
+	Zu beachten ist auch, dass sich die Einstellungen nicht ändern lassen, solange ein aktuelles Spiel noch läuft (s. nächster Abschnitt).
+	
+	\section{Spiel abbrechen und neues Spiel starten}
+	
+	Möchte man ein aktuell laufendes Spiel abbrechen, so klicke man den Button \textit{Neues Spiel} oben rechts.
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=\imagewidth]{spiel.png}
+		\caption{Laufendes Spiel}
+		\label{spiel}
+	\end{figure}
+	
+	Hierbei ist zu beachten, dass dann allerdings der gesamte Spielfortschritt verloren gehen würde, wobei der Spieler auch eine Warnung erhält. 
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=\imagewidth]{warnung.png}
+		\caption{Warnung vor Neustart}
+		\label{warnung}
+	\end{figure}
+	
+	Klickt man nun auf \textit{Ja}, hat man wieder die Möglichkeit, die Einstellungen zu ändern oder man startet ein neues Spiel mit den selben Einstellungen. 
+	
+	\section{AI gegen AI}
+	
+	Bei der Version AI gegen AI hat man noch zusätzliche Optionen. 
+	
+	Das Spiel lässt sich jederzeit pausieren, indem man auf den \textit{Pause/Play} Button drückt (links neben \textit{Neues Spiel}).
+	Zudem lässt sich die Schnelligkeit der Züge beeinflussen anhand des Reglers links daneben. 
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=\imagewidth]{ai.png}
+		\caption{AI spielt gegen AI}
+		\label{ai}
+	\end{figure}
+	
+	\section{Spielzug machen}
+	
+	Der Stein des jeweiligen Spielers, der gerade an der Reihe ist, erscheint an dem Mauszeiger und bewegt sich mit, wenn die Maus verschoben wird
+	Möchte man einen Stein irgendwo platzieren, so braucht man nur auf die jeweilige Stelle im Brett zu klicken.
+	Der Stein wird dann dort abgelegt (solange diese Position legal ist, es also möglich ist an dieser Position zu spielen) und der Gegner ist an der Reihe. 
+
+	\section{Gewinner}
+	Sollte ein Spieler gewinnen, erscheint folgende Meldung. 
+
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=\imagewidth]{gewinner.png}
+		\caption{Meldung bei Gewinner}
+		\label{gewinner}
+	\end{figure}
+
+	Hier hat man dann die Möglichkeit, das Spiel neu zu starten, indem man auf \textit{neu} klickt.
+	Oder man klickt auf \textit{abbrechen}, um womöglich den Spielverlauf zu analysieren. 
+	
+	\section{Hilfe und Über}
+	Die Spielanleitung ist im Tab \textit{Hilfe} nachzulesen und Informationen über Programm und Autor lassen sich im Tab \textit{Über} nachschauen. 
+	
+	\pagebreak
+	
+	Beschreibung des Programms aus Sicht der Programmierer
+	
+	Model
+	
+	Im Model befinden sich die folgenden Klassen:
+	
+	\begin{center}
+		\begin{tabular}{r l}
+			\lstinline|Brett| & zur Speicherung eines Spielbrettes \\
+			\lstinline|Options| & speichert die Optionen als ein Paar zweier Objekte vom Typ \lstinline|String| und \lstinline|Object| \\
+			\lstinline|SpielAI| & generiert die AI \\
+			\lstinline|SpielStein| & zur Speicherung eines Spielsteins
+		\end{tabular}
+	\end{center}
 	
 	\begin{tikzpicture}[thick, scale=\umlScale, every node/.style={scale=\umlScale}]
 		%\begin{package}{application}	
@@ -187,7 +289,7 @@
 			%\end{package}%model
 		%\end{package}%application
 	\end{tikzpicture}
-
+	
 	\begin{tikzpicture}[thick, scale=\umlScale, every node/.style={scale=\umlScale}]
 		%\begin{package}{application}	
 			%\begin{package}{model}
@@ -209,17 +311,6 @@
 					\operation{+ toString() : String}
 				\end{class}
 			%\end{package}%model
-		%\end{package}%application
-	\end{tikzpicture}
-	
-	\begin{tikzpicture}[thick, scale=\umlScale, every node/.style={scale=\umlScale}]
-		%\begin{package}{application}
-			\begin{class}[text width=\umlWidth]{Main}{0, 0}
-				\attribute{+ optionen : static Options}
-				\attribute{+ primaryStage : static Stage}
-				\operation{+ start(primaryStage : Stage) : void}
-				\operation{+ main(args : String[]) : static void}
-			\end{class}
 		%\end{package}%application
 	\end{tikzpicture}
 	
@@ -252,6 +343,101 @@
 					\operation{+ equals(obj : Object) : boolean}
 				\end{class}
 			%\end{package}%model
+		%\end{package}%application
+	\end{tikzpicture}
+	
+	\begin{tikzpicture}[thick, scale=\umlScale, every node/.style={scale=\umlScale}]
+		%\begin{package}{application}
+			%\begin{package}{model}{0,-10}
+				\begin{class}[text width=\umlWidth]{SpielStein}{0, 0}
+					\attribute{$-$ farbe : int}
+					\attribute{$-$ img : Image}
+					\attribute{$-$ blackStone : static Image}
+					\attribute{$-$ whiteStone : static Image}
+					
+					\operation{+ getColor() : final int}
+					\operation{+ getImage() : final Image}
+				\end{class}
+			%\end{package}%model
+		%\end{package}%application
+	\end{tikzpicture}
+	
+	(Hier noch UML Diagramme einfügen und Algorithmen in Pseudo Code)
+	
+	
+	View
+	
+	(Hier Scene Graph einfügen)
+	
+	Controller
+	
+	Der Spielcontroller ist zuständig für das gesamte Spiellayout.
+	Zusätzlich gibt es noch den \lstinline|GewinnerController| für das \lstinline|GewinnerLayout|,
+	welches immer dann erscheint, sobald ein Spieler gewonnen hat bzw. unentschieden gespielt wurde. 
+	
+	(Hier UML-Diagramme einfügen bzw. Algorithmen )
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	\begin{tikzpicture}[thick, scale=\umlScale, every node/.style={scale=\umlScale}]
+		%\begin{package}{application}
+			%\begin{package}{view}
+				\begin{class}[text width=\umlWidth]{GewinnerController}{0, 0}
+					\attribute{$-$ gewinnerPane : AnchorPane}
+					\attribute{$-$ abbrechenButton : Button}
+					\attribute{$-$ neuButton : Button}
+					\attribute{$-$ gewinneriView :ImageView}
+					\attribute{$-$ gewinnerText : Text}				
+					\attribute{$-$ spielController : SpielController}
+					\attribute{$-$ gewinnerStage : Stage}
+					\operation{+ handleAbbrechenButton(event : ActionEvent) : void}
+					\operation{+ handleNeuButton(event : ActionEvent) : void}
+					\operation{+ setGewinnerImage(image Image) : void}		
+					\operation{+ setDialogStage(gewinnerStage : Stage) : void}
+					\operation{+ setGewinnerText(s : String) : void}
+					\operation{+ setDialogSpielController(spielController : SpielController):void}
+				\end{class}
+			%\end{package}%view
+		%\end{package}%application
+	\end{tikzpicture}
+
+	\begin{tikzpicture}[thick, scale=\umlScale, every node/.style={scale=\umlScale}]
+		%\begin{package}{application}
+			\begin{class}[text width=\umlWidth]{Main}{0, 0}
+				\attribute{+ optionen : static Options}
+				\attribute{+ primaryStage : static Stage}
+				\operation{+ start(primaryStage : Stage) : void}
+				\operation{+ main(args : String[]) : static void}
+			\end{class}
 		%\end{package}%application
 	\end{tikzpicture}
 	
