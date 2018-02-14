@@ -52,7 +52,7 @@
 %  Headings and Footings :
 \usepackage{fancyhdr}
 \headheight15pt
-\lhead{Anwendungsprogrammierung \ueberschrift} % TODO
+\lhead{Anwendungsprogrammierung, \ueberschrift} % TODO
 
 \chead{}
 \rhead{\thepage}
@@ -60,18 +60,18 @@
 
 \lfoot{\today}
 \cfoot{}
-\rfoot{Vornam Nachnamee, Vornamee Nac, Vorname Nachnamee} %TODO, würde ich erst am ende eintragen und generieren vorm abschicken, muss ja nicht bei github rumhängen
+\rfoot{vorname nachname, vorname nachname, vorname nachname} %TODO, würde ich erst am ende eintragen und generieren vorm abschicken, muss ja nicht bei github rumhängen
 \renewcommand{\footrulewidth}{.4pt}
 
 %----------------------------------------------------------------
 
 
-\textwidth15.5cm % 16.5cm
+\textwidth16.5cm % 16.5cm
 \textheight23cm
 \oddsidemargin0.cm
 \evensidemargin0.cm
 \voffset-1.5cm % move page up
-\hoffset0.5cm % move page to the left
+%\hoffset0.5cm % move page to the left
 
 \parindent0cm
 
@@ -91,7 +91,7 @@
 \newcommand{\rot}{}
 
 % ------------------  edit Ueberschrift ---------------------
-\newcommand{\ueberschrift}{Dokumentation} % TODO
+\newcommand{\ueberschrift}{Dokumentation des Spiels Gomoku} % TODO
 
 
 \usepackage{varwidth}
@@ -108,15 +108,19 @@
 \newcommand{\umlScale}{0.925}
 \newcommand{\umlScaleSpielController}{0.65}
 \newcommand{\umlWidth}{.74\linewidth}
-\newcommand{\imagewidth}{.4\textheight}%{.7\linewidth}
+\newcommand{\imagewidth}{.6\textheight}%{.7\linewidth}
 
 % -----------------------------------------------------------
 \begin{document}
 	\pagestyle{fancy}
 
 	\arraycolsep=1.0pt\def\arraystretch{1.0}
-
-	\section*{Beschreibung des Programms aus Sicht der Anwender}
+	
+	\begin{center}
+		\section*{Projekt Anwendungsprogrammierung: Gomoku}
+	\end{center}
+	
+	\subsection*{Beschreibung des Programms aus Sicht der Anwender}
 	
 	Das Programm bietet die Möglichkeit, mehrere Versionen des Spiels Gomoku bzw. 5 Gewinnt zu spielen.
 	Dabei ist dem Spieler überlassen, ob er gegen den Computer, einen realen Gegner oder die künstliche Intelligenz gegen sich selbst spielen lassen möchte.
@@ -435,49 +439,130 @@
 %	\FloatBarrier	
 \end{minipage}
 	
+	\pagebreak
 	\section{View}
 	
-	(Hier Scene Graph einfügen)
+	Folgendes ist der Scene-Graph des \lstinline|GameLayout|:\\
+	
+	
+	\newcommand{\hAbst}{0.5cm}
+	\newcommand{\vAbst}{.4cm}
+	\begin{tikzpicture}[scale=1, every node/.style={scale=.55}, node distance=\vAbst]
+		\node[draw] (wrapAnchorPane) at (0,0) {wrapAnchorPane : AnchorPane};
+		\node[draw, right=\hAbst of wrapAnchorPane] (tabPaneSwitch) {tabPaneSwitch : TabPane};
+		\node[draw, right=\hAbst of wrapAnchorPane, below=\vAbst of tabPaneSwitch] (Pause) {Pause : ToggleButton};
+		\node[draw, right=\hAbst of wrapAnchorPane, below=\vAbst of Pause] (NeuesSpiel) {NeuesSpiel : Button};
+		\node[draw, right=\hAbst of wrapAnchorPane, below=\vAbst of NeuesSpiel] (aiSpeedSlider) {aiSpeedSlider : Slider};
+
+		\draw[->] (wrapAnchorPane) to[in=180, out=0] (tabPaneSwitch);
+		\draw[->] (wrapAnchorPane) to[in=180, out=0] (Pause);
+		\draw[->] (wrapAnchorPane) to[in=180, out=0] (NeuesSpiel);
+		\draw[->] (wrapAnchorPane) to[in=180, out=0] (aiSpeedSlider);
+
+	
+		\node[draw, right=\hAbst of tabPaneSwitch] (Spiel) {Spiel : Tab};
+		\node[draw, right=\hAbst of tabPaneSwitch, below=\vAbst of Spiel, yshift=-2.1cm] (Hilfe) {helpTab : Tab};
+		\node[draw, right=\hAbst of tabPaneSwitch, below=\vAbst of Hilfe] (UEber) {ueberTab : Tab};
+		\node[draw, right=\hAbst of tabPaneSwitch, below=\vAbst of UEber] (Einstellungen) {einstellungenTab : Tab};
+		
+		\draw[->] (tabPaneSwitch) to[in=180, out=0] (Spiel);
+		\draw[->] (tabPaneSwitch) to[in=169, out=0] (Einstellungen);
+		\draw[->] (tabPaneSwitch) to[in=180, out=0] (Hilfe);
+		\draw[->] (tabPaneSwitch) to[in=180, out=0] (UEber);
+		
+		
+		\node[draw, right=\hAbst of Spiel] (gameAnchorPane) {gameAnchorPane : AnchorPane};
+		\draw[->] (Spiel) to[in=180, out=0] (gameAnchorPane);
+		
+		
+		\node[draw, right=\hAbst of gameAnchorPane] (backgroundImage) {backgroundImage : ImageView};
+		\node[draw, right=\hAbst of gameAnchorPane, below=\vAbst of backgroundImage] (stoneImage) {stoneImage : ImageView};
+		\node[draw, right=\hAbst of gameAnchorPane, below=\vAbst of stoneImage] (startButton) {startButton : Button};
+		\draw[->] (gameAnchorPane) to[in=180, out=0]  (backgroundImage);
+		\draw[->] (gameAnchorPane) to[in=180, out=0] (stoneImage);
+		\draw[->] (gameAnchorPane) to[in=180, out=0] (startButton);
+		
+		\node[draw, right=\hAbst of Einstellungen](einstellungenAnchorPane){einstellungenAnchorPane : AnchorPane};
+		\draw[->] (Einstellungen) to[in=180, out=0] (einstellungenAnchorPane);
+		\node[draw, right=\hAbst of einstellungenAnchorPane] (AnzahlSpieler) {AnzahlSpieler : Label};
+		\node[draw, right=\hAbst of einstellungenAnchorPane, below=\vAbst of AnzahlSpieler] (Brettgroesse) {Brettgröße : Label};
+		\node[draw, right=\hAbst of einstellungenAnchorPane, below=\vAbst of Brettgroesse] (Spielregeln) {Spielregeln : Label};
+		\node[draw, right=\hAbst of einstellungenAnchorPane, below=\vAbst of Spielregeln] (brettGroesseTextField) {brettGroesseTextField : TextField};
+		\node[draw, right=\hAbst of einstellungenAnchorPane, below=\vAbst of brettGroesseTextField] (brettGroesseLabel) {brettGroesseLabel : Label};
+		\node[draw, right=\hAbst of einstellungenAnchorPane, below=\vAbst of brettGroesseLabel] (anzahlReiheTextField) {anzahlReiheTextField : TextField};
+		\node[draw, right=\hAbst of einstellungenAnchorPane, below=\vAbst of anzahlReiheTextField] (inEinerReihe) {in einer Reihe : Label};
+		\node[draw, right=\hAbst of einstellungenAnchorPane, below=\vAbst of inEinerReihe] (anlegenCheckBox) {anlegenCheckBox : CheckBox};
+		\node[draw, right=\hAbst of einstellungenAnchorPane, below=\vAbst of anlegenCheckBox] (aiCheckBox) {aiCheckBox : CheckBox};
+		\node[draw, right=\hAbst of einstellungenAnchorPane, below=\vAbst of aiCheckBox] (mitteBeginnCheckBox) {mitteBeginnCheckBox : CheckBox};
+		\node[draw, right=\hAbst of einstellungenAnchorPane, below=\vAbst of mitteBeginnCheckBox] (Hintergrund) {Hintergrund : Label};
+		\node[draw, right=\hAbst of einstellungenAnchorPane, below=\vAbst of Hintergrund] (einSpielerButton) {einSpielerButton : RadioButton};
+		\node[draw, right=\hAbst of einstellungenAnchorPane, below=\vAbst of einSpielerButton] (zweiSpielerButton) {zweiSpielerButton : RadioButton};
+		\node[draw, right=\hAbst of einstellungenAnchorPane, below=\vAbst of zweiSpielerButton] (aiButton) {aiButton : RadioButton};
+		\node[draw, right=\hAbst of einstellungenAnchorPane, below=\vAbst of aiButton] (brettGroesseBox) {brettGroesseBox : ComboBox};
+		\node[draw, right=\hAbst of einstellungenAnchorPane, below=\vAbst of brettGroesseBox] (LabelX) {Label x : Label};
+		\node[draw, right=\hAbst of einstellungenAnchorPane, below=\vAbst of LabelX] (bild1Button) {bild1Button : ToggleButton};
+		\node[draw, right=\hAbst of einstellungenAnchorPane, below=\vAbst of bild1Button] (bild2Button) {bild2Button : ToggleButton};
+		\node[draw, right=\hAbst of einstellungenAnchorPane, below=\vAbst of bild2Button] (spielStartenButton) {spielStartenButton : Button};
+		\node[draw, right=\hAbst of einstellungenAnchorPane, below=\vAbst of spielStartenButton] (zuruecksetzenButton) {zuruecksetzenButton : Button};
+		
+		\draw[->](einstellungenAnchorPane)to[in=180, out=0](AnzahlSpieler);
+		\draw[->](einstellungenAnchorPane)to[in=180, out=0](Brettgroesse);
+		\draw[->](einstellungenAnchorPane)to[in=180, out=0](Spielregeln);
+		\draw[->](einstellungenAnchorPane)to[in=180, out=0](brettGroesseTextField);
+		\draw[->](einstellungenAnchorPane)to[in=180, out=-7](brettGroesseLabel);
+		\draw[->](einstellungenAnchorPane)to[in=180, out=-8](anzahlReiheTextField);
+		\draw[->](einstellungenAnchorPane)to[in=180, out=-15](inEinerReihe);
+		\draw[->](einstellungenAnchorPane)to[in=180, out=-35](anlegenCheckBox);
+		\draw[->](einstellungenAnchorPane)to[in=180, out=-45](aiCheckBox);
+		\draw[->](einstellungenAnchorPane)to[in=180, out=-90](mitteBeginnCheckBox);
+		\draw[->](einstellungenAnchorPane)to[in=180, out=-90](Hintergrund);
+		\draw[->](einstellungenAnchorPane)to[in=180, out=-90](einSpielerButton);
+		\draw[->](einstellungenAnchorPane)to[in=180, out=-90](zweiSpielerButton);
+		\draw[->](einstellungenAnchorPane)to[in=180, out=-85](aiButton);
+		\draw[->](einstellungenAnchorPane)to[in=180, out=-85](brettGroesseBox);
+		\draw[->](einstellungenAnchorPane)to[in=180, out=-85](LabelX);
+		\draw[->](einstellungenAnchorPane)to[in=180, out=-80](bild1Button);
+		\draw[->](einstellungenAnchorPane)to[in=180, out=-80](bild2Button);
+		\draw[->](einstellungenAnchorPane)to[in=180, out=-80](spielStartenButton);
+		\draw[->](einstellungenAnchorPane)to[in=180, out=-80](zuruecksetzenButton);
+
+		
+		
+		\node[draw, right=\hAbst of Hilfe] (helpAnchorPane) { AnchorPane};
+		\node[draw, right=\hAbst of helpAnchorPane] (hilfeText) {hilfeText : TextArea};
+		
+		\draw[->](Hilfe)to[in=180, out=0](helpAnchorPane);
+		\draw[->](helpAnchorPane)to[in=180, out=0](hilfeText);
+		
+		
+		\node[draw, right=\hAbst of UEber] (ueberAnchorPane) { AnchorPane};
+		\node[draw, right=\hAbst of ueberAnchorPane] (uberText) {uberText : TextArea};
+		
+		\draw[->](UEber)to[in=180, out=0](ueberAnchorPane);
+		\draw[->](ueberAnchorPane)to[in=180, out=0](uberText);		
+	\end{tikzpicture}
+
+	Folgendes ist der Scene-Graph des \lstinline|GewinnerLayout|:\\
+
+	\begin{tikzpicture}[scale=1, every node/.style={scale=.55}, node distance=\vAbst]
+		\node[draw] (gewinnerPane) {gewinnerPane : AnchorPane};
+		\node[draw, right=\hAbst of gewinnerPane] (abbrechenButton) {abbrechenButton : Button};
+		\node[draw, right=\hAbst of gewinnerPane, below=\vAbst of abbrechenButton] (neuButton) {neuButton : Button};
+		\node[draw, right=\hAbst of gewinnerPane, below=\vAbst of neuButton] (gewinneriView) {gewinneriView : ImageView};
+		\node[draw, right=\hAbst of gewinnerPane, below=\vAbst of gewinneriView] (gewinnerText) {gewinnerText : ImageView};
+		
+		\draw[->](gewinnerPane)to[in=180, out=0](abbrechenButton);
+		\draw[->](gewinnerPane)to[in=180, out=0](neuButton);
+		\draw[->](gewinnerPane)to[in=180, out=0](gewinneriView);
+		\draw[->](gewinnerPane)to[in=180, out=0](gewinnerText);
+	\end{tikzpicture}
 	
 	\section{Controller}
 	
 	Der Spielcontroller ist zuständig für das gesamte Spiellayout und den zeitlichen Ablauf des Spieles.
 	Zusätzlich gibt es noch den \lstinline|GewinnerController| für das \lstinline|GewinnerLayout|,
-	welches immer dann erscheint, sobald ein Spieler gewonnen hat bzw. unentschieden gespielt wurde. 
-	
-	(Hier UML-Diagramme einfügen bzw. Algorithmen )
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+	welches immer dann erscheint, sobald ein Spieler gewonnen hat bzw. unentschieden gespielt wurde. \\
+		
 	\begin{tikzpicture}[thick, scale=\umlScale, every node/.style={scale=\umlScale}]
 		%\begin{package}{application}
 			%\begin{package}{view}

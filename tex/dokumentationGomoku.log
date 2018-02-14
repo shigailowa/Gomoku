@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.17 (MiKTeX 2.9.6100 64-bit) (preloaded format=pdflatex 2016.12.29)  14 FEB 2018 08:11
+This is pdfTeX, Version 3.14159265-2.6-1.40.17 (MiKTeX 2.9.6100 64-bit) (preloaded format=pdflatex 2016.12.29)  14 FEB 2018 11:45
 entering extended mode
 **./dokumentationGomoku.tex
 (dokumentationGomoku.tex
@@ -1129,12 +1129,12 @@ G,.JBIG2,.JB2,.eps]
 (grfext)             \AppendGraphicsExtensions on input line 456.
 )
 ABD: EveryShipout initializing macros
-LaTeX Font Info:    Try loading font information for U+msa on input line 128.
+LaTeX Font Info:    Try loading font information for U+msa on input line 132.
 
 ("D:\Program Files\MiKTeX 2.9\tex\latex\amsfonts\umsa.fd"
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Try loading font information for U+msb on input line 128.
+LaTeX Font Info:    Try loading font information for U+msb on input line 132.
 
 ("D:\Program Files\MiKTeX 2.9\tex\latex\amsfonts\umsb.fd"
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
@@ -1142,8 +1142,8 @@ File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 <starten.png, id=4, 451.6875pt x 493.0922pt>
 File: starten.png Graphic file (type png)
  <use starten.png>
-Package pdftex.def Info: starten.png used on input line 148.
-(pdftex.def)             Requested size: 261.76135pt x 285.76794pt.
+Package pdftex.def Info: starten.png used on input line 152.
+(pdftex.def)             Requested size: 392.65201pt x 428.67073pt.
 
 
 LaTeX Warning: `h' float specifier changed to `ht'.
@@ -1154,8 +1154,8 @@ LaTeX Warning: `h' float specifier changed to `ht'.
 <einstellungen.png, id=13, 451.6875pt x 499.11469pt>
 File: einstellungen.png Graphic file (type png)
  <use einstellungen.png>
-Package pdftex.def Info: einstellungen.png used on input line 163.
-(pdftex.def)             Requested size: 261.76135pt x 289.25822pt.
+Package pdftex.def Info: einstellungen.png used on input line 167.
+(pdftex.def)             Requested size: 392.65201pt x 433.90639pt.
 
 
 LaTeX Warning: `h' float specifier changed to `ht'.
@@ -1164,8 +1164,8 @@ LaTeX Warning: `h' float specifier changed to `ht'.
 File: spiel.png Graphic file (type png)
 
 <use spiel.png>
-Package pdftex.def Info: spiel.png used on input line 187.
-(pdftex.def)             Requested size: 261.76135pt x 287.12352pt.
+Package pdftex.def Info: spiel.png used on input line 191.
+(pdftex.def)             Requested size: 392.65201pt x 430.6966pt.
 
 
 LaTeX Warning: `h' float specifier changed to `ht'.
@@ -1173,45 +1173,56 @@ LaTeX Warning: `h' float specifier changed to `ht'.
 <warnung.png, id=18, 447.92343pt x 493.845pt>
 File: warnung.png Graphic file (type png)
  <use warnung.png>
-Package pdftex.def Info: warnung.png used on input line 196.
-(pdftex.def)             Requested size: 261.76135pt x 288.6005pt.
+Package pdftex.def Info: warnung.png used on input line 200.
+(pdftex.def)             Requested size: 392.65201pt x 432.9196pt.
 
 
 LaTeX Warning: `h' float specifier changed to `ht'.
 
-[3 <./einstellungen.png>] [4 <./spiel.png> <./warnung.png>]
-<ai.png, id=25, 449.42906pt x 496.10344pt>
+[3 <./einstellungen.png>] [4 <./spiel.png>] [5 <./warnung.png>]
+<ai.png, id=28, 449.42906pt x 496.10344pt>
 File: ai.png Graphic file (type png)
  <use ai.png>
-Package pdftex.def Info: ai.png used on input line 214.
-(pdftex.def)             Requested size: 261.76135pt x 288.95894pt.
+Package pdftex.def Info: ai.png used on input line 218.
+(pdftex.def)             Requested size: 392.65201pt x 433.44598pt.
+ [6
 
-<gewinner.png, id=26, 447.92343pt x 496.10344pt>
+ <./ai.png>]
+<gewinner.png, id=32, 447.92343pt x 496.10344pt>
 File: gewinner.png Graphic file (type png)
  <use gewinner.png>
-Package pdftex.def Info: gewinner.png used on input line 231.
-(pdftex.def)             Requested size: 261.76135pt x 289.92032pt.
-
-
-LaTeX Warning: `h' float specifier changed to `ht'.
-
-[5
-
- <./ai.png>] [6 <./gewinner.png>]
-Overfull \hbox (38.31871pt too wide) in paragraph at lines 266--272
+Package pdftex.def Info: gewinner.png used on input line 235.
+(pdftex.def)             Requested size: 392.65201pt x 434.89941pt.
+ [7 <./gewinner.png>]
+Overfull \hbox (9.86597pt too wide) in paragraph at lines 270--276
  [] 
  []
 
-[7] [8] [9] [10]
+[8] [9] [10] [11]
+Underfull \hbox (badness 10000) in paragraph at lines 445--446
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 545--546
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 562--565
+
+ []
+
+[12] [13]
 Overfull \vbox (8.79411pt too high) has occurred while \output is active []
 
 
-[11] (dokumentationGomoku.aux) ) 
+[14] (dokumentationGomoku.aux) ) 
 Here is how much of TeX's memory you used:
- 18931 strings out of 493333
- 362461 string characters out of 3139190
- 428661 words of memory out of 3000000
- 22064 multiletter control sequences out of 15000+200000
+ 19266 strings out of 493333
+ 369905 string characters out of 3139190
+ 436520 words of memory out of 3000000
+ 22399 multiletter control sequences out of 15000+200000
  10619 words of font info for 40 fonts, out of 3000000 for 9000
  1141 hyphenation exceptions out of 8191
  55i,16n,66p,470b,1143s stack positions out of 5000i,500n,10000p,200000b,50000s
@@ -1227,9 +1238,9 @@ e1/public/amsfonts/cm/cmsy8.pfb><D:/Program Files/MiKTeX 2.9/fonts/type1/public
 /amsfonts/cm/cmti10.pfb><D:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfont
 s/cm/cmtt10.pfb><D:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/symbol
 s/msbm10.pfb>
-Output written on dokumentationGomoku.pdf (11 pages, 4046665 bytes).
+Output written on dokumentationGomoku.pdf (14 pages, 4055034 bytes).
 PDF statistics:
- 95 PDF objects out of 1000 (max. 8388607)
+ 105 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
  43 words of extra memory for PDF output out of 10000 (max. 10000000)
 
