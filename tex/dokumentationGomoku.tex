@@ -60,18 +60,18 @@
 
 \lfoot{\today}
 \cfoot{}
-\rfoot{Name...} %TODO, würde ich erst am ende eintragen und generieren vorm abschicken, muss ja nicht bei github rumhängen
+\rfoot{Vornam Nachnamee, Vornamee Nac, Vorname Nachnamee} %TODO, würde ich erst am ende eintragen und generieren vorm abschicken, muss ja nicht bei github rumhängen
 \renewcommand{\footrulewidth}{.4pt}
 
 %----------------------------------------------------------------
 
 
-\textwidth17.5cm % 16.5cm
+\textwidth15.5cm % 16.5cm
 \textheight23cm
 \oddsidemargin0.cm
 \evensidemargin0.cm
 \voffset-1.5cm % move page up
-\hoffset-0.5cm % move page to the left
+\hoffset0.5cm % move page to the left
 
 \parindent0cm
 
@@ -105,15 +105,18 @@
 \renewcommand{\umldrawcolor}{gray}
 \renewcommand{\umlfillcolor}{white}
 % variables to tweak appearance of uml stuff
-\newcommand{\umlScale}{0.9}
-\newcommand{\umlScaleSpielController}{0.6}
+\newcommand{\umlScale}{0.925}
+\newcommand{\umlScaleSpielController}{0.65}
 \newcommand{\umlWidth}{.74\linewidth}
-\newcommand{\imagewidth}{.8\linewidth}
+\newcommand{\imagewidth}{.4\textheight}%{.7\linewidth}
+
 % -----------------------------------------------------------
 \begin{document}
 	\pagestyle{fancy}
-	
-	\section*{Beschreibung des Programms aus Sicht der Anwender:}
+
+	\arraycolsep=1.0pt\def\arraystretch{1.0}
+
+	\section*{Beschreibung des Programms aus Sicht der Anwender}
 	
 	Das Programm bietet die Möglichkeit, mehrere Versionen des Spiels Gomoku bzw. 5 Gewinnt zu spielen.
 	Dabei ist dem Spieler überlassen, ob er gegen den Computer, einen realen Gegner oder die künstliche Intelligenz gegen sich selbst spielen lassen möchte.
@@ -121,37 +124,41 @@
 	ob in der Mitte des Bretts begonnen werden soll und ob nur Anlegen an einen anderen Stein erlaubt ist.
 	Die Brettgröße ist auch flexibel wählbar.
 	
-	\subsection*{Es sind folgende Spielregeln zu beachten:}
+	\subsection*{Es sind folgende Spielregeln zu beachten}
 	Das klassische Gomoku wird auf einem $19 \times 19$ Brett gespielt.
 	Dabei legt jeder Spieler abwechselnd einen Stein seiner Farbe auf das Brett.
-	Die Steine dürfen nicht mehr bewegt werden, nachdem sie gesetzt wurden. Jeder versucht eine gerade, ununterbrochene Reihe aus 5 Spielsteinen zu legen.
-	Die Reihe kann waagerecht, senkrecht oder diagonal verlaufen. 
+	Wie beim Schach startet weiß, da schwarz vom besseren Spieler gespielt wird.
+	Die Steine dürfen nicht mehr bewegt werden, nachdem sie gesetzt wurden.
+	Jeder versucht eine gerade, ununterbrochene Reihe aus 5 Spielsteinen zu legen.
+	Diese Reihe kann waagerecht, senkrecht oder diagonal verlaufen. 
+	Außerdem muss der erste Zug in der Mitte des Brettes erfolgen, alle weiteren müssen angelegt werden an schon liegende Steine, also Seitlich oder Diagonal daneben.
 	
 	Gleichzeitig muss jeder Spieler verhindern, dass der andere Spieler dieses Ziel vor ihm erreicht.
-	Das Spiel ist beendet, wenn ein Spieler 5 Steine in einer ununterbrochenen Reihe gelegt hat. 
+	Das Spiel ist beendet, wenn ein Spieler 5 Steine in einer ununterbrochenen Reihe gelegt hat, oder einer aufgegeben hat.
 	Die Spielregeln für alle anderen Versionen sind analog, es ändert sich nur die Brettgröße und die Anzahl Steine in einer Reihe, die zum Sieg benötigt werden. 
 	
 	
 	\section*{Bedienungsanleitung}
 	
 	\section{Spiel Starten}
-	Beim Starten des Programms erscheint folgende Oberfläche
-	
-	\begin{figure}[H]
+	Beim Starten des Programms erscheint folgende Oberfläche(siehe Abb. \ref{starten}).
+	\FloatBarrier
+	\begin{figure}[h]
 		\centering
 		\includegraphics[width=\imagewidth]{starten.png}
 		\caption{Aussehen nach Programmstart}
 		\label{starten}
 	\end{figure}
-	
 	Startet man nun das Spiel, indem man auf den \textit{Spiel starten} Button drückt, so werden die Standardeinstellungen geladen.
 	Das heißt die AI spielt gegen sich selbst auf einem $19 \times 19$ Brett. 
-	
+
+	\FloatBarrier
 	
 	\section{Einstellungen ändern}
-	Möchte man mit anderen Einstellungen spielen, so hat man die Möglichkeit diese zu ändern, indem man auf den \textit{Einstellungen Tab} wechselt. 
-	
-	\begin{figure}[H]
+	\FloatBarrier
+	Möchte man mit anderen Einstellungen spielen, so hat man die Möglichkeit diese zu ändern, indem man auf den \textit{Einstellungen Tab} wechselt (Abbildung \ref{einstellungen}).
+
+	\begin{figure}[h]
 		\centering
 		\includegraphics[width=\imagewidth]{einstellungen.png}
 		\caption{Einstellungen Tab}
@@ -170,42 +177,46 @@
 	Möchte man die Einstellungen wieder auf die Standardeinstellungen zurücksetzen, so braucht man nur den Button \textit{Einstellungen zurücksetzen} oben links zu klicken. 
 	Zu beachten ist auch, dass sich die Einstellungen nicht ändern lassen, solange ein aktuelles Spiel noch läuft (s. nächster Abschnitt).
 	
+	\FloatBarrier
 	\section{Spiel abbrechen und neues Spiel starten}
 	
-	Möchte man ein aktuell laufendes Spiel abbrechen, so klicke man den Button \textit{Neues Spiel} oben rechts.
+	Möchte man ein aktuell laufendes Spiel abbrechen, so klicke man den Button \textit{Neues Spiel} oben rechts (siehe Abb. \ref{spiel}).
 	
-	\begin{figure}[H]
+	\begin{figure}[h]
 		\centering
 		\includegraphics[width=\imagewidth]{spiel.png}
 		\caption{Laufendes Spiel}
 		\label{spiel}
 	\end{figure}
 	
-	Hierbei ist zu beachten, dass dann allerdings der gesamte Spielfortschritt verloren gehen würde, wobei der Spieler auch eine Warnung erhält. 
+	Hierbei ist zu beachten, dass dann allerdings der gesamte Spielfortschritt verloren gehen würde, wobei der Spieler auch eine Warnung erhält (siehe Abb. \ref{warnung}).
 	
-	\begin{figure}[H]
+	\begin{figure}[h]
 		\centering
 		\includegraphics[width=\imagewidth]{warnung.png}
 		\caption{Warnung vor Neustart}
 		\label{warnung}
 	\end{figure}
 	
-	Klickt man nun auf \textit{Ja}, hat man wieder die Möglichkeit, die Einstellungen zu ändern oder man startet ein neues Spiel mit den selben Einstellungen. 
+	Klickt man nun auf \textit{Ja}, hat man wieder die Möglichkeit, die Einstellungen zu ändern oder man startet ein neues Spiel mit denselben Einstellungen. 
 	
+	\FloatBarrier
 	\section{AI gegen AI}
+	\FloatBarrier
 	
 	Bei der Version AI gegen AI hat man noch zusätzliche Optionen. 
 	
 	Das Spiel lässt sich jederzeit pausieren, indem man auf den \textit{Pause/Play} Button drückt (links neben \textit{Neues Spiel}).
-	Zudem lässt sich die Schnelligkeit der Züge beeinflussen anhand des Reglers links daneben. 
+	Zudem lässt sich die Schnelligkeit der Züge beeinflussen anhand des Reglers links daneben (siehe Ab. \ref{ai}).
 	
-	\begin{figure}[H]
+	\begin{figure}[h]
 		\centering
 		\includegraphics[width=\imagewidth]{ai.png}
 		\caption{AI spielt gegen AI}
 		\label{ai}
 	\end{figure}
-	
+
+	\FloatBarrier	
 	\section{Spielzug machen}
 	
 	Der Stein des jeweiligen Spielers, der gerade an der Reihe ist, erscheint an dem Mauszeiger und bewegt sich mit, wenn die Maus verschoben wird
@@ -213,9 +224,9 @@
 	Der Stein wird dann dort abgelegt (solange diese Position legal ist, es also möglich ist an dieser Position zu spielen) und der Gegner ist an der Reihe. 
 
 	\section{Gewinner}
-	Sollte ein Spieler gewinnen, erscheint folgende Meldung. 
-
-	\begin{figure}[H]
+	\FloatBarrier
+	Sollte ein Spieler gewinnen, erscheint folgende Meldung (siehe Abb. \ref{gewinner}).
+	\begin{figure}[h]
 		\centering
 		\includegraphics[width=\imagewidth]{gewinner.png}
 		\caption{Meldung bei Gewinner}
@@ -224,24 +235,39 @@
 
 	Hier hat man dann die Möglichkeit, das Spiel neu zu starten, indem man auf \textit{neu} klickt.
 	Oder man klickt auf \textit{abbrechen}, um womöglich den Spielverlauf zu analysieren. 
+	\FloatBarrier
 	
 	\section{Hilfe und Über}
 	Die Spielanleitung ist im Tab \textit{Hilfe} nachzulesen und Informationen über Programm und Autor lassen sich im Tab \textit{Über} nachschauen. 
 	
-	\pagebreak
+%	\pagebreak%TODO better formatting
 	
-	Beschreibung des Programms aus Sicht der Programmierer
+	\section*{Beschreibung des Programms aus Sicht der Programmierer}
 	
-	Model
+	Wenn das Spiel gestartet wurde sind Linien auf einem Gitter gezeichnet, worauf Bilder von Spielsteinen gezeigt werden sollen.
+	Diese werden intern in einem \lstinline|Brett| gespeichert und schon gespielte Züge von dort gelesen.
+	Für einen Zug wird auf einen Mausklick gewartet, die Position in Gitter-Koordinaten umgerechnet und überprüft ob es legal ist dort einen Stein abzulegen.
+	Wenn das der Fall ist, so wird der Zug gespeichert und ein Bild an der Stelle dargestellt.
+
+	Falls man gegen eine AI spielt, so wird diese sofort nach dem eigenen Zug gerufen einen Zug zu machen, was dann in eine Position resultiert wo diese Spielen möchte.
+	Deren Zug wird dann auch ausgeführt und der Spieler ist wieder an der Reihe.
+	
+	Lässt man die AI gegen sich selbst spielen, so wird ein Timer verwendet, welcher nach einer vorgegebenen Zeitspanne nach einem Zug der AI fragt und diesen ausführt.
+	Dadurch spielt die AI nicht so schnell, wie es ihr möglich wäre, sondern meist etwas langsamer sodass man ihr folgen kann.
+	
+	Die AI verlässt sich auf ihre Heuristik-Funktion (), welche eine Bewertung jeder legalen Position des momentanen Brettes ausgibt.
+	Diese Information wird dann iteriert und eine Liste an möglichen besten Zügen wird zurückgegeben, wovon dann im \lstinline|SpielController| einer zufällig gewählt und gespielt wird.
+	
+	\section{Model}
 	
 	Im Model befinden sich die folgenden Klassen:
 	
 	\begin{center}
 		\begin{tabular}{r l}
-			\lstinline|Brett| & zur Speicherung eines Spielbrettes \\
-			\lstinline|Options| & speichert die Optionen als ein Paar zweier Objekte vom Typ \lstinline|String| und \lstinline|Object| \\
-			\lstinline|SpielAI| & generiert die AI \\
-			\lstinline|SpielStein| & zur Speicherung eines Spielsteins
+			\lstinline|Brett| &-- zur Speicherung eines Spielbrettes \\
+			\lstinline|Options| &-- speichert die Optionen als ein Paar zweier Objekte vom Typ \lstinline|String| und \lstinline|Object| \\
+			\lstinline|SpielAI| &-- generiert die AI \\
+			\lstinline|SpielStein| &-- zur Speicherung eines Spielsteins
 		\end{tabular}
 	\end{center}
 	
@@ -279,7 +305,10 @@
 					\operation{+ getSpieler() : final int}
 					\operation{+ getBrett() : final SpielStein[ ][ ]}
 				\end{class}
-				\begin{class}[text width=\umlWidth]{+ static SpielZug}{0, -14.5}
+	\end{tikzpicture}
+	
+	\begin{tikzpicture}[thick, scale=\umlScale, every node/.style={scale=\umlScale}]
+				\begin{class}[text width=\umlWidth]{+ static Brett::SpielZug}{0, 0}
 					\attribute{+ x, y : int}
 					\attribute{+ stein:SpielStein}
 					\attribute{+ iView:ImageView}
@@ -301,7 +330,10 @@
 					\operation{+ printOption(name : String) : void}
 					\operation{+ toString() : String}
 				\end{class}
-				\begin{class}[text width=\umlWidth]{-Tupel}{0, -4.0}
+	\end{tikzpicture}
+
+	\begin{tikzpicture}[thick, scale=\umlScale, every node/.style={scale=\umlScale}]
+				\begin{class}[text width=\umlWidth]{$-$Options::Tupel}{0, 0}
 					\attribute{+ name : String}
 					\attribute{+ objekt : Object}
 					\operation{+ Tupel(name : String, objekt : Object)}
@@ -329,7 +361,10 @@
 					\operation{+ twoDeepCloneDouble(a : Double[ ][ ]) : static Double[ ][ ] }
 					\operation{+ printDoubleArray(a : Double[ ][ ]) : static void }
 				\end{class}
-				\begin{class}[text width=\umlWidth]{Savegame}{0, -6}
+	\end{tikzpicture}
+				
+	\begin{tikzpicture}[thick, scale=\umlScale, every node/.style={scale=\umlScale}]
+				\begin{class}[text width=\umlWidth]{SpielAI::Savegame}{0, 0}
 					\attribute{$-$ moveNr : int}
 					\attribute{$-$ steine : int[ ][ ]}
 					\attribute{$-$ spielerAnz : int}
@@ -345,7 +380,7 @@
 			%\end{package}%model
 		%\end{package}%application
 	\end{tikzpicture}
-	
+
 	\begin{tikzpicture}[thick, scale=\umlScale, every node/.style={scale=\umlScale}]
 		%\begin{package}{application}
 			%\begin{package}{model}{0,-10}
@@ -362,16 +397,51 @@
 		%\end{package}%application
 	\end{tikzpicture}
 	
-	(Hier noch UML Diagramme einfügen und Algorithmen in Pseudo Code)
+\begin{minipage}{\linewidth} % such that the following two things stay on the same page no matter what
+%	\FloatBarrier
+	Die AI sucht sich den Besten Zug folgendermaßen mit der Funktion \lstinline|getBestMoves()|aus:
 	
+%	\begin{wrapfigure}{L}{\textwidth}
+		\umramt{\begin{varwidth}{\textwidth}
+			\begin{algorithmic}[1]
+				\State $h\leftarrow$ generateHeuristic()
+				\State $max \leftarrow-\infty$
+				\State $n\leftarrow 0$
+				\For{$i \in \{0, dim(h)\} $}
+					\For{$j \in \{0, dim(h)\} $}
+						\If{$max < h_{i, j}$}
+							\State $max \leftarrow h_{i, j}$
+							\State $n\leftarrow 1$
+						\ElsIf{$max=h_{i, j}$}
+							\State $n++$
+						\EndIf
+					\EndFor
+				\EndFor
+				\State $erg :\in {\mathbb{N}}^{\text{n}\times 2}$
+				\For{$i \in \{0, dim(h)\} $}
+					\For{$j \in \{0, dim(h)\} $}
+						\If{ $max = h_{i, j}$ }
+							\State 	$n \leftarrow n-1$
+							\State 	$erg_{n, 0}\leftarrow i$
+							\State 	$erg_{n, 1}\leftarrow j$
+						\EndIf
+					\EndFor
+				\EndFor
+				\State\Return erg
+			\end{algorithmic}
+		\end{varwidth}}%
+%	\end{wrapfigure}
+
+%	\FloatBarrier	
+\end{minipage}
 	
-	View
+	\section{View}
 	
 	(Hier Scene Graph einfügen)
 	
-	Controller
+	\section{Controller}
 	
-	Der Spielcontroller ist zuständig für das gesamte Spiellayout.
+	Der Spielcontroller ist zuständig für das gesamte Spiellayout und den zeitlichen Ablauf des Spieles.
 	Zusätzlich gibt es noch den \lstinline|GewinnerController| für das \lstinline|GewinnerLayout|,
 	welches immer dann erscheint, sobald ein Spieler gewonnen hat bzw. unentschieden gespielt wurde. 
 	
@@ -523,43 +593,7 @@
 			%\end{package}%model
 		%\end{package}%application
 	\end{tikzpicture}
-	
 
-		
-
-	
-	\begin{wrapfigure}{L}{\textwidth}
-		getBestMoves():\\
-		\umramt{\begin{varwidth}{\textwidth}
-			\begin{algorithmic}[1]
-				\State $h\leftarrow$ generateHeuristic()
-				\State $max \leftarrow-\infty$
-				\State $n\leftarrow 0$
-				\For{$i \in \{0, dim(h)\} $}
-					\For{$j \in \{0, dim(h)\} $}
-						\If{$max < h_{i, j}$}
-							\State $max \leftarrow h_{i, j}$
-							\State $n\leftarrow 1$
-						\ElsIf{$max=h_{i, j}$}
-							\State $n++$
-						\EndIf
-					\EndFor
-				\EndFor
-				\State $erg :\in {\mathbb{N}}^{\text{n}\times 2}$
-				\For{$i \in \{0, dim(h)\} $}
-					\For{$j \in \{0, dim(h)\} $}
-						\If{ $max = h_{i, j}$ }
-							\State 	$n \leftarrow n-1$
-							\State 	$erg_{n, 0}\leftarrow i$
-							\State 	$erg_{n, 1}\leftarrow j$
-						\EndIf
-					\EndFor
-				\EndFor
-				\State\Return erg
-			\end{algorithmic}
-		\end{varwidth}}%
-	\end{wrapfigure}
-	
 \end{document}
 
 

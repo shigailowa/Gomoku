@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.17 (MiKTeX 2.9.6100 64-bit) (preloaded format=pdflatex 2016.12.29)  12 FEB 2018 07:26
+This is pdfTeX, Version 3.14159265-2.6-1.40.17 (MiKTeX 2.9.6100 64-bit) (preloaded format=pdflatex 2016.12.29)  14 FEB 2018 08:11
 entering extended mode
 **./dokumentationGomoku.tex
 (dokumentationGomoku.tex
@@ -1052,18 +1052,18 @@ File: tikzlibraryfit.code.tex 2013/07/12 v3.0.1a (rcs-revision 1.5)
 ) (dokumentationGomoku.aux)
 \openout1 = `dokumentationGomoku.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 113.
-LaTeX Font Info:    ... okay on input line 113.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 113.
-LaTeX Font Info:    ... okay on input line 113.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 113.
-LaTeX Font Info:    ... okay on input line 113.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 113.
-LaTeX Font Info:    ... okay on input line 113.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 113.
-LaTeX Font Info:    ... okay on input line 113.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 113.
-LaTeX Font Info:    ... okay on input line 113.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 114.
+LaTeX Font Info:    ... okay on input line 114.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 114.
+LaTeX Font Info:    ... okay on input line 114.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 114.
+LaTeX Font Info:    ... okay on input line 114.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 114.
+LaTeX Font Info:    ... okay on input line 114.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 114.
+LaTeX Font Info:    ... okay on input line 114.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 114.
+LaTeX Font Info:    ... okay on input line 114.
 \c@lstlisting=\count159
 Package caption Info: Begin \AtBeginDocument code.
 Package caption Info: float package is loaded.
@@ -1129,12 +1129,12 @@ G,.JBIG2,.JB2,.eps]
 (grfext)             \AppendGraphicsExtensions on input line 456.
 )
 ABD: EveryShipout initializing macros
-LaTeX Font Info:    Try loading font information for U+msa on input line 125.
+LaTeX Font Info:    Try loading font information for U+msa on input line 128.
 
 ("D:\Program Files\MiKTeX 2.9\tex\latex\amsfonts\umsa.fd"
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Try loading font information for U+msb on input line 125.
+LaTeX Font Info:    Try loading font information for U+msb on input line 128.
 
 ("D:\Program Files\MiKTeX 2.9\tex\latex\amsfonts\umsb.fd"
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
@@ -1142,70 +1142,94 @@ File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 <starten.png, id=4, 451.6875pt x 493.0922pt>
 File: starten.png Graphic file (type png)
  <use starten.png>
-Package pdftex.def Info: starten.png used on input line 142.
-(pdftex.def)             Requested size: 398.34009pt x 434.87802pt.
- [1{C:/ProgramData/MiKTeX/2.9/pdftex/config/pdftex.map}
+Package pdftex.def Info: starten.png used on input line 148.
+(pdftex.def)             Requested size: 261.76135pt x 285.76794pt.
+
+
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+[1{C:/ProgramData/MiKTeX/2.9/pdftex/config/pdftex.map}
 
 ]
-<einstellungen.png, id=12, 451.6875pt x 499.11469pt>
+<einstellungen.png, id=13, 451.6875pt x 499.11469pt>
 File: einstellungen.png Graphic file (type png)
  <use einstellungen.png>
-Package pdftex.def Info: einstellungen.png used on input line 156.
-(pdftex.def)             Requested size: 398.34009pt x 440.18948pt.
+Package pdftex.def Info: einstellungen.png used on input line 163.
+(pdftex.def)             Requested size: 261.76135pt x 289.25822pt.
+
+
+LaTeX Warning: `h' float specifier changed to `ht'.
 
 [2 <./starten.png>] <spiel.png, id=17, 450.9347pt x 494.59781pt>
 File: spiel.png Graphic file (type png)
 
 <use spiel.png>
-Package pdftex.def Info: spiel.png used on input line 179.
-(pdftex.def)             Requested size: 398.34009pt x 436.93037pt.
- [3 <./einstellungen.png>]
-<warnung.png, id=21, 447.92343pt x 493.845pt>
+Package pdftex.def Info: spiel.png used on input line 187.
+(pdftex.def)             Requested size: 261.76135pt x 287.12352pt.
+
+
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+<warnung.png, id=18, 447.92343pt x 493.845pt>
 File: warnung.png Graphic file (type png)
  <use warnung.png>
-Package pdftex.def Info: warnung.png used on input line 188.
-(pdftex.def)             Requested size: 398.34009pt x 439.1891pt.
- [4 <./spiel.png>] <ai.png, id=25, 449.42906pt x 497.60907pt>
+Package pdftex.def Info: warnung.png used on input line 196.
+(pdftex.def)             Requested size: 261.76135pt x 288.6005pt.
+
+
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+[3 <./einstellungen.png>] [4 <./spiel.png> <./warnung.png>]
+<ai.png, id=25, 449.42906pt x 496.10344pt>
 File: ai.png Graphic file (type png)
  <use ai.png>
-Package pdftex.def Info: ai.png used on input line 204.
-(pdftex.def)             Requested size: 398.34009pt x 441.06357pt.
- [5 <./warnung.png>]
-<gewinner.png, id=29, 447.92343pt x 496.85625pt>
+Package pdftex.def Info: ai.png used on input line 214.
+(pdftex.def)             Requested size: 261.76135pt x 288.95894pt.
+
+<gewinner.png, id=26, 447.92343pt x 496.10344pt>
 File: gewinner.png Graphic file (type png)
  <use gewinner.png>
-Package pdftex.def Info: gewinner.png used on input line 220.
-(pdftex.def)             Requested size: 398.34009pt x 441.86708pt.
- [6 <./ai.png>] [7 <./gewinner.png>] [8] [9]
-Overfull \hbox (19.8663pt too wide) in paragraph at lines 374--377
-[]\OT1/cmr/m/n/10.95 Der Spiel-con-trol-ler ist zust[]andig f[]ur das ge-sam-te
- Spiel-lay-out. Zus[]atzlich gibt es noch den [][][]
+Package pdftex.def Info: gewinner.png used on input line 231.
+(pdftex.def)             Requested size: 261.76135pt x 289.92032pt.
+
+
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+[5
+
+ <./ai.png>] [6 <./gewinner.png>]
+Overfull \hbox (38.31871pt too wide) in paragraph at lines 266--272
+ [] 
  []
 
-[10] [11] [12] (dokumentationGomoku.aux) ) 
+[7] [8] [9] [10]
+Overfull \vbox (8.79411pt too high) has occurred while \output is active []
+
+
+[11] (dokumentationGomoku.aux) ) 
 Here is how much of TeX's memory you used:
- 18940 strings out of 493333
- 362485 string characters out of 3139190
- 432757 words of memory out of 3000000
- 22073 multiletter control sequences out of 15000+200000
+ 18931 strings out of 493333
+ 362461 string characters out of 3139190
+ 428661 words of memory out of 3000000
+ 22064 multiletter control sequences out of 15000+200000
  10619 words of font info for 40 fonts, out of 3000000 for 9000
  1141 hyphenation exceptions out of 8191
- 55i,15n,66p,470b,1142s stack positions out of 5000i,500n,10000p,200000b,50000s
-<D:/Program Files/MiKTeX 2.9/fonts/ty
-pe1/public/amsfonts/cm/cmbx10.pfb><D:/Program Files/MiKTeX 2.9/fonts/type1/publ
-ic/amsfonts/cm/cmbx12.pfb><D:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfo
-nts/cm/cmmi10.pfb><D:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/c
-mmi8.pfb><D:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr10.pfb>
-<D:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr8.pfb><D:/Progra
-m Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr9.pfb><D:/Program Files/Mi
-KTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy10.pfb><D:/Program Files/MiKTeX 2.9
-/fonts/type1/public/amsfonts/cm/cmsy8.pfb><D:/Program Files/MiKTeX 2.9/fonts/ty
-pe1/public/amsfonts/cm/cmti10.pfb><D:/Program Files/MiKTeX 2.9/fonts/type1/publ
-ic/amsfonts/cm/cmtt10.pfb><D:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfo
-nts/symbols/msbm10.pfb>
-Output written on dokumentationGomoku.pdf (12 pages, 4043930 bytes).
+ 55i,16n,66p,470b,1143s stack positions out of 5000i,500n,10000p,200000b,50000s
+<D:/Program Files/MiKTeX 2.9/fonts/type1/public
+/amsfonts/cm/cmbx10.pfb><D:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfont
+s/cm/cmbx12.pfb><D:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmm
+i10.pfb><D:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi8.pfb><
+D:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr10.pfb><D:/Progra
+m Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr8.pfb><D:/Program Files/Mi
+KTeX 2.9/fonts/type1/public/amsfonts/cm/cmr9.pfb><D:/Program Files/MiKTeX 2.9/f
+onts/type1/public/amsfonts/cm/cmsy10.pfb><D:/Program Files/MiKTeX 2.9/fonts/typ
+e1/public/amsfonts/cm/cmsy8.pfb><D:/Program Files/MiKTeX 2.9/fonts/type1/public
+/amsfonts/cm/cmti10.pfb><D:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfont
+s/cm/cmtt10.pfb><D:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/symbol
+s/msbm10.pfb>
+Output written on dokumentationGomoku.pdf (11 pages, 4046665 bytes).
 PDF statistics:
- 98 PDF objects out of 1000 (max. 8388607)
+ 95 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
  43 words of extra memory for PDF output out of 10000 (max. 10000000)
 
